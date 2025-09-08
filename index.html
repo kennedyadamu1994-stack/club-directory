@@ -679,7 +679,8 @@ function initializeApp() {
   const skillLevels = [...new Set(clubs.map(c => c.skill_levels))].filter(Boolean).sort();
   const skillSelect = document.getElementById('f-skills');
   skillSelect.innerHTML = '<option value="">Any skill level</option>';
-  skillLevels.forEach(s => { const o=document.createElement('option'); o.value=o.textContent=s; skillSelect.appendChild(s); });
+  // FIXED: Was skillSelect.appendChild(s), should be skillSelect.appendChild(o)
+  skillLevels.forEach(s => { const o=document.createElement('option'); o.value=o.textContent=s; skillSelect.appendChild(o); });
 
   buildStarUI();
   setupEventListeners();
