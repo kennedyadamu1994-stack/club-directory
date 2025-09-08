@@ -92,7 +92,7 @@
         /* Card Styling */
         .card {
             background: #fff;
-            border-radius: 3px;
+            border-radius: 16px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -118,7 +118,7 @@
         .club-logo {
             width: 80px;
             height: 80px;
-            border-radius: 3px;
+            border-radius: 16px;
             margin: 0 auto 20px;
             background: rgba(255, 255, 255, 0.9);
             display: flex;
@@ -149,7 +149,7 @@
             padding: 16px 36px;
             font-size: 18px;
             font-weight: 600;
-            border-radius: 3px;
+            border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
@@ -173,7 +173,7 @@
 
         .info-item {
             background: #f8f9fa;
-            border-radius: 3px;
+            border-radius: 12px;
             padding: 20px;
             text-align: center;
             transition: transform 0.3s ease;
@@ -233,7 +233,7 @@
             background: #e8f4fd;
             color: #007aff;
             padding: 8px 16px;
-            border-radius: 3px;
+            border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
         }
@@ -279,7 +279,7 @@
 
         .stat-card {
             background: #f8f9fa;
-            border-radius: 3px;
+            border-radius: 12px;
             padding: 20px;
             text-align: center;
             transition: transform 0.3s ease;
@@ -311,7 +311,7 @@
 
         .contact-item {
             background: #f8f9fa;
-            border-radius: 3px;
+            border-radius: 12px;
             padding: 20px;
             text-decoration: none;
             color: inherit;
@@ -517,14 +517,14 @@
                     </div>
 
                     <div style="margin-top: 30px;" id="instructorSection">
-                        <h3 style="margin-bottom: 15px; font-size: 18px;">Instructor</h3>
-                        <div style="display: flex; align-items: center; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                        <h3 style="margin-bottom: 15px; font-size: 18px;">Coach</h3>
+                        <div style="display: flex; align-items: center; background: #f8f9fa; padding: 20px; border-radius: 12px;">
                             <div style="width: 60px; height: 60px; border-radius: 50%; background: #007aff; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; margin-right: 20px;" id="instructorAvatar">
                                 ?
                             </div>
                             <div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: #1c1c1e; margin-bottom: 5px;" id="instructorName">Instructor Name</h4>
-                                <p style="font-size: 14px; color: #8e8e93;" id="instructorBio">Instructor details</p>
+                                <h4 style="font-size: 18px; font-weight: 700; color: #1c1c1e; margin-bottom: 5px;" id="instructorName">Coach Name</h4>
+                                <p style="font-size: 14px; color: #8e8e93;" id="instructorBio">Coach details</p>
                             </div>
                         </div>
                     </div>
@@ -550,11 +550,11 @@
                                 <p id="clubPhone">Contact phone</p>
                             </div>
                         </a>
-                        <a href="" class="contact-item" id="websiteLink" target="_blank">
-                            <div class="contact-icon">🌐</div>
+                        <a href="" class="contact-item" id="whatsappLink" target="_blank">
+                            <div class="contact-icon">💬</div>
                             <div class="contact-info">
-                                <h4>Website</h4>
-                                <p>Visit website</p>
+                                <h4>WhatsApp</h4>
+                                <p>Message us</p>
                             </div>
                         </a>
                         <a href="" class="contact-item" id="addressLink" target="_blank">
@@ -571,10 +571,6 @@
     </div>
 
     <script>
-        // Configuration
-        const SHEET_ID = '1dLYAGkacNmKcSyIoX4p6V9KOansmctifTJwCH-GFLBQ'; // Your Google Sheet ID
-        const API_KEY = 'AIzaSyCfiQ4T2AzFcgq93AYuecfVd15m9LrSgrA'; // Your Google Sheets API key
-        
         // Get club code from URL path
         const pathParts = window.location.pathname.split('/');
         const clubCode = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
@@ -590,38 +586,16 @@
 
         async function loadClubData(code) {
             try {
-                // Fetch club data from Google Sheets
-                const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Clubs!A:AD?key=${API_KEY}`;
-                const response = await fetch(sheetUrl);
+                // Use backend API instead of direct Google Sheets API
+                const response = await fetch(`/api/club-data?code=${encodeURIComponent(code)}`);
                 
                 if (!response.ok) {
-                    throw new Error('Failed to load club data');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to load club data');
                 }
                 
-                const data = await response.json();
-                const rows = data.values;
-                
-                if (!rows || rows.length < 2) {
-                    throw new Error('No club data found');
-                }
-                
-                // Find club by code (column B)
-                const clubRow = rows.find((row, index) => {
-                    if (index === 0) return false; // Skip header
-                    return row[1] && row[1].toLowerCase() === code.toLowerCase();
-                });
-                
-                if (!clubRow) {
-                    throw new Error('Club not found');
-                }
-                
-                // Check if club is active (column X)
-                if (clubRow[23] !== 'yes') {
-                    throw new Error('Club is not currently active');
-                }
-                
-                // Parse club data
-                const club = parseClubData(clubRow);
+                const club = await response.json();
+                console.log('Club loaded successfully:', club);
                 
                 // Display club information
                 displayClub(club);
@@ -629,45 +603,10 @@
                 // Update SEO meta tags
                 updateSEO(club);
                 
-                console.log('Club loaded successfully:', club);
-                
             } catch (error) {
                 console.error('Error loading club:', error);
                 showError(error.message);
             }
-        }
-
-        function parseClubData(row) {
-            return {
-                club_id: row[0] || '',
-                club_code: row[1] || '',
-                club_name: row[2] || 'Unknown Club',
-                activity_type: row[3] || '',
-                location: row[4] || '',
-                address: row[5] || '',
-                monthly_fee: parseFloat(row[6]) || 0,
-                description: row[7] || '',
-                image_url: row[8] || '',
-                website: row[9] || '',
-                phone: row[10] || '',
-                email: row[11] || '',
-                rating: parseFloat(row[12]) || 0,
-                user_rating: parseFloat(row[13]) || 0,
-                review_count: parseInt(row[14]) || 0,
-                total_members: parseInt(row[15]) || 0,
-                sessions_per_week: parseInt(row[16]) || 0,
-                age_groups: row[17] || '',
-                skill_levels: row[18] || '',
-                tags: row[19] || '',
-                facilities: row[20] || '',
-                instructor_name: row[21] || '',
-                instructor_bio: row[22] || '',
-                active: row[23] || 'no',
-                featured: row[24] || 'no',
-                booking_url: row[25] || '',
-                page_url: row[26] || '',
-                admin_url: row[27] || ''
-            };
         }
 
         function displayClub(club) {
@@ -679,52 +618,54 @@
             document.getElementById('clubName').textContent = club.club_name;
             document.getElementById('clubActivity').textContent = club.activity_type;
             
-            // Club logo (first letter of club name)
-            const logoLetter = club.club_name.charAt(0).toUpperCase();
-            document.getElementById('clubLogo').textContent = logoLetter;
+            // Club logo (emoji or first letter)
+            const logo = club.club_logo_emoji || club.club_name.charAt(0).toUpperCase();
+            document.getElementById('clubLogo').textContent = logo;
             
             // Info grid
             document.getElementById('clubLocation').textContent = club.location;
-            document.getElementById('clubFee').textContent = `£${club.monthly_fee}/month`;
-            document.getElementById('clubMembers').textContent = club.total_members.toString();
+            document.getElementById('clubFee').textContent = club.monthly_fee_text || `£${club.monthly_fee_amount}/month`;
+            document.getElementById('clubMembers').textContent = club.member_count.toString();
             
             // Ratings
-            const stars = generateStars(club.rating);
+            const stars = generateStars(club.numeric_rating);
             document.getElementById('clubStars').innerHTML = stars;
-            document.getElementById('clubRating').textContent = club.rating.toFixed(1);
+            document.getElementById('clubRating').textContent = club.numeric_rating.toFixed(1);
             
             // Stats
             document.getElementById('sessionsPerWeek').textContent = club.sessions_per_week.toString();
-            document.getElementById('userRating').textContent = club.user_rating.toFixed(1);
-            document.getElementById('reviewCount').textContent = club.review_count.toString();
+            document.getElementById('userRating').textContent = club.numeric_rating.toFixed(1);
+            document.getElementById('reviewCount').textContent = club.testimonials?.length || 0;
             document.getElementById('skillLevels').textContent = club.skill_levels || 'All levels';
             
             // Description
-            document.getElementById('clubDescription').textContent = club.description;
+            document.getElementById('clubDescription').textContent = club.club_bio || club.description;
             
             // Tags
-            if (club.tags) {
+            if (club.tags || club.tags_who || club.tags_vibe || club.tags_accessibility) {
                 const tagsContainer = document.getElementById('clubTags');
-                const tags = club.tags.split(',').map(tag => tag.trim());
-                tagsContainer.innerHTML = tags.map(tag => 
-                    `<span class="tag">${tag}</span>`
-                ).join('');
+                const allTags = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
+                if (allTags.length > 0) {
+                    tagsContainer.innerHTML = allTags.map(tag => 
+                        `<span class="tag">${tag}</span>`
+                    ).join('');
+                }
             }
             
             // Facilities
-            if (club.facilities) {
+            if (club.facilities_list) {
                 const facilitiesContainer = document.getElementById('facilitiesList');
-                const facilities = club.facilities.split(',').map(facility => facility.trim());
+                const facilities = club.facilities_list.split(',').map(facility => facility.trim());
                 facilitiesContainer.innerHTML = facilities.map(facility => 
                     `<span class="tag facility">${facility}</span>`
                 ).join('');
             }
             
-            // Instructor
-            if (club.instructor_name) {
-                document.getElementById('instructorName').textContent = club.instructor_name;
-                document.getElementById('instructorBio').textContent = club.instructor_bio;
-                const initials = club.instructor_name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
+            // Coach/Instructor
+            if (club.coach_name) {
+                document.getElementById('instructorName').textContent = club.coach_name;
+                document.getElementById('instructorBio').textContent = club.coach_role || club.instructor_bio;
+                const initials = club.coach_name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
                 document.getElementById('instructorAvatar').textContent = initials;
             } else {
                 document.getElementById('instructorSection').style.display = 'none';
@@ -745,10 +686,10 @@
                 document.getElementById('phoneLink').style.display = 'none';
             }
             
-            if (club.website) {
-                document.getElementById('websiteLink').href = club.website;
+            if (club.whatsapp) {
+                document.getElementById('whatsappLink').href = `https://wa.me/${club.whatsapp.replace(/[^0-9]/g, '')}`;
             } else {
-                document.getElementById('websiteLink').style.display = 'none';
+                document.getElementById('whatsappLink').style.display = 'none';
             }
             
             if (club.address) {
@@ -762,7 +703,7 @@
             // Join button
             if (club.booking_url) {
                 document.getElementById('joinButton').href = club.booking_url;
-                document.getElementById('joinButton').textContent = `Join for £${club.monthly_fee}/month`;
+                document.getElementById('joinButton').textContent = `Join for ${club.monthly_fee_text || '£' + club.monthly_fee_amount + '/month'}`;
             } else {
                 document.getElementById('joinButton').href = `mailto:${club.email}`;
                 document.getElementById('joinButton').textContent = 'Contact to Join';
@@ -792,7 +733,7 @@
             document.getElementById('pageTitle').textContent = document.title;
             
             // Update meta description
-            const description = `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.total_members} members, ${club.rating}/5 rating. From £${club.monthly_fee}/month.`;
+            const description = `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/5 rating. From £${club.monthly_fee_amount}/month.`;
             document.getElementById('pageDescription').setAttribute('content', description);
             
             // Update Open Graph tags
@@ -809,19 +750,18 @@
                 "@context": "https://schema.org",
                 "@type": "SportsClub",
                 "name": club.club_name,
-                "description": club.description,
+                "description": club.club_bio,
                 "address": {
                     "@type": "PostalAddress",
                     "streetAddress": club.address
                 },
                 "telephone": club.phone,
                 "email": club.email,
-                "url": club.website,
-                "priceRange": `£${club.monthly_fee}`,
+                "priceRange": `£${club.monthly_fee_amount}`,
                 "aggregateRating": {
                     "@type": "AggregateRating",
-                    "ratingValue": club.rating,
-                    "reviewCount": club.review_count
+                    "ratingValue": club.numeric_rating,
+                    "reviewCount": club.testimonials?.length || 0
                 }
             };
             
