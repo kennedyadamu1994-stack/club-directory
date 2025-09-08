@@ -1,31 +1,9 @@
-// vercel.json - Complete routing configuration for dynamic club pages
 {
   "version": 2,
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  },
-  "env": {
-    "GOOGLE_SHEET_ID": "@google_sheet_id",
-    "GOOGLE_SERVICE_ACCOUNT": "@google_service_account",
-    "GOOGLE_SHEETS_API_KEY": "@google_sheets_api_key"
-  },
-  "build": {
-    "env": {
-      "GOOGLE_SHEET_ID": "@google_sheet_id",
-      "GOOGLE_SERVICE_ACCOUNT": "@google_service_account", 
-      "GOOGLE_SHEETS_API_KEY": "@google_sheets_api_key"
-    }
-  },
   "rewrites": [
     {
       "source": "/club/:code*",
       "destination": "/club.html?code=:code"
-    },
-    {
-      "source": "/api/club-data/:code",
-      "destination": "/api/club-data.js?code=:code"
     }
   ],
   "redirects": [
@@ -37,27 +15,6 @@
   ],
   "headers": [
     {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods", 
-          "value": "GET, POST, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "s-maxage=300, stale-while-revalidate=60"
-        }
-      ]
-    },
-    {
       "source": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg))",
       "headers": [
         {
@@ -65,12 +22,6 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/refresh-cache",
-      "schedule": "0 */30 * * * *"
     }
   ]
 }
