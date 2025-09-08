@@ -83,10 +83,21 @@ module.exports = async (req, res) => {
 
 // Helper function to parse club data from sheet row for listing (consistent with club-data.js)
 function parseClubDataForListing(row) {
-    // Helper functions for safe data extraction
-    const safeGet = (index) => row[index] || '';
-    const safeGetFloat = (index) => parseFloat(row[index]) || 0;
-    const safeGetInt = (index) => parseInt(row[index]) || 0;
+    // Helper functions for safe data extraction, treating "N/A" as empty
+    const safeGet = (index) => {
+        const value = row[index] || '';
+        return value === 'N/A' ? '' : value;
+    };
+    const safeGetFloat = (index) => {
+        const value = row[index] || '';
+        if (value === 'N/A' || value === '') return 0;
+        return parseFloat(value) || 0;
+    };
+    const safeGetInt = (index) => {
+        const value = row[index] || '';
+        if (value === 'N/A' || value === '') return 0;
+        return parseInt(value) || 0;
+    };
 
     const club = {
         // Basic Info (A-C: columns 0-2)
