@@ -21,6 +21,8 @@
   body{
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:#fafafa;
+    margin: 0;
+    padding: 0;
   }
 
   /* ---------- Loading / error ---------- */
@@ -36,7 +38,7 @@
     color: white;
     text-align: center;
     padding: 60px 20px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
   }
   
   .club-header h1{
@@ -54,7 +56,15 @@
   }
 
   /* ---------- Toolbar ---------- */
-  .club-toolbar{max-width:1400px;margin:0 auto;padding:1.5rem 1.5rem 0;display:flex;gap:0.75rem;flex-wrap:wrap}
+  .club-toolbar{
+    max-width:1400px;
+    margin:0 auto 30px;
+    padding:0 1.5rem;
+    display:flex;
+    gap:0.75rem;
+    flex-wrap:wrap;
+    align-items: center;
+  }
   .club-btn{padding:0.5rem 1rem;border:1px solid var(--brand);border-radius:6px;background:var(--brand);color:#fff;font-weight:600;cursor:pointer;font-size:0.9rem;transition:all .2s ease}
   .club-btn:hover{background:#e60062;border-color:#e60062}
   .club-btn.secondary{background:#fff;color:var(--brand)}
@@ -65,7 +75,7 @@
   /* ---------- Search Bar ---------- */
   .search-section{
     max-width: 1400px;
-    margin: 0 auto 30px;
+    margin: 0 auto 40px;
     padding: 0 1.5rem;
   }
   
@@ -101,156 +111,160 @@
     font-size: 18px;
   }
 
-  /* ---------- Cards grid ---------- */
+  /* ---------- Cards grid with improved spacing ---------- */
   .club-grid{
-    max-width:1400px;
-    margin:1rem auto 2rem;
-    padding:0 1.5rem;
-    display:grid;
-    gap:2rem;
-    grid-template-columns:repeat(auto-fill,minmax(350px,1fr));
+    max-width: 1400px;
+    margin: 0 auto 3rem;
+    padding: 0 1.5rem;
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    align-items: start;
   }
   
-  /* ---------- Card container ---------- */
+  /* ---------- Card container with consistent spacing ---------- */
   .club-card{
-    display:flex;
-    flex-direction:column;
-    gap:1rem;
-    transition:all .3s ease;
+    display: flex;
+    flex-direction: column;
+    transition: all .3s ease;
     background: white;
     border-radius: var(--radius);
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     overflow: hidden;
+    height: fit-content;
+    margin-bottom: 0; /* Remove any margin that might interfere with grid gap */
   }
   
   .club-card:hover{
-    transform:translateY(-8px);
+    transform: translateY(-8px);
     box-shadow: 0 12px 30px rgba(0,0,0,0.15);
   }
   
   /* ---------- Image container ---------- */
   .club-img-container{
-    position:relative;
-    width:100%;
-    height:200px;
-    overflow:hidden;
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    flex-shrink: 0;
   }
   
   /* ---------- Featured styling ---------- */
   .club-card.featured .club-img-container{
-    border-bottom:4px solid #FFD700;
+    border-bottom: 4px solid #FFD700;
   }
   .club-card.featured .club-img-container::after{
-    content:"FEATURED";
-    position:absolute;
-    top:12px;
-    left:12px;
-    background:#FFD700;
-    color:#333;
-    padding:6px 12px;
-    border-radius:6px;
-    font-size:0.75rem;
-    font-weight:700;
-    z-index:4;
-    box-shadow:0 2px 8px rgba(0,0,0,0.3);
+    content: "FEATURED";
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #FFD700;
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    z-index: 4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
   
   /* ---------- Image ---------- */
   .club-img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    transition:transform .3s ease;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .3s ease;
   }
   
   .club-card:hover .club-img{
-    transform:scale(1.08);
+    transform: scale(1.08);
   }
   
   /* ---------- Top overlay elements on image ---------- */
   .club-website-icon {
-    position:absolute;
-    top:12px;
-    right:12px;
-    width:36px;
-    height:36px;
-    background:rgba(255,255,255,0.9);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-size:14px;
-    font-weight:600;
-    color:var(--brand);
-    text-decoration:none;
-    box-shadow:0 2px 8px rgba(0,0,0,0.2);
-    transition:all 0.2s ease;
-    z-index:3;
-    backdrop-filter:blur(10px);
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--brand);
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+    z-index: 3;
+    backdrop-filter: blur(10px);
   }
   .club-website-icon:hover { 
-    background:rgba(255,255,255,1);
-    transform:scale(1.1);
-    color:var(--brand);
+    background: rgba(255,255,255,1);
+    transform: scale(1.1);
+    color: var(--brand);
   }
   
   .club-rating-overlay {
-    position:absolute;
-    top:12px;
-    left:12px;
-    font-weight:700;
-    padding:6px 10px;
-    border-radius:3px;
-    color:#fff;
-    font-size:0.85rem;
-    min-width:32px;
-    text-align:center;
-    box-shadow:0 2px 8px rgba(0,0,0,0.3);
-    z-index:3;
-    backdrop-filter:blur(10px);
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.85rem;
+    min-width: 32px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    z-index: 3;
+    backdrop-filter: blur(10px);
   }
-  .club-card.featured .club-rating-overlay { top:60px }
+  .club-card.featured .club-rating-overlay { top: 60px }
   
   /* Rating colors */
-  .club-rating-overlay.club-score-0  { background:rgba(139,0,0,0.9) }
-  .club-rating-overlay.club-score-1  { background:rgba(165,42,42,0.9) }
-  .club-rating-overlay.club-score-2  { background:rgba(205,92,92,0.9) }
-  .club-rating-overlay.club-score-3  { background:rgba(220,20,60,0.9) }
-  .club-rating-overlay.club-score-4  { background:rgba(255,69,0,0.9) }
-  .club-rating-overlay.club-score-5  { background:rgba(255,165,0,0.9) }
-  .club-rating-overlay.club-score-6  { background:rgba(218,165,32,0.9) }
-  .club-rating-overlay.club-score-7  { background:rgba(34,139,34,0.9) }
-  .club-rating-overlay.club-score-8  { background:rgba(50,205,50,0.9) }
-  .club-rating-overlay.club-score-9  { background:rgba(34,139,34,0.9) }
-  .club-rating-overlay.club-score-10 { background:rgba(0,100,0,0.9) }
+  .club-rating-overlay.club-score-0  { background: rgba(139,0,0,0.9) }
+  .club-rating-overlay.club-score-1  { background: rgba(165,42,42,0.9) }
+  .club-rating-overlay.club-score-2  { background: rgba(205,92,92,0.9) }
+  .club-rating-overlay.club-score-3  { background: rgba(220,20,60,0.9) }
+  .club-rating-overlay.club-score-4  { background: rgba(255,69,0,0.9) }
+  .club-rating-overlay.club-score-5  { background: rgba(255,165,0,0.9) }
+  .club-rating-overlay.club-score-6  { background: rgba(218,165,32,0.9) }
+  .club-rating-overlay.club-score-7  { background: rgba(34,139,34,0.9) }
+  .club-rating-overlay.club-score-8  { background: rgba(50,205,50,0.9) }
+  .club-rating-overlay.club-score-9  { background: rgba(34,139,34,0.9) }
+  .club-rating-overlay.club-score-10 { background: rgba(0,100,0,0.9) }
   
-  /* ---------- Content below image ---------- */
+  /* ---------- Content below image with consistent spacing ---------- */
   .club-content{
-    display:flex;
-    flex-direction:column;
-    gap:0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     padding: 20px;
+    flex-grow: 1;
   }
   
   .club-title{
-    font-size:1.2rem;
-    font-weight:700;
-    color:var(--text);
-    line-height:1.3;
-    margin:0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin: 0;
   }
   
   .club-activity{
-    font-size:0.95rem;
-    color:var(--brand);
-    font-weight:600;
-    margin:0;
+    font-size: 0.95rem;
+    color: var(--brand);
+    font-weight: 600;
+    margin: 0;
   }
   
   .club-location{
-    font-size:0.9rem;
-    color:var(--muted);
-    margin:0;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0;
     display: flex;
     align-items: center;
     gap: 4px;
@@ -258,30 +272,30 @@
   
   /* ---------- Price and rating row ---------- */
   .club-price-rating-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:1rem;
-    flex-wrap:wrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
     margin-top: 10px;
   }
   
   .club-price{
-    font-size:1.2rem;
-    font-weight:700;
-    color:var(--brand);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--brand);
   }
-  .club-price.free{color:#28a745}
+  .club-price.free{color: #28a745}
   
   .club-rating-section{
-    display:flex;
-    align-items:center;
-    gap:0.25rem;
-    font-size:0.85rem;
-    color:var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
   }
   
-  /* ---------- Stats row ---------- */
+  /* ---------- Stats row with consistent spacing ---------- */
   .club-stats-row{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -311,74 +325,75 @@
     letter-spacing: 0.5px;
   }
 
-  /* ---------- Badges ---------- */
+  /* ---------- Badges with proper spacing ---------- */
   .club-badges-container {
-    display:flex;
-    align-items:center;
-    gap:6px;
-    flex-wrap:wrap;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
     margin-top: 10px;
+    margin-bottom: auto; /* Push action buttons to bottom */
   }
   
   .club-badge{
-    display:inline-block;
-    background:var(--brand);
-    color:#fff;
-    border-radius:4px;
-    padding:3px 8px;
-    font-size:0.7rem;
-    font-weight:600;
+    display: inline-block;
+    background: var(--brand);
+    color: #fff;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-weight: 600;
   }
   
-  .club-badge.beginners{background:#10B981}
-  .club-badge.advanced{background:#8B5CF6}
-  .club-badge.all-ages{background:#FF6B35}
-  .club-badge.wheelchair{background:#3B82F6}
+  .club-badge.beginners{background: #10B981}
+  .club-badge.advanced{background: #8B5CF6}
+  .club-badge.all-ages{background: #FF6B35}
+  .club-badge.wheelchair{background: #3B82F6}
   
-  /* ---------- Action buttons ---------- */
+  /* ---------- Action buttons with consistent positioning ---------- */
   .club-card-actions{
-    display:flex;
-    gap:0.75rem;
-    margin-top:0.5rem;
+    display: flex;
+    gap: 0.75rem;
+    margin-top: auto;
     padding: 0 20px 20px;
   }
   .club-card-actions .club-btn{
-    flex:1;
-    padding:0.75rem 1rem;
-    font-weight:600;
-    font-size:0.9rem;
-    text-align:center;
-    border-radius:6px;
-    transition:all .2s ease;
-    border:1px solid var(--border);
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 6px;
+    transition: all .2s ease;
+    border: 1px solid var(--border);
     text-decoration: none;
     display: block;
   }
   .club-btn.details{
-    background:#fff;
-    color:var(--text);
-    box-shadow:0 2px 4px rgba(0,0,0,0.05);
+    background: #fff;
+    color: var(--text);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
   .club-btn.details:hover{
-    background:#f8f9fa;
-    box-shadow:0 4px 8px rgba(0,0,0,0.1);
+    background: #f8f9fa;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
   .club-btn.join{
-    background:var(--brand);
-    border-color:var(--brand);
-    color:#fff;
-    box-shadow:0 2px 4px rgba(255,0,110,0.2);
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(255,0,110,0.2);
   }
   .club-btn.join:hover{
-    background:#e60062;
-    border-color:#e60062;
-    box-shadow:0 4px 8px rgba(255,0,110,0.3);
+    background: #e60062;
+    border-color: #e60062;
+    box-shadow: 0 4px 8px rgba(255,0,110,0.3);
   }
   
   /* ---------- Stars ---------- */
-  .club-rating-stars{display:inline-flex;gap:1px;margin-left:0.25rem}
-  .club-rating-stars .star{color:#ddd;font-size:0.8rem}
-  .club-rating-stars .star.filled{color:#fbbf24}
+  .club-rating-stars{display: inline-flex;gap: 1px;margin-left: 0.25rem}
+  .club-rating-stars .star{color: #ddd;font-size: 0.8rem}
+  .club-rating-stars .star.filled{color: #fbbf24}
   .club-rating-stars .star.partial{
     background: linear-gradient(90deg, #fbbf24 var(--fill-percent, 0%), #ddd var(--fill-percent, 0%));
     background-clip: text;
@@ -387,47 +402,70 @@
   }
 
   /* ---------- Modal ---------- */
-  .club-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:99999;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:clamp(12px,3vw,24px)}
-  .club-modal.active{display:flex}
-  .club-dialog{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:1.25rem;max-height:85vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.15);position:relative;margin-top:2rem}
-  .club-dialog h2{margin:0 0 1.1rem;font-size:1.15rem}
-  .club-field{margin-bottom:1rem;display:flex;flex-direction:column;font-size:0.9rem}
-  .club-label{font-weight:600;margin-bottom:0.3rem;color:var(--text)}
-  .club-dialog select,.club-dialog input[type="number"]{padding:0.5rem 0.7rem;border:1px solid var(--border);border-radius:6px;font-size:0.9rem;background:#fff}
-  .club-dialog select:focus,.club-dialog input:focus{outline:none;border-color:var(--brand)}
-  .club-check{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem;margin-bottom:0.4rem}
-  .club-actions{display:flex;gap:0.5rem;margin-top:1.2rem}
-  .club-actions .club-btn{flex:1}
+  .club-modal{position: fixed;inset: 0;display: none;align-items: center;justify-content: center;background: rgba(0,0,0,0.5);z-index: 99999;backdrop-filter: blur(4px);-webkit-backdrop-filter: blur(4px);padding: clamp(12px,3vw,24px)}
+  .club-modal.active{display: flex}
+  .club-dialog{background: #fff;border-radius: 16px;width: 100%;max-width: 400px;padding: 1.25rem;max-height: 85vh;overflow-y: auto;box-shadow: 0 20px 50px rgba(0,0,0,0.15);position: relative;margin-top: 2rem}
+  .club-dialog h2{margin: 0 0 1.1rem;font-size: 1.15rem}
+  .club-field{margin-bottom: 1rem;display: flex;flex-direction: column;font-size: 0.9rem}
+  .club-label{font-weight: 600;margin-bottom: 0.3rem;color: var(--text)}
+  .club-dialog select,.club-dialog input[type="number"]{padding: 0.5rem 0.7rem;border: 1px solid var(--border);border-radius: 6px;font-size: 0.9rem;background: #fff}
+  .club-dialog select:focus,.club-dialog input:focus{outline: none;border-color: var(--brand)}
+  .club-check{display: flex;align-items: center;gap: 0.5rem;font-size: 0.9rem;margin-bottom: 0.4rem}
+  .club-actions{display: flex;gap: 0.5rem;margin-top: 1.2rem}
+  .club-actions .club-btn{flex: 1}
 
   /* ---------- Stars in filter ---------- */
-  .club-stars{display:flex;gap:0.25rem;font-size:1.2rem;cursor:pointer}
-  .club-stars span{color:var(--border);transition:color .2s}
-  .club-stars span:hover{color:#ffb3d1}
-  .club-stars span.active{color:var(--brand)}
+  .club-stars{display: flex;gap: 0.25rem;font-size: 1.2rem;cursor: pointer}
+  .club-stars span{color: var(--border);transition: color .2s}
+  .club-stars span:hover{color: #ffb3d1}
+  .club-stars span.active{color: var(--brand)}
 
   /* ---------- Advanced toggle ---------- */
-  .club-advanced-toggle{width:100%;padding:0.65rem 1.2rem;margin:1rem 0;background:#f8f8f8;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:0.9rem;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:center;gap:0.5rem;transition:all .2s ease}
-  .club-advanced-toggle:hover{background:#f0f0f0;border-color:#ccc}
-  .club-advanced-toggle:after{content:'▼';font-size:0.7rem;transition:transform .3s ease}
-  .club-advanced-toggle.active:after{transform:rotate(180deg)}
-  .club-advanced-section{display:none;padding-top:0.5rem;border-top:1px solid var(--border);margin-top:1rem}
-  .club-advanced-section.active{display:block}
+  .club-advanced-toggle{width: 100%;padding: 0.65rem 1.2rem;margin: 1rem 0;background: #f8f8f8;border: 1px solid var(--border);border-radius: 6px;cursor: pointer;font-size: 0.9rem;font-weight: 600;color: var(--text);display: flex;align-items: center;justify-content: center;gap: 0.5rem;transition: all .2s ease}
+  .club-advanced-toggle:hover{background: #f0f0f0;border-color: #ccc}
+  .club-advanced-toggle:after{content: '▼';font-size: 0.7rem;transition: transform .3s ease}
+  .club-advanced-toggle.active:after{transform: rotate(180deg)}
+  .club-advanced-section{display: none;padding-top: 0.5rem;border-top: 1px solid var(--border);margin-top: 1rem}
+  .club-advanced-section.active{display: block}
 
-  /* ---------- Mobile tweaks ---------- */
-  @media (max-width:480px){
-    .club-grid{grid-template-columns:1fr;padding:0 1rem;gap:1.5rem}
-    .club-img-container{height:180px}
-    .club-title{font-size:1.1rem}
-    .club-activity{font-size:0.9rem}
-    .club-location{font-size:0.85rem}
-    .club-card-actions .club-btn{font-size:0.85rem;padding:0.65rem 0.8rem}
-    .club-toolbar{flex-direction:column;gap:0.5rem}
-    .club-header h1{font-size:32px}
-    .club-header p{font-size:18px}
-    .search-input{padding:14px 18px 14px 45px;font-size:14px}
+  /* ---------- Mobile tweaks with improved spacing ---------- */
+  @media (max-width: 480px){
+    .club-grid{
+      grid-template-columns: 1fr;
+      padding: 0 1rem;
+      gap: 2rem;
+    }
+    .club-img-container{height: 180px}
+    .club-title{font-size: 1.1rem}
+    .club-activity{font-size: 0.9rem}
+    .club-location{font-size: 0.85rem}
+    .club-card-actions .club-btn{font-size: 0.85rem;padding: 0.65rem 0.8rem}
+    .club-toolbar{
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 20px;
+    }
+    .club-header{
+      padding: 40px 20px;
+      margin-bottom: 30px;
+    }
+    .club-header h1{font-size: 32px}
+    .club-header p{font-size: 18px}
+    .search-input{padding: 14px 18px 14px 45px;font-size: 14px}
+    .search-section{margin-bottom: 30px}
   }
-  @media (min-width:481px) and (max-width:768px){
-    .club-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+  
+  @media (min-width: 481px) and (max-width: 768px){
+    .club-grid{
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px){
+    .club-grid{
+      gap: 2.25rem;
+    }
   }
 </style>
 </head>
@@ -607,33 +645,34 @@ async function loadClubData(forceFresh = false) {
       activity_type: String(club.activity_type || ''),
       location: String(club.location || ''),
       address: String(club.address || ''),
-      monthly_fee: parseFloat(club.monthly_fee) || 0,
-      description: String(club.description || ''),
+      monthly_fee: parseFloat(club.monthly_fee_amount || club.monthly_fee) || 0,
+      description: String(club.club_bio || club.description || ''),
       image_url: String(club.image_url || `https://source.unsplash.com/featured/?${club.activity_type||'fitness'}`),
       website: String(club.website || ''),
       phone: String(club.phone || ''),
       email: String(club.email || ''),
-      rating: parseFloat(club.rating) || 0,
-      user_rating: parseFloat(club.user_rating) || 0,
-      review_count: parseFloat(club.review_count) || 0,
-      total_members: parseFloat(club.total_members) || 0,
+      rating: parseFloat(club.numeric_rating || club.rating) || 0,
+      user_rating: parseFloat(club.numeric_rating || club.user_rating) || 0,
+      review_count: parseFloat(club.review_count) || (club.testimonials ? club.testimonials.length : 0),
+      total_members: parseFloat(club.member_count || club.total_members) || 0,
       sessions_per_week: parseFloat(club.sessions_per_week) || 0,
-      age_groups: String(club.age_groups || ''),
-      skill_levels: String(club.skill_levels || ''),
+      age_groups: String(club.tags_who || club.age_groups || ''),
+      skill_levels: String(club.skill_levels || 'All levels'),
       tags: String(club.tags || ''),
-      facilities: String(club.facilities || ''),
-      instructor_name: String(club.instructor_name || ''),
-      instructor_bio: String(club.instructor_bio || ''),
+      facilities: String(club.facilities_list || club.facilities || ''),
+      instructor_name: String(club.coach_name || club.instructor_name || ''),
+      instructor_bio: String(club.coach_role || club.instructor_bio || ''),
       active: String(club.active || '').toLowerCase() === 'yes',
-      featured: club.featured === true || String(club.featured || '').toLowerCase() === 'yes',
+      featured: club.featured === true || String(club.featured || '').toLowerCase() === 'yes' || club.ranking_category === 'Featured',
       booking_url: String(club.booking_url || ''),
       page_url: String(club.page_url || `/club/${club.club_code || club.club_name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`),
       admin_url: String(club.admin_url || ''),
       
-      // Computed properties
-      is_beginner_friendly: String(club.tags || '').toLowerCase().includes('beginner'),
-      is_wheelchair_accessible: String(club.facilities || '').toLowerCase().includes('wheelchair'),
-      is_all_ages: String(club.age_groups || '').toLowerCase().includes('all ages')
+      // Computed properties with better data mapping
+      is_beginner_friendly: String(club.tags_who || club.tags || '').toLowerCase().includes('beginner'),
+      is_wheelchair_accessible: (String(club.tags_accessibility || club.facilities || '').toLowerCase().includes('wheelchair') || 
+                                String(club.tags_accessibility || club.facilities || '').toLowerCase().includes('accessible')),
+      is_all_ages: String(club.tags_who || club.age_groups || '').toLowerCase().includes('all ages')
     })).filter(club => club.active); // Only show active clubs
 
     if (!clubs.length) throw new Error('No active clubs found');
@@ -679,7 +718,6 @@ function initializeApp() {
   const skillLevels = [...new Set(clubs.map(c => c.skill_levels))].filter(Boolean).sort();
   const skillSelect = document.getElementById('f-skills');
   skillSelect.innerHTML = '<option value="">Any skill level</option>';
-  // FIXED: Was skillSelect.appendChild(s), should be skillSelect.appendChild(o)
   skillLevels.forEach(s => { const o=document.createElement('option'); o.value=o.textContent=s; skillSelect.appendChild(o); });
 
   buildStarUI();
