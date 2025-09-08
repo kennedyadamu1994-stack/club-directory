@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Loading Club...</title>
+    <meta name="description" id="pageDescription" content="Club information">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" id="ogTitle" content="">
+    <meta property="og:description" id="ogDescription" content="">
+    <meta property="og:image" id="ogImage" content="">
+    <meta property="og:url" id="ogUrl" content="">
+    <meta property="og:type" content="website">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json" id="structuredData">
+    {
+      "@context": "https://schema.org",
+      "@type": "SportsClub",
+      "name": "",
+      "description": "",
+      "address": {},
+      "telephone": "",
+      "email": "",
+      "url": "",
+      "priceRange": ""
+    }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1c1c1e;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #8e8e93;
+        }
+
+        .loading-spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007aff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Error State */
+        .error {
+            background: #ffeaea;
+            color: #ff3b30;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .content-grid {
+            display: grid;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        /* Card Styling */
+        .card {
+            background: #fff;
+            border-radius: 3px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        /* Hero Section */
+        .hero-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .club-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 3px;
+            margin: 0 auto 20px;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: #333;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .hero-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .hero-cta {
+            background: #FF006E;
+            color: white;
+            border: none;
+            padding: 16px 36px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
+        }
+
+        .hero-cta:hover {
+            background: #E6005E;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 0, 110, 0.4);
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            border-radius: 3px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .info-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #8e8e93;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 18px;
+            color: #1c1c1e;
+            font-weight: 600;
+        }
+
+        .rating-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .stars {
+            color: #FFD700;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .rating-number {
+            font-size: 14px;
+            color: #8e8e93;
+            margin-left: 4px;
+        }
+
+        /* Tags */
+        .tags-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tag {
+            background: #e8f4fd;
+            color: #007aff;
+            padding: 8px 16px;
+            border-radius: 3px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .tag.activity {
+            background: #f0f9ff;
+            color: #0891b2;
+        }
+
+        .tag.facility {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, #FF006E, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 3px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #FF006E;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #8e8e93;
+        }
+
+        /* Contact Grid */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .contact-item {
+            background: #f8f9fa;
+            border-radius: 3px;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: #e8f4fd;
+            transform: translateY(-3px);
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            background: #007aff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .contact-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 5px;
+        }
+
+        .contact-info p {
+            font-size: 14px;
+            color: #8e8e93;
+        }
+
+        /* Navigation */
+        .back-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .back-nav:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 15px;
+            }
+            
+            .content-grid {
+                gap: 20px;
+            }
+
+            .hero-title {
+                font-size: 28px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .back-nav {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin-bottom: 20px;
+                display: inline-block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Navigation -->
+    <a href="/" class="back-nav">← Back to Clubs</a>
+
+    <div class="page-container">
+        <!-- Loading State -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Loading club information...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="error" style="display: none;">
+            <h2>Club Not Found</h2>
+            <p>The club you're looking for doesn't exist or is no longer available.</p>
+            <a href="/" style="color: #ff3b30; text-decoration: underline;">Browse all clubs</a>
+        </div>
+
+        <!-- Main Content -->
+        <div id="content" class="content-grid" style="display: none;">
+            <!-- Hero Card -->
+            <div class="card hero-card">
+                <div class="club-logo" id="clubLogo">🏛️</div>
+                <h1 class="hero-title" id="clubName">Club Name</h1>
+                <p class="hero-subtitle" id="clubActivity">Activity Type</p>
+                <a href="#membership" class="hero-cta" id="joinButton">Join Club</a>
+            </div>
+
+            <!-- Club Info Card -->
+            <div class="card">
+                <div class="card-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <div class="info-label">Location</div>
+                            <div class="info-value" id="clubLocation">Location</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">💰</span>
+                            <div class="info-label">Monthly Fee</div>
+                            <div class="info-value" id="clubFee">£0/month</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">⭐</span>
+                            <div class="info-label">NBRH Rating</div>
+                            <div class="info-value">
+                                <div class="rating-display">
+                                    <span class="stars" id="clubStars">★★★★☆</span>
+                                    <span class="rating-number" id="clubRating">4.0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <div class="info-label">Members</div>
+                            <div class="info-value" id="clubMembers">0</div>
+                        </div>
+                    </div>
+                    <div class="tags-row" id="clubTags">
+                        <!-- Tags will be populated dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Club Performance Card -->
+            <div class="card" id="membership">
+                <div class="card-content">
+                    <h2 class="section-header">Club Performance</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-number" id="sessionsPerWeek">0</span>
+                            <div class="stat-label">Sessions per Week</div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" id="userRating">0</span>
+                            <div class="stat-label">Community Rating</div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" id="reviewCount">0</span>
+                            <div class="stat-label">Reviews</div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" id="skillLevels">All</span>
+                            <div class="stat-label">Skill Levels</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Club Card -->
+            <div class="card">
+                <div class="card-content">
+                    <h2 class="section-header">About This Club</h2>
+                    <p id="clubDescription">Club description will appear here...</p>
+                    
+                    <div style="margin-top: 20px;">
+                        <h3 style="margin-bottom: 15px; font-size: 18px;">Facilities & Features</h3>
+                        <div id="facilitiesList" class="tags-row">
+                            <!-- Facilities will be populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;" id="instructorSection">
+                        <h3 style="margin-bottom: 15px; font-size: 18px;">Instructor</h3>
+                        <div style="display: flex; align-items: center; background: #f8f9fa; padding: 20px; border-radius: 8px;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #007aff; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; margin-right: 20px;" id="instructorAvatar">
+                                ?
+                            </div>
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 700; color: #1c1c1e; margin-bottom: 5px;" id="instructorName">Instructor Name</h4>
+                                <p style="font-size: 14px; color: #8e8e93;" id="instructorBio">Instructor details</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact & Location Card -->
+            <div class="card">
+                <div class="card-content">
+                    <h2 class="section-header">Get In Touch</h2>
+                    <div class="contact-grid">
+                        <a href="" class="contact-item" id="emailLink">
+                            <div class="contact-icon">📧</div>
+                            <div class="contact-info">
+                                <h4>Email</h4>
+                                <p id="clubEmail">Contact email</p>
+                            </div>
+                        </a>
+                        <a href="" class="contact-item" id="phoneLink">
+                            <div class="contact-icon">📞</div>
+                            <div class="contact-info">
+                                <h4>Phone</h4>
+                                <p id="clubPhone">Contact phone</p>
+                            </div>
+                        </a>
+                        <a href="" class="contact-item" id="websiteLink" target="_blank">
+                            <div class="contact-icon">🌐</div>
+                            <div class="contact-info">
+                                <h4>Website</h4>
+                                <p>Visit website</p>
+                            </div>
+                        </a>
+                        <a href="" class="contact-item" id="addressLink" target="_blank">
+                            <div class="contact-icon">📍</div>
+                            <div class="contact-info">
+                                <h4>Location</h4>
+                                <p id="clubAddress">Club address</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const SHEET_ID = '1dLYAGkacNmKcSyIoX4p6V9KOansmctifTJwCH-GFLBQ'; // Your Google Sheet ID
+        const API_KEY = 'AIzaSyCfiQ4T2AzFcgq93AYuecfVd15m9LrSgrA'; // Your Google Sheets API key
+        
+        // Get club code from URL path
+        const pathParts = window.location.pathname.split('/');
+        const clubCode = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
+        
+        console.log('Loading club with code:', clubCode);
+        
+        // Load club data on page load
+        if (clubCode && clubCode !== 'club') {
+            loadClubData(clubCode);
+        } else {
+            showError('No club code provided in URL');
+        }
+
+        async function loadClubData(code) {
+            try {
+                // Fetch club data from Google Sheets
+                const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Clubs!A:AD?key=${API_KEY}`;
+                const response = await fetch(sheetUrl);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to load club data');
+                }
+                
+                const data = await response.json();
+                const rows = data.values;
+                
+                if (!rows || rows.length < 2) {
+                    throw new Error('No club data found');
+                }
+                
+                // Find club by code (column B)
+                const clubRow = rows.find((row, index) => {
+                    if (index === 0) return false; // Skip header
+                    return row[1] && row[1].toLowerCase() === code.toLowerCase();
+                });
+                
+                if (!clubRow) {
+                    throw new Error('Club not found');
+                }
+                
+                // Check if club is active (column X)
+                if (clubRow[23] !== 'yes') {
+                    throw new Error('Club is not currently active');
+                }
+                
+                // Parse club data
+                const club = parseClubData(clubRow);
+                
+                // Display club information
+                displayClub(club);
+                
+                // Update SEO meta tags
+                updateSEO(club);
+                
+                console.log('Club loaded successfully:', club);
+                
+            } catch (error) {
+                console.error('Error loading club:', error);
+                showError(error.message);
+            }
+        }
+
+        function parseClubData(row) {
+            return {
+                club_id: row[0] || '',
+                club_code: row[1] || '',
+                club_name: row[2] || 'Unknown Club',
+                activity_type: row[3] || '',
+                location: row[4] || '',
+                address: row[5] || '',
+                monthly_fee: parseFloat(row[6]) || 0,
+                description: row[7] || '',
+                image_url: row[8] || '',
+                website: row[9] || '',
+                phone: row[10] || '',
+                email: row[11] || '',
+                rating: parseFloat(row[12]) || 0,
+                user_rating: parseFloat(row[13]) || 0,
+                review_count: parseInt(row[14]) || 0,
+                total_members: parseInt(row[15]) || 0,
+                sessions_per_week: parseInt(row[16]) || 0,
+                age_groups: row[17] || '',
+                skill_levels: row[18] || '',
+                tags: row[19] || '',
+                facilities: row[20] || '',
+                instructor_name: row[21] || '',
+                instructor_bio: row[22] || '',
+                active: row[23] || 'no',
+                featured: row[24] || 'no',
+                booking_url: row[25] || '',
+                page_url: row[26] || '',
+                admin_url: row[27] || ''
+            };
+        }
+
+        function displayClub(club) {
+            // Hide loading, show content
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            
+            // Hero section
+            document.getElementById('clubName').textContent = club.club_name;
+            document.getElementById('clubActivity').textContent = club.activity_type;
+            
+            // Club logo (first letter of club name)
+            const logoLetter = club.club_name.charAt(0).toUpperCase();
+            document.getElementById('clubLogo').textContent = logoLetter;
+            
+            // Info grid
+            document.getElementById('clubLocation').textContent = club.location;
+            document.getElementById('clubFee').textContent = `£${club.monthly_fee}/month`;
+            document.getElementById('clubMembers').textContent = club.total_members.toString();
+            
+            // Ratings
+            const stars = generateStars(club.rating);
+            document.getElementById('clubStars').innerHTML = stars;
+            document.getElementById('clubRating').textContent = club.rating.toFixed(1);
+            
+            // Stats
+            document.getElementById('sessionsPerWeek').textContent = club.sessions_per_week.toString();
+            document.getElementById('userRating').textContent = club.user_rating.toFixed(1);
+            document.getElementById('reviewCount').textContent = club.review_count.toString();
+            document.getElementById('skillLevels').textContent = club.skill_levels || 'All levels';
+            
+            // Description
+            document.getElementById('clubDescription').textContent = club.description;
+            
+            // Tags
+            if (club.tags) {
+                const tagsContainer = document.getElementById('clubTags');
+                const tags = club.tags.split(',').map(tag => tag.trim());
+                tagsContainer.innerHTML = tags.map(tag => 
+                    `<span class="tag">${tag}</span>`
+                ).join('');
+            }
+            
+            // Facilities
+            if (club.facilities) {
+                const facilitiesContainer = document.getElementById('facilitiesList');
+                const facilities = club.facilities.split(',').map(facility => facility.trim());
+                facilitiesContainer.innerHTML = facilities.map(facility => 
+                    `<span class="tag facility">${facility}</span>`
+                ).join('');
+            }
+            
+            // Instructor
+            if (club.instructor_name) {
+                document.getElementById('instructorName').textContent = club.instructor_name;
+                document.getElementById('instructorBio').textContent = club.instructor_bio;
+                const initials = club.instructor_name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
+                document.getElementById('instructorAvatar').textContent = initials;
+            } else {
+                document.getElementById('instructorSection').style.display = 'none';
+            }
+            
+            // Contact information
+            if (club.email) {
+                document.getElementById('clubEmail').textContent = club.email;
+                document.getElementById('emailLink').href = `mailto:${club.email}`;
+            } else {
+                document.getElementById('emailLink').style.display = 'none';
+            }
+            
+            if (club.phone) {
+                document.getElementById('clubPhone').textContent = club.phone;
+                document.getElementById('phoneLink').href = `tel:${club.phone}`;
+            } else {
+                document.getElementById('phoneLink').style.display = 'none';
+            }
+            
+            if (club.website) {
+                document.getElementById('websiteLink').href = club.website;
+            } else {
+                document.getElementById('websiteLink').style.display = 'none';
+            }
+            
+            if (club.address) {
+                document.getElementById('clubAddress').textContent = club.address;
+                const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(club.address)}`;
+                document.getElementById('addressLink').href = mapsUrl;
+            } else {
+                document.getElementById('addressLink').style.display = 'none';
+            }
+            
+            // Join button
+            if (club.booking_url) {
+                document.getElementById('joinButton').href = club.booking_url;
+                document.getElementById('joinButton').textContent = `Join for £${club.monthly_fee}/month`;
+            } else {
+                document.getElementById('joinButton').href = `mailto:${club.email}`;
+                document.getElementById('joinButton').textContent = 'Contact to Join';
+            }
+        }
+
+        function generateStars(rating) {
+            const maxStars = 5;
+            let starsHtml = '';
+            
+            for (let i = 1; i <= maxStars; i++) {
+                if (rating >= i) {
+                    starsHtml += '★';
+                } else if (rating >= i - 0.5) {
+                    starsHtml += '⭐';
+                } else {
+                    starsHtml += '☆';
+                }
+            }
+            
+            return starsHtml;
+        }
+
+        function updateSEO(club) {
+            // Update page title
+            document.title = `${club.club_name} - ${club.activity_type} in ${club.location}`;
+            document.getElementById('pageTitle').textContent = document.title;
+            
+            // Update meta description
+            const description = `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.total_members} members, ${club.rating}/5 rating. From £${club.monthly_fee}/month.`;
+            document.getElementById('pageDescription').setAttribute('content', description);
+            
+            // Update Open Graph tags
+            document.getElementById('ogTitle').setAttribute('content', club.club_name);
+            document.getElementById('ogDescription').setAttribute('content', description);
+            document.getElementById('ogUrl').setAttribute('content', window.location.href);
+            
+            if (club.image_url) {
+                document.getElementById('ogImage').setAttribute('content', club.image_url);
+            }
+            
+            // Update structured data
+            const structuredData = {
+                "@context": "https://schema.org",
+                "@type": "SportsClub",
+                "name": club.club_name,
+                "description": club.description,
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": club.address
+                },
+                "telephone": club.phone,
+                "email": club.email,
+                "url": club.website,
+                "priceRange": `£${club.monthly_fee}`,
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": club.rating,
+                    "reviewCount": club.review_count
+                }
+            };
+            
+            document.getElementById('structuredData').textContent = JSON.stringify(structuredData);
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            
+            // Update page title for error
+            document.title = 'Club Not Found';
+        }
+
+        // Analytics tracking (optional)
+        function trackPageView(club) {
+            // Add your analytics code here
+            console.log('Page view tracked for club:', club.club_name);
+        }
+    </script>
+</body>
+</html>
