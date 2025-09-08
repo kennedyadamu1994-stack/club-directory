@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Loading Club...</title>
     <meta name="description" id="pageDescription" content="Club information">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- SEO Meta Tags -->
     <meta property="og:title" id="ogTitle" content="">
@@ -77,7 +78,7 @@
             background: #ffeaea;
             color: #ff3b30;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 16px;
             margin: 20px;
             text-align: center;
         }
@@ -238,14 +239,19 @@
             font-weight: 500;
         }
 
-        .tag.activity {
+        .tag.vibe {
             background: #f0f9ff;
             color: #0891b2;
         }
 
-        .tag.facility {
+        .tag.accessibility {
             background: #f0fdf4;
             color: #16a34a;
+        }
+
+        .tag.facility {
+            background: #fef3c7;
+            color: #d97706;
         }
 
         /* Section Headers */
@@ -300,6 +306,268 @@
         .stat-label {
             font-size: 14px;
             color: #8e8e93;
+        }
+
+        /* Collapsible Sections */
+        .collapsible-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .collapsible-header {
+            padding: 25px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e5ea;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            background: #e8f4fd;
+        }
+
+        .collapsible-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c1c1e;
+        }
+
+        .collapsible-icon {
+            font-size: 18px;
+            color: #8e8e93;
+            transition: transform 0.3s ease;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .collapsible-content.expanded {
+            max-height: 2000px;
+        }
+
+        .collapsible-header.expanded .collapsible-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .testimonial-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .testimonial-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .testimonial-rating {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-rating .stars {
+            color: #FFD700;
+            font-size: 16px;
+        }
+
+        .testimonial-author {
+            font-size: 14px;
+            color: #8e8e93;
+            font-weight: 500;
+        }
+
+        .testimonial-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #1c1c1e;
+            font-style: italic;
+        }
+
+        /* Benefits */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .benefit-icon {
+            font-size: 28px;
+            margin-right: 20px;
+            margin-top: 5px;
+            color: #007aff;
+        }
+
+        .benefit-content h4 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 8px;
+        }
+
+        .benefit-content p {
+            font-size: 15px;
+            color: #8e8e93;
+            line-height: 1.5;
+        }
+
+        /* FAQ */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .faq-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .faq-question {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 15px;
+        }
+
+        .faq-answer {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* About */
+        .about-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .about-text {
+            line-height: 1.7;
+            color: #1c1c1e;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .about-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .coach-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .coach-info:hover {
+            transform: translateY(-3px);
+        }
+
+        .coach-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #007aff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            margin-right: 20px;
+        }
+
+        .coach-details h4 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1c1c1e;
+            margin-bottom: 5px;
+        }
+
+        .coach-details p {
+            font-size: 14px;
+            color: #8e8e93;
+        }
+
+        /* Facilities */
+        .facilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .facility-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 14px;
+            color: #1c1c1e;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .facility-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .facility-item::before {
+            content: "✓";
+            color: #30a330;
+            margin-right: 10px;
+            font-weight: bold;
         }
 
         /* Contact Grid */
@@ -372,6 +640,131 @@
             transform: scale(1.05);
         }
 
+        /* Sticky CTA */
+        .sticky-cta {
+            position: fixed;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #FF006E;
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(255, 0, 110, 0.35);
+            z-index: 1000;
+            display: none;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .sticky-cta:hover {
+            background: #E6005E;
+            transform: translateX(-50%) translateY(-2px);
+            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.45);
+        }
+
+        /* Sessions */
+        .sessions-container {
+            margin-top: 30px;
+        }
+
+        .sessions-container h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1c1e;
+            margin-bottom: 20px;
+        }
+
+        .session-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .session-item {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .session-item:hover {
+            background: #e8f4fd;
+            transform: translateY(-3px);
+        }
+
+        .session-time {
+            font-weight: 700;
+            color: #1c1c1e;
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .session-date {
+            font-size: 14px;
+            color: #8e8e93;
+            margin-bottom: 8px;
+        }
+
+        .session-type {
+            font-size: 14px;
+            color: #FF006E;
+            font-weight: 600;
+            background: rgba(255, 0, 110, 0.1);
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        /* Value Proposition */
+        .value-proposition {
+            background: #f0f9ff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .value-comparison {
+            margin-bottom: 15px;
+        }
+
+        .comparison-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .comparison-item.membership {
+            font-weight: 700;
+            color: #FF006E;
+        }
+
+        .comparison-label {
+            color: #1c1c1e;
+        }
+
+        .comparison-price {
+            font-weight: 600;
+        }
+
+        .savings-text {
+            font-size: 16px;
+            color: #16a34a;
+            font-weight: 700;
+            margin-top: 15px;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .page-container {
@@ -390,6 +783,11 @@
                 font-size: 18px;
             }
 
+            .section-header, .collapsible-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+
             .info-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
@@ -400,8 +798,46 @@
                 gap: 10px;
             }
 
+            .session-list {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .faq-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
             .contact-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .facilities-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .sticky-cta {
+                left: 20px;
+                right: 20px;
+                transform: none;
+                text-align: center;
+                width: calc(100% - 40px);
+                font-size: 16px;
+                padding: 16px;
             }
 
             .back-nav {
@@ -412,11 +848,39 @@
                 display: inline-block;
             }
         }
+
+        /* Tablet adjustments */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .page-container {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .session-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hide sections by default */
+        .section-hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <!-- Back Navigation -->
-    <a href="/" class="back-nav">← Back to Clubs</a>
+    <a href="/" class="back-nav"><i class="fas fa-arrow-left"></i> Back to Clubs</a>
 
     <div class="page-container">
         <!-- Loading State -->
@@ -436,7 +900,7 @@
         <div id="content" class="content-grid" style="display: none;">
             <!-- Hero Card -->
             <div class="card hero-card">
-                <div class="club-logo" id="clubLogo">🏛️</div>
+                <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
                 <h1 class="hero-title" id="clubName">Club Name</h1>
                 <p class="hero-subtitle" id="clubActivity">Activity Type</p>
                 <a href="#membership" class="hero-cta" id="joinButton">Join Club</a>
@@ -447,18 +911,18 @@
                 <div class="card-content">
                     <div class="info-grid">
                         <div class="info-item">
-                            <span class="info-icon">📍</span>
+                            <span class="info-icon"><i class="fas fa-map-marker-alt"></i></span>
                             <div class="info-label">Location</div>
                             <div class="info-value" id="clubLocation">Location</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-icon">💰</span>
+                            <span class="info-icon"><i class="fas fa-pound-sign"></i></span>
                             <div class="info-label">Monthly Fee</div>
                             <div class="info-value" id="clubFee">£0/month</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-icon">⭐</span>
-                            <div class="info-label">NBRH Rating</div>
+                            <span class="info-icon"><i class="fas fa-star"></i></span>
+                            <div class="info-label">Rating</div>
                             <div class="info-value">
                                 <div class="rating-display">
                                     <span class="stars" id="clubStars">★★★★☆</span>
@@ -467,7 +931,7 @@
                             </div>
                         </div>
                         <div class="info-item">
-                            <span class="info-icon">👥</span>
+                            <span class="info-icon"><i class="fas fa-users"></i></span>
                             <div class="info-label">Members</div>
                             <div class="info-value" id="clubMembers">0</div>
                         </div>
@@ -500,74 +964,114 @@
                             <div class="stat-label">Skill Levels</div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- About Club Card -->
-            <div class="card">
-                <div class="card-content">
-                    <h2 class="section-header">About This Club</h2>
-                    <p id="clubDescription">Club description will appear here...</p>
                     
-                    <div style="margin-top: 20px;">
-                        <h3 style="margin-bottom: 15px; font-size: 18px;">Facilities & Features</h3>
-                        <div id="facilitiesList" class="tags-row">
-                            <!-- Facilities will be populated dynamically -->
+                    <div class="sessions-container" id="sessionsContainer" style="display: none;">
+                        <h3>Recent Sessions</h3>
+                        <div class="session-list" id="sessionsList">
+                            <!-- Sessions will be populated dynamically -->
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div style="margin-top: 30px;" id="instructorSection">
-                        <h3 style="margin-bottom: 15px; font-size: 18px;">Coach</h3>
-                        <div style="display: flex; align-items: center; background: #f8f9fa; padding: 20px; border-radius: 12px;">
-                            <div style="width: 60px; height: 60px; border-radius: 50%; background: #007aff; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 20px; margin-right: 20px;" id="instructorAvatar">
-                                ?
-                            </div>
+            <!-- Member Testimonials Card - Collapsible -->
+            <div class="collapsible-card" id="testimonialsCard" style="display: none;">
+                <div class="collapsible-header" onclick="toggleSection('testimonials')">
+                    <div class="collapsible-title">What Members Say</div>
+                    <div class="collapsible-icon">▼</div>
+                </div>
+                <div class="collapsible-content" id="testimonials">
+                    <div class="card-content">
+                        <div class="testimonials-grid" id="testimonialsGrid">
+                            <!-- Testimonials will be populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membership Benefits Card - Collapsible -->
+            <div class="collapsible-card">
+                <div class="collapsible-header" onclick="toggleSection('benefits')">
+                    <div class="collapsible-title">Membership Benefits</div>
+                    <div class="collapsible-icon">▼</div>
+                </div>
+                <div class="collapsible-content" id="benefits">
+                    <div class="card-content">
+                        <div class="benefits-grid" id="benefitsGrid">
+                            <!-- Default benefits - can be customized based on activity type -->
+                        </div>
+                        <div class="value-proposition" id="valueProposition">
+                            <!-- Value comparison will be populated -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Card - Collapsible -->
+            <div class="collapsible-card">
+                <div class="collapsible-header" onclick="toggleSection('faq')">
+                    <div class="collapsible-title">Frequently Asked Questions</div>
+                    <div class="collapsible-icon">▼</div>
+                </div>
+                <div class="collapsible-content" id="faq">
+                    <div class="card-content">
+                        <div class="faq-grid" id="faqGrid">
+                            <!-- FAQ items will be populated based on activity type -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Card - Collapsible -->
+            <div class="collapsible-card">
+                <div class="collapsible-header" onclick="toggleSection('about')">
+                    <div class="collapsible-title">About This Club</div>
+                    <div class="collapsible-icon">▼</div>
+                </div>
+                <div class="collapsible-content" id="about">
+                    <div class="card-content">
+                        <div class="about-content">
                             <div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: #1c1c1e; margin-bottom: 5px;" id="instructorName">Coach Name</h4>
-                                <p style="font-size: 14px; color: #8e8e93;" id="instructorBio">Coach details</p>
+                                <p class="about-text" id="clubDescription">Club description will appear here...</p>
+                                
+                                <div id="facilitiesSection" style="display: none;">
+                                    <div class="facilities-grid" id="facilitiesList">
+                                        <!-- Facilities will be populated dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="about-sidebar">
+                                <div class="coach-info" id="instructorSection" style="display: none;">
+                                    <div class="coach-avatar" id="instructorAvatar">?</div>
+                                    <div class="coach-details">
+                                        <h4 id="instructorName">Coach Name</h4>
+                                        <p id="instructorBio">Coach details</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Contact & Location Card -->
-            <div class="card">
-                <div class="card-content">
-                    <h2 class="section-header">Get In Touch</h2>
-                    <div class="contact-grid">
-                        <a href="" class="contact-item" id="emailLink">
-                            <div class="contact-icon">📧</div>
-                            <div class="contact-info">
-                                <h4>Email</h4>
-                                <p id="clubEmail">Contact email</p>
-                            </div>
-                        </a>
-                        <a href="" class="contact-item" id="phoneLink">
-                            <div class="contact-icon">📞</div>
-                            <div class="contact-info">
-                                <h4>Phone</h4>
-                                <p id="clubPhone">Contact phone</p>
-                            </div>
-                        </a>
-                        <a href="" class="contact-item" id="whatsappLink" target="_blank">
-                            <div class="contact-icon">💬</div>
-                            <div class="contact-info">
-                                <h4>WhatsApp</h4>
-                                <p>Message us</p>
-                            </div>
-                        </a>
-                        <a href="" class="contact-item" id="addressLink" target="_blank">
-                            <div class="contact-icon">📍</div>
-                            <div class="contact-info">
-                                <h4>Location</h4>
-                                <p id="clubAddress">Club address</p>
-                            </div>
-                        </a>
+            <!-- Contact & Location Card - Collapsible -->
+            <div class="collapsible-card">
+                <div class="collapsible-header" onclick="toggleSection('contact')">
+                    <div class="collapsible-title">Get In Touch</div>
+                    <div class="collapsible-icon">▼</div>
+                </div>
+                <div class="collapsible-content" id="contact">
+                    <div class="card-content">
+                        <div class="contact-grid" id="contactGrid">
+                            <!-- Contact items will be populated dynamically -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Sticky CTA -->
+        <a href="#membership" class="sticky-cta" id="stickyCTA">Join Club</a>
     </div>
 
     <script>
@@ -603,6 +1107,9 @@
                 // Update SEO meta tags
                 updateSEO(club);
                 
+                // Initialize interactive features
+                initializeStickyButton();
+                
             } catch (error) {
                 console.error('Error loading club:', error);
                 showError(error.message);
@@ -618,9 +1125,9 @@
             document.getElementById('clubName').textContent = club.club_name;
             document.getElementById('clubActivity').textContent = club.activity_type;
             
-            // Club logo (emoji or first letter)
-            const logo = club.club_logo_emoji || club.club_name.charAt(0).toUpperCase();
-            document.getElementById('clubLogo').textContent = logo;
+            // Club logo (emoji or icon based on activity)
+            const logo = club.club_logo_emoji || getActivityIcon(club.activity_type);
+            document.getElementById('clubLogo').innerHTML = logo;
             
             // Info grid
             document.getElementById('clubLocation').textContent = club.location;
@@ -642,72 +1149,314 @@
             document.getElementById('clubDescription').textContent = club.club_bio || club.description;
             
             // Tags
-            if (club.tags || club.tags_who || club.tags_vibe || club.tags_accessibility) {
-                const tagsContainer = document.getElementById('clubTags');
-                const allTags = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
-                if (allTags.length > 0) {
-                    tagsContainer.innerHTML = allTags.map(tag => 
-                        `<span class="tag">${tag}</span>`
-                    ).join('');
-                }
-            }
+            populateTags(club);
             
             // Facilities
-            if (club.facilities_list) {
-                const facilitiesContainer = document.getElementById('facilitiesList');
-                const facilities = club.facilities_list.split(',').map(facility => facility.trim());
-                facilitiesContainer.innerHTML = facilities.map(facility => 
-                    `<span class="tag facility">${facility}</span>`
-                ).join('');
-            }
+            populateFacilities(club);
             
             // Coach/Instructor
-            if (club.coach_name) {
-                document.getElementById('instructorName').textContent = club.coach_name;
-                document.getElementById('instructorBio').textContent = club.coach_role || club.instructor_bio;
-                const initials = club.coach_name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
-                document.getElementById('instructorAvatar').textContent = initials;
-            } else {
-                document.getElementById('instructorSection').style.display = 'none';
-            }
+            populateInstructor(club);
             
             // Contact information
+            populateContact(club);
+            
+            // Testimonials
+            populateTestimonials(club);
+            
+            // Benefits
+            populateBenefits(club);
+            
+            // FAQ
+            populateFAQ(club);
+            
+            // Join button
+            setupJoinButton(club);
+        }
+
+        function populateTags(club) {
+            const tagsContainer = document.getElementById('clubTags');
+            const tags = [];
+            
+            if (club.tags_who) tags.push({text: club.tags_who, class: 'tag'});
+            if (club.tags_vibe) tags.push({text: club.tags_vibe, class: 'tag vibe'});
+            if (club.tags_accessibility) tags.push({text: club.tags_accessibility, class: 'tag accessibility'});
+            
+            if (tags.length > 0) {
+                tagsContainer.innerHTML = tags.map(tag => 
+                    `<span class="${tag.class}">${tag.text}</span>`
+                ).join('');
+            }
+        }
+
+        function populateFacilities(club) {
+            if (club.facilities_list) {
+                const facilitiesContainer = document.getElementById('facilitiesList');
+                const facilitiesSection = document.getElementById('facilitiesSection');
+                
+                const facilities = club.facilities_list.split(',').map(facility => facility.trim());
+                facilitiesContainer.innerHTML = facilities.map(facility => 
+                    `<div class="facility-item">${facility}</div>`
+                ).join('');
+                
+                facilitiesSection.style.display = 'block';
+            }
+        }
+
+        function populateInstructor(club) {
+            if (club.coach_name) {
+                const instructorSection = document.getElementById('instructorSection');
+                document.getElementById('instructorName').textContent = club.coach_name;
+                document.getElementById('instructorBio').textContent = club.coach_role || club.instructor_bio || 'Certified Instructor';
+                
+                const initials = club.coach_name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
+                document.getElementById('instructorAvatar').textContent = initials;
+                
+                instructorSection.style.display = 'flex';
+            }
+        }
+
+        function populateContact(club) {
+            const contactGrid = document.getElementById('contactGrid');
+            let contactItems = [];
+            
             if (club.email) {
-                document.getElementById('clubEmail').textContent = club.email;
-                document.getElementById('emailLink').href = `mailto:${club.email}`;
-            } else {
-                document.getElementById('emailLink').style.display = 'none';
+                contactItems.push(`
+                    <a href="mailto:${club.email}" class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="contact-info">
+                            <h4>Email</h4>
+                            <p>${club.email}</p>
+                        </div>
+                    </a>
+                `);
             }
             
             if (club.phone) {
-                document.getElementById('clubPhone').textContent = club.phone;
-                document.getElementById('phoneLink').href = `tel:${club.phone}`;
-            } else {
-                document.getElementById('phoneLink').style.display = 'none';
+                contactItems.push(`
+                    <a href="tel:${club.phone}" class="contact-item">
+                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
+                        <div class="contact-info">
+                            <h4>Phone</h4>
+                            <p>${club.phone}</p>
+                        </div>
+                    </a>
+                `);
             }
             
             if (club.whatsapp) {
-                document.getElementById('whatsappLink').href = `https://wa.me/${club.whatsapp.replace(/[^0-9]/g, '')}`;
-            } else {
-                document.getElementById('whatsappLink').style.display = 'none';
+                const whatsappNumber = club.whatsapp.replace(/[^0-9]/g, '');
+                contactItems.push(`
+                    <a href="https://wa.me/${whatsappNumber}" class="contact-item" target="_blank">
+                        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                        <div class="contact-info">
+                            <h4>WhatsApp</h4>
+                            <p>Message us</p>
+                        </div>
+                    </a>
+                `);
             }
             
             if (club.address) {
-                document.getElementById('clubAddress').textContent = club.address;
                 const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(club.address)}`;
-                document.getElementById('addressLink').href = mapsUrl;
-            } else {
-                document.getElementById('addressLink').style.display = 'none';
+                contactItems.push(`
+                    <a href="${mapsUrl}" class="contact-item" target="_blank">
+                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                        <div class="contact-info">
+                            <h4>Location</h4>
+                            <p>${club.address}</p>
+                        </div>
+                    </a>
+                `);
             }
             
-            // Join button
-            if (club.booking_url) {
-                document.getElementById('joinButton').href = club.booking_url;
-                document.getElementById('joinButton').textContent = `Join for ${club.monthly_fee_text || '£' + club.monthly_fee_amount + '/month'}`;
-            } else {
-                document.getElementById('joinButton').href = `mailto:${club.email}`;
-                document.getElementById('joinButton').textContent = 'Contact to Join';
+            contactGrid.innerHTML = contactItems.join('');
+        }
+
+        function populateTestimonials(club) {
+            if (club.testimonials && club.testimonials.length > 0) {
+                const testimonialsCard = document.getElementById('testimonialsCard');
+                const testimonialsGrid = document.getElementById('testimonialsGrid');
+                
+                const testimonialItems = club.testimonials.map(testimonial => `
+                    <div class="testimonial-item">
+                        <div class="testimonial-rating">
+                            <span class="stars">${generateStars(testimonial.rating || 5)}</span>
+                            <span class="testimonial-author">${testimonial.author || 'Anonymous'}</span>
+                        </div>
+                        <p class="testimonial-text">"${testimonial.text}"</p>
+                    </div>
+                `).join('');
+                
+                testimonialsGrid.innerHTML = testimonialItems;
+                testimonialsCard.style.display = 'block';
             }
+        }
+
+        function populateBenefits(club) {
+            const benefitsGrid = document.getElementById('benefitsGrid');
+            const valueProposition = document.getElementById('valueProposition');
+            
+            // Default benefits based on activity type
+            const defaultBenefits = getBenefitsByActivity(club.activity_type);
+            
+            benefitsGrid.innerHTML = defaultBenefits.map(benefit => `
+                <div class="benefit-item">
+                    <div class="benefit-icon"><i class="${benefit.icon}"></i></div>
+                    <div class="benefit-content">
+                        <h4>${benefit.title}</h4>
+                        <p>${benefit.description}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Value proposition
+            const monthlyFee = club.monthly_fee_amount || 25;
+            const payPerSession = Math.round(monthlyFee * 1.8); // Approximate pay-per-session rate
+            const sessions = club.sessions_per_week || 4;
+            const pricePerSession = Math.round(monthlyFee / sessions);
+            const savings = Math.round((payPerSession - pricePerSession) * sessions);
+            
+            valueProposition.innerHTML = `
+                <div class="value-comparison">
+                    <div class="comparison-item">
+                        <span class="comparison-label">Pay per session:</span>
+                        <span class="comparison-price">£${payPerSession} each</span>
+                    </div>
+                    <div class="comparison-item membership">
+                        <span class="comparison-label">Monthly membership:</span>
+                        <span class="comparison-price">£${monthlyFee} (£${pricePerSession} per session)</span>
+                    </div>
+                </div>
+                <p class="savings-text">Save over £${savings} per month with membership!</p>
+            `;
+        }
+
+        function populateFAQ(club) {
+            const faqGrid = document.getElementById('faqGrid');
+            const faqs = getFAQByActivity(club.activity_type);
+            
+            faqGrid.innerHTML = faqs.map(faq => `
+                <div class="faq-item">
+                    <h4 class="faq-question">${faq.question}</h4>
+                    <p class="faq-answer">${faq.answer}</p>
+                </div>
+            `).join('');
+        }
+
+        function setupJoinButton(club) {
+            const joinButton = document.getElementById('joinButton');
+            const stickyCTA = document.getElementById('stickyCTA');
+            const buttonText = `Join for ${club.monthly_fee_text || '£' + club.monthly_fee_amount + '/month'}`;
+            
+            if (club.booking_url) {
+                joinButton.href = club.booking_url;
+                stickyCTA.href = club.booking_url;
+            } else {
+                joinButton.href = `mailto:${club.email || 'info@example.com'}?subject=Joining ${club.club_name}`;
+                stickyCTA.href = joinButton.href;
+            }
+            
+            joinButton.textContent = buttonText;
+            stickyCTA.textContent = buttonText;
+        }
+
+        function getActivityIcon(activityType) {
+            const icons = {
+                'Swimming': '<i class="fas fa-swimmer"></i>',
+                'Fitness': '<i class="fas fa-dumbbell"></i>',
+                'Yoga': '<i class="fas fa-user-plus"></i>',
+                'Running': '<i class="fas fa-running"></i>',
+                'Cycling': '<i class="fas fa-bicycle"></i>',
+                'Tennis': '<i class="fas fa-table-tennis"></i>',
+                'Football': '<i class="fas fa-futbol"></i>',
+                'Basketball': '<i class="fas fa-basketball-ball"></i>',
+                'Boxing': '<i class="fas fa-fist-raised"></i>',
+                'Dance': '<i class="fas fa-music"></i>',
+                'Martial Arts': '<i class="fas fa-fist-raised"></i>',
+                'Rock Climbing': '<i class="fas fa-mountain"></i>',
+                'Badminton': '<i class="fas fa-table-tennis"></i>',
+                'Squash': '<i class="fas fa-table-tennis"></i>'
+            };
+            return icons[activityType] || '<i class="fas fa-users"></i>';
+        }
+
+        function getBenefitsByActivity(activityType) {
+            const commonBenefits = [
+                {
+                    icon: 'fas fa-infinity',
+                    title: 'Unlimited Sessions',
+                    description: 'Access to all weekly sessions included in your membership'
+                },
+                {
+                    icon: 'fas fa-user-friends',
+                    title: 'Community Access',
+                    description: 'Join a supportive community of like-minded members'
+                },
+                {
+                    icon: 'fas fa-mobile-alt',
+                    title: 'Easy Booking',
+                    description: 'Book sessions and manage your membership through our app'
+                },
+                {
+                    icon: 'fas fa-calendar-check',
+                    title: 'Flexible Membership',
+                    description: 'Cancel anytime with 30 days notice - no long-term contracts'
+                }
+            ];
+
+            const activitySpecific = {
+                'Swimming': [
+                    {
+                        icon: 'fas fa-swimmer',
+                        title: 'Pool Access',
+                        description: 'Access to heated pool facilities during all sessions'
+                    },
+                    {
+                        icon: 'fas fa-dumbbell',
+                        title: 'Equipment Provided',
+                        description: 'All aqua fitness equipment and floats included'
+                    }
+                ],
+                'Fitness': [
+                    {
+                        icon: 'fas fa-dumbbell',
+                        title: 'Equipment Included',
+                        description: 'All gym equipment and weights provided during sessions'
+                    },
+                    {
+                        icon: 'fas fa-heartbeat',
+                        title: 'Fitness Tracking',
+                        description: 'Monitor your progress with regular fitness assessments'
+                    }
+                ]
+            };
+
+            return [...commonBenefits, ...(activitySpecific[activityType] || [])];
+        }
+
+        function getFAQByActivity(activityType) {
+            return [
+                {
+                    question: 'Can I cancel my membership anytime?',
+                    answer: 'Yes! We offer flexible monthly memberships with just 30 days notice required for cancellation. No long-term contracts.'
+                },
+                {
+                    question: 'What should I bring to sessions?',
+                    answer: 'Just bring appropriate sportswear and a water bottle. All necessary equipment is provided, and we have secure storage available.'
+                },
+                {
+                    question: 'Is it suitable for beginners?',
+                    answer: 'Absolutely! We welcome all skill levels and our instructors help newcomers feel comfortable and confident.'
+                },
+                {
+                    question: 'What if I miss sessions?',
+                    answer: 'No problem! Your membership includes unlimited access to sessions, so you can attend as many or as few as you like each month.'
+                },
+                {
+                    question: 'Do you offer a trial session?',
+                    answer: 'Yes! New members can try their first session completely free. Just contact us to arrange your trial.'
+                }
+            ];
         }
 
         function generateStars(rating) {
@@ -725,6 +1474,35 @@
             }
             
             return starsHtml;
+        }
+
+        function toggleSection(sectionId) {
+            const content = document.getElementById(sectionId);
+            const header = content.previousElementSibling;
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                header.classList.remove('expanded');
+            } else {
+                content.classList.add('expanded');
+                header.classList.add('expanded');
+            }
+        }
+
+        function initializeStickyButton() {
+            const stickyCta = document.querySelector('.sticky-cta');
+            const heroCard = document.querySelector('.hero-card');
+            
+            window.addEventListener('scroll', () => {
+                const heroBottom = heroCard.offsetTop + heroCard.offsetHeight;
+                
+                // Show CTA when past hero
+                if (window.scrollY > heroBottom - 100) {
+                    stickyCta.style.display = 'block';
+                } else {
+                    stickyCta.style.display = 'none';
+                }
+            });
         }
 
         function updateSEO(club) {
@@ -776,11 +1554,19 @@
             document.title = 'Club Not Found';
         }
 
-        // Analytics tracking (optional)
-        function trackPageView(club) {
-            // Add your analytics code here
-            console.log('Page view tracked for club:', club.club_name);
-        }
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Smooth scrolling for anchor links
+            document.addEventListener('click', (e) => {
+                if (e.target.matches('a[href^="#"]')) {
+                    e.preventDefault();
+                    const target = document.querySelector(e.target.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
     </script>
 </body>
 </html>
