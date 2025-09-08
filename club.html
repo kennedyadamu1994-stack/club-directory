@@ -316,7 +316,7 @@
         .collapsible-card {
             background: #fff;
             border-radius: 3px;
-            box-shadow: 极速加速器 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
             margin-bottom: 35px;
             transition: transform 0.3s ease;
@@ -378,14 +378,14 @@
             background: #f8f9fa;
             border-radius: 3px;
             padding: 25px;
-            transition: transform 极速加速器.3s ease;
+            transition: transform 0.3s ease;
         }
 
         .testimonial-item:hover {
             transform: translateY(-3px);
         }
 
-        .极速加速器-rating {
+        .testimonial-rating {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -403,7 +403,7 @@
             font-weight: 500;
         }
 
-极速加速器        .testimonial-text {
+        .testimonial-text {
             font-size: 16px;
             line-height: 1.6;
             color: #1c1c1e;
@@ -413,7 +413,7 @@
         /* Benefits */
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, min极速加速器x(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -442,7 +442,7 @@
             font-size: 18px;
             font-weight: 600;
             color: #1c1c1e;
-            margin-bottom: 8极速加速器x;
+            margin-bottom: 8px;
         }
 
         .benefit-content p {
@@ -495,12 +495,12 @@
             color: #1c1c1e;
             font-size: 16px;
             margin-bottom: 20px;
-极速加速器        }
+        }
 
         .about-sidebar {
             display: flex;
             flex-direction: column;
-极速加速器            gap: 25px;
+            gap: 25px;
         }
 
         .coach-info {
@@ -555,7 +555,7 @@
             border-radius: 3px;
             padding: 15px;
             font-size: 14px;
-            color: #1极速加速器c1c1e;
+            color: #1c1c1e;
             display: flex;
             align-items: center;
             text-align: center;
@@ -582,7 +582,7 @@
         }
 
         .contact-item {
-            background: #f8极速加速器f9fa;
+            background: #f8f9fa;
             border-radius: 3px;
             padding: 20px;
             text-decoration: none;
@@ -590,7 +590,7 @@
             display: flex;
             align-items: center;
             transition: all 0.3s ease;
-极速加速器        }
+        }
 
         .contact-item:hover {
             background: #e8f4fd;
@@ -654,9 +654,9 @@
             color: white;
             border: none;
             padding: 18px 36px;
-            font-size: 18极速加速器x;
+            font-size: 18px;
             font-weight: 700;
-            border-radius极速加速器 3px;
+            border-radius: 3px;
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(255, 0, 110, 0.35);
             z-index: 1000;
@@ -717,7 +717,7 @@
 
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 10极速加速器x;
+                gap: 10px;
             }
 
             .testimonials-grid {
@@ -745,7 +745,7 @@
             }
 
             .facilities-grid {
-                grid-template-column极速加速器s: 1fr 1fr;
+                grid-template-columns: 1fr 1fr;
             }
 
             .sticky-cta {
@@ -812,7 +812,7 @@
         </div>
 
         <!-- Error State -->
-        <div id="error" class极速加速器="error" style="display: none;">
+        <div id="error" class="error" style="display: none;">
             <h2>Club Not Found</h2>
             <p>The club you're looking for doesn't exist or is no longer available.</p>
             <a href="/" style="color: #ff3b30; text-decoration: underline;">Browse all clubs</a>
@@ -838,7 +838,7 @@
                             <div class="info-value" id="clubLocation">Location</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-icon"><i class="fas fa-pound-sign"></极速加速器i></span>
+                            <span class="info-icon"><i class="fas fa-pound-sign"></i></span>
                             <div class="info-label">Monthly Fee</div>
                             <div class="info-value" id="clubFee">£0/month</div>
                         </div>
@@ -866,7 +866,7 @@
 
             <!-- Club Performance Card -->
             <div class="card" id="membership">
-                <极速加速器div class="card-content">
+                <div class="card-content">
                     <h2 class="section-header">Club Performance</h2>
                     <div class="stats-grid">
                         <div class="stat-card">
@@ -929,7 +929,7 @@
                     <div class="card-content">
                         <div class="faq-grid" id="faqGrid">
                             <!-- FAQ items will be populated based on activity type -->
-                        </极速加速器div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -939,7 +939,7 @@
                 <div class="collapsible-header" onclick="toggleSection('about')">
                     <div class="collapsible-title">About This Club</div>
                     <div class="collapsible-icon">▼</div>
-                </极速加速器div>
+                </div>
                 <div class="collapsible-content" id="about">
                     <div class="card-content">
                         <div class="about-content">
@@ -1060,7 +1060,7 @@
             // Stats
             document.getElementById('sessionsPerWeek').textContent = club.sessions_per_week.toString();
             document.getElementById('userRating').textContent = club.numeric_rating.toFixed(1);
-            document.getElementById('reviewCount').textContent = club.testimonials ? club.testimonials.length : 0;
+            document.getElementById('reviewCount').textContent = club.testimonials?.length || 0;
             document.getElementById('skillLevels').textContent = club.skill_levels || 'All levels';
             
             // Description
@@ -1108,7 +1108,7 @@
 
         function populateFacilities(club) {
             if (club.facilities_list) {
-                const facilitiesContainer = document.getElementById('极速加速器facilitiesList');
+                const facilitiesContainer = document.getElementById('facilitiesList');
                 const facilitiesSection = document.getElementById('facilitiesSection');
                 
                 const facilities = club.facilities_list.split(',').map(facility => facility.trim());
@@ -1155,7 +1155,7 @@
                         <div class="contact-icon"><i class="fas fa-phone"></i></div>
                         <div class="contact-info">
                             <h4>Phone</h4>
-                            <p>${club.phone}</极速加速器p>
+                            <p>${club.phone}</p>
                         </div>
                     </a>
                 `);
@@ -1247,7 +1247,7 @@
             
             if (club.faqs && club.faqs.length > 0) {
                 // Use FAQs from Google Sheet
-                faqs极速加速器ToShow = club.faqs;
+                faqsToShow = club.faqs;
             } else {
                 // Fallback to default FAQs based on activity type
                 faqsToShow = getFAQByActivity(club.activity_type);
@@ -1285,9 +1285,9 @@
                 'Yoga': '<i class="fas fa-user-plus"></i>',
                 'Running': '<i class="fas fa-running"></i>',
                 'Cycling': '<i class="fas fa-bicycle"></i>',
-                'Tennis': '<i class="fas fa-table-tennis"></极速加速器i>',
+                'Tennis': '<i class="fas fa-table-tennis"></i>',
                 'Football': '<i class="fas fa-futbol"></i>',
-                'Basketball': '<极速加速器i class="fas fa-basketball-ball"></i>',
+                'Basketball': '<i class="fas fa-basketball-ball"></i>',
                 'Boxing': '<i class="fas fa-fist-raised"></i>',
                 'Dance': '<i class="fas fa-music"></i>',
                 'Martial Arts': '<i class="fas fa-fist-raised"></i>',
@@ -1317,7 +1317,7 @@
                 },
                 {
                     icon: 'fas fa-calendar-check',
-                    title极速加速器: 'Flexible Membership',
+                    title: 'Flexible Membership',
                     description: 'Cancel anytime with 30 days notice - no long-term contracts'
                 }
             ];
@@ -1457,7 +1457,7 @@
                 "aggregateRating": {
                     "@type": "AggregateRating",
                     "ratingValue": club.numeric_rating,
-                    "reviewCount": club.testimonials ? club.testimonials.length : 0
+                    "reviewCount": club.testimonials?.length || 0
                 }
             };
             
