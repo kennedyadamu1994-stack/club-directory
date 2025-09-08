@@ -1346,9 +1346,19 @@
 
         function populateFAQ(club) {
             const faqGrid = document.getElementById('faqGrid');
-            const faqs = getFAQByActivity(club.activity_type);
             
-            faqGrid.innerHTML = faqs.map(faq => `
+            // Use actual FAQs from Google Sheet if available, otherwise use defaults
+            let faqsToShow = [];
+            
+            if (club.faqs && club.faqs.length > 0) {
+                // Use FAQs from Google Sheet
+                faqsToShow = club.faqs;
+            } else {
+                // Fallback to default FAQs based on activity type
+                faqsToShow = getFAQByActivity(club.activity_type);
+            }
+            
+            faqGrid.innerHTML = faqsToShow.map(faq => `
                 <div class="faq-item">
                     <h4 class="faq-question">${faq.question}</h4>
                     <p class="faq-answer">${faq.answer}</p>
