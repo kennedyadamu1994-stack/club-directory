@@ -1011,7 +1011,7 @@
                 <div class="collapsible-content" id="benefits">
                     <div class="card-content">
                         <div class="benefits-grid" id="benefitsGrid">
-                            <!-- Default benefits - can be customized based on activity type -->
+                            <!-- Benefits will be populated dynamically -->
                         </div>
                         <div class="value-proposition" id="valueProposition">
                             <!-- Value comparison will be populated -->
@@ -1129,6 +1129,33 @@
             }
         }
 
+        // NEW FUNCTION: Populate sessions from Google Sheet data
+        function populateSessions(club) {
+            const sessionsContainer = document.getElementById('sessionsContainer');
+            const sessionsList = document.getElementById('sessionsList');
+            
+            if (club.sessions && club.sessions.length > 0) {
+                // Show the sessions container
+                sessionsContainer.style.display = 'block';
+                
+                // Populate sessions
+                const sessionItems = club.sessions.map(session => `
+                    <div class="session-item">
+                        <div>
+                            <div class="session-time">${session.time}</div>
+                            <div class="session-date">${session.date}</div>
+                            <div class="session-type">${session.type}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                sessionsList.innerHTML = sessionItems;
+            } else {
+                // Hide the sessions container if no sessions
+                sessionsContainer.style.display = 'none';
+            }
+        }
+
         function displayClub(club) {
             // Hide loading, show content
             document.getElementById('loading').style.display = 'none';
@@ -1173,10 +1200,13 @@
             // Contact information
             populateContact(club);
             
+            // Sessions - NOW SHOWS GOOGLE SHEET DATA
+            populateSessions(club);
+            
             // Testimonials
             populateTestimonials(club);
             
-            // Benefits
+            // Benefits - NOW SHOWS GOOGLE SHEET DATA
             populateBenefits(club);
             
             // FAQ
@@ -1305,14 +1335,27 @@
             }
         }
 
+        // FIXED FUNCTION: Use benefits from Google Sheet instead of defaults
         function populateBenefits(club) {
             const benefitsGrid = document.getElementById('benefitsGrid');
             const valueProposition = document.getElementById('valueProposition');
             
-            // Default benefits based on activity type
-            const defaultBenefits = getBenefitsByActivity(club.activity_type);
+            // Use benefits from Google Sheet if available, otherwise fall back to defaults
+            let benefitsToShow = [];
             
-            benefitsGrid.innerHTML = defaultBenefits.map(benefit => `
+            if (club.benefits && club.benefits.length > 0) {
+                // Use benefits from Google Sheet
+                benefitsToShow = club.benefits.map(benefit => ({
+                    icon: benefit.icon || 'fas fa-check-circle', // Default icon if none provided
+                    title: benefit.title,
+                    description: benefit.description
+                }));
+            } else {
+                // Fallback to default benefits based on activity type
+                benefitsToShow = getBenefitsByActivity(club.activity_type);
+            }
+            
+            benefitsGrid.innerHTML = benefitsToShow.map(benefit => `
                 <div class="benefit-item">
                     <div class="benefit-icon"><i class="${benefit.icon}"></i></div>
                     <div class="benefit-content">
@@ -1322,12 +1365,12 @@
                 </div>
             `).join('');
             
-            // Value proposition
-            const monthlyFee = club.monthly_fee_amount || 25;
-            const payPerSession = Math.round(monthlyFee * 1.8); // Approximate pay-per-session rate
+            // Value proposition - now using Google Sheet data where available
+            const monthlyFee = club.monthly_fee_amount || club.monthly_fee || 25;
+            const payPerSession = club.pay_per_session_price || Math.round(monthlyFee * 1.8); // Use sheet data or approximate
             const sessions = club.sessions_per_week || 4;
             const pricePerSession = Math.round(monthlyFee / sessions);
-            const savings = Math.round((payPerSession - pricePerSession) * sessions);
+            const savings = club.savings_amount || Math.round((payPerSession - pricePerSession) * sessions); // Use sheet data or calculate
             
             valueProposition.innerHTML = `
                 <div class="value-comparison">
