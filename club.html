@@ -111,13 +111,13 @@
 
         /* Hero Section - REPLACED GRADIENT WITH IMAGE */
         .hero-card {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
             padding: 50px 20px;
             margin-bottom: 35px;
+            background-size: cover;
+            background-position: center;
         }
 
         .club-logo {
@@ -821,7 +821,7 @@
         <!-- Main Content -->
         <div id="content" class="content-grid" style="display: none;">
             <!-- Hero Card -->
-            <div class="card hero-card">
+            <div class="card hero-card" id="heroSection">
                 <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
                 <h1 class="hero-title" id="clubName">Club Name</h1>
                 <p class="hero-subtitle" id="clubActivity">Activity Type</p>
@@ -1043,8 +1043,18 @@
             
             // Set hero background image if available
             if (club.image_url) {
-                const heroCard = document.querySelector('.hero-card');
-                heroCard.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${club.image_url}')`;
+                const heroSection = document.getElementById('heroSection');
+                heroSection.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${club.image_url}')`;
+                heroSection.style.backgroundSize = 'cover';
+                heroSection.style.backgroundPosition = 'center';
+                
+                // Add a fallback in case the image fails to load
+                const img = new Image();
+                img.onerror = function() {
+                    console.error('Failed to load hero image:', club.image_url);
+                    heroSection.style.backgroundImage = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                };
+                img.src = club.image_url;
             }
             
             // Info grid
@@ -1411,7 +1421,7 @@
             const stickyCta = document.querySelector('.sticky-cta');
             const heroCard = document.querySelector('.hero-card');
             
-            window.addEventListener('scroll', () => {
+            window.addEventListener('scroll', () {
                 const heroBottom = heroCard.offsetTop + heroCard.offsetHeight;
                 
                 // Show CTA when past hero
