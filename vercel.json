@@ -4,10 +4,5 @@
       "source": "/club/:code",
       "destination": "/club.html"
     }
-  ],
-  "functions": {
-    "api/*.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }
