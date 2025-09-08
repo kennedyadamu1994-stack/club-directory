@@ -78,7 +78,7 @@
             background: #ffeaea;
             color: #ff3b30;
             padding: 20px;
-            border-radius: 16px;
+            border-radius: 3px;
             margin: 20px;
             text-align: center;
         }
@@ -86,18 +86,18 @@
         /* Main Content - INCREASED SPACING */
         .content-grid {
             display: grid;
-            gap: 35px; /* Increased from 25px */
-            margin-bottom: 50px; /* Increased from 40px */
+            gap: 35px;
+            margin-bottom: 50px;
         }
 
-        /* Card Styling */
+        /* Card Styling - ALL BORDER RADIUS SET TO 3px */
         .card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 3px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 25px; /* Added to prevent clashing */
+            margin-bottom: 25px;
         }
 
         .card:hover {
@@ -109,19 +109,21 @@
             padding: 25px;
         }
 
-        /* Hero Section */
+        /* Hero Section - REPLACED GRADIENT WITH IMAGE */
         .hero-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
             color: white;
             text-align: center;
             padding: 50px 20px;
-            margin-bottom: 35px; /* Added to prevent clashing */
+            margin-bottom: 35px;
         }
 
         .club-logo {
             width: 80px;
             height: 80px;
-            border-radius: 16px;
+            border-radius: 3px;
             margin: 0 auto 20px;
             background: rgba(255, 255, 255, 0.9);
             display: flex;
@@ -152,7 +154,7 @@
             padding: 16px 36px;
             font-size: 18px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 3px;
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
@@ -176,7 +178,7 @@
 
         .info-item {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 20px;
             text-align: center;
             transition: transform 0.3s ease;
@@ -236,7 +238,7 @@
             background: #e8f4fd;
             color: #007aff;
             padding: 8px 16px;
-            border-radius: 8px;
+            border-radius: 3px;
             font-size: 14px;
             font-weight: 500;
         }
@@ -274,7 +276,7 @@
             width: 50px;
             height: 4px;
             background: linear-gradient(90deg, #FF006E, #764ba2);
-            border-radius: 2px;
+            border-radius: 3px;
         }
 
         /* Stats Grid */
@@ -287,7 +289,7 @@
 
         .stat-card {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 20px;
             text-align: center;
             transition: transform 0.3s ease;
@@ -310,13 +312,13 @@
             color: #8e8e93;
         }
 
-        /* Collapsible Sections - INCREASED SPACING */
+        /* Collapsible Sections */
         .collapsible-card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 3px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
-            margin-bottom: 35px; /* Increased from 25px */
+            margin-bottom: 35px;
             transition: transform 0.3s ease;
         }
 
@@ -374,7 +376,7 @@
 
         .testimonial-item {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 25px;
             transition: transform 0.3s ease;
         }
@@ -421,7 +423,7 @@
             align-items: flex-start;
             padding: 20px;
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             transition: transform 0.3s ease;
         }
 
@@ -458,7 +460,7 @@
 
         .faq-item {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 25px;
             transition: transform 0.3s ease;
         }
@@ -503,7 +505,7 @@
 
         .coach-info {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 25px;
             display: flex;
             align-items: center;
@@ -550,7 +552,7 @@
 
         .facility-item {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 15px;
             font-size: 14px;
             color: #1c1c1e;
@@ -581,7 +583,7 @@
 
         .contact-item {
             background: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 3px;
             padding: 20px;
             text-decoration: none;
             color: inherit;
@@ -598,7 +600,7 @@
         .contact-icon {
             width: 48px;
             height: 48px;
-            border-radius: 24px;
+            border-radius: 3px;
             background: #007aff;
             color: white;
             display: flex;
@@ -628,7 +630,7 @@
             background: rgba(0, 0, 0, 0.8);
             color: white;
             padding: 10px 15px;
-            border-radius: 25px;
+            border-radius: 3px;
             text-decoration: none;
             font-size: 14px;
             font-weight: 500;
@@ -654,7 +656,7 @@
             padding: 18px 36px;
             font-size: 18px;
             font-weight: 700;
-            border-radius: 8px;
+            border-radius: 3px;
             cursor: pointer;
             box-shadow: 0 8px 25px rgba(255, 0, 110, 0.35);
             z-index: 1000;
@@ -672,27 +674,27 @@
 
         /* Sessions - HIDDEN */
         .sessions-container {
-            display: none !important; /* Force hide */
+            display: none !important;
         }
 
         /* Value Proposition - REMOVED */
         .value-proposition {
-            display: none; /* Remove the blue box and text section */
+            display: none;
         }
 
-        /* Responsive Design with improved spacing */
+        /* Responsive Design */
         @media (max-width: 768px) {
             .page-container {
                 padding: 15px;
             }
             
             .content-grid {
-                gap: 25px; /* Reduced for mobile */
+                gap: 25px;
                 margin-bottom: 40px;
             }
 
             .collapsible-card {
-                margin-bottom: 25px; /* Reduced for mobile */
+                margin-bottom: 25px;
             }
 
             .hero-title {
@@ -765,7 +767,7 @@
             }
         }
 
-        /* Tablet adjustments with improved spacing */
+        /* Tablet adjustments */
         @media (min-width: 769px) and (max-width: 1024px) {
             .page-container {
                 padding: 20px;
@@ -884,8 +886,6 @@
                             <div class="stat-label">Skill Levels</div>
                         </div>
                     </div>
-                    
-                    <!-- SESSIONS SECTION REMOVED -->
                 </div>
             </div>
 
@@ -915,7 +915,6 @@
                         <div class="benefits-grid" id="benefitsGrid">
                             <!-- Benefits will be populated dynamically -->
                         </div>
-                        <!-- Value Proposition REMOVED -->
                     </div>
                 </div>
             </div>
@@ -1042,6 +1041,12 @@
             const logo = club.club_logo_emoji || getActivityIcon(club.activity_type);
             document.getElementById('clubLogo').innerHTML = logo;
             
+            // Set hero background image if available
+            if (club.image_url) {
+                const heroCard = document.querySelector('.hero-card');
+                heroCard.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${club.image_url}')`;
+            }
+            
             // Info grid
             document.getElementById('clubLocation').textContent = club.location;
             document.getElementById('clubFee').textContent = club.monthly_fee_text || `£${club.monthly_fee_amount}/month`;
@@ -1076,7 +1081,7 @@
             // Testimonials
             populateTestimonials(club);
             
-            // Benefits - NOW SHOWS GOOGLE SHEET DATA
+            // Benefits
             populateBenefits(club);
             
             // FAQ
@@ -1205,7 +1210,6 @@
             }
         }
 
-        // FIXED FUNCTION: Use benefits from Google Sheet instead of defaults
         function populateBenefits(club) {
             const benefitsGrid = document.getElementById('benefitsGrid');
             
@@ -1215,7 +1219,7 @@
             if (club.benefits && club.benefits.length > 0) {
                 // Use benefits from Google Sheet
                 benefitsToShow = club.benefits.map(benefit => ({
-                    icon: benefit.icon || 'fas fa-check-circle', // Default icon if none provided
+                    icon: benefit.icon || 'fas fa-check-circle',
                     title: benefit.title,
                     description: benefit.description
                 }));
@@ -1233,8 +1237,6 @@
                     </div>
                 </div>
             `).join('');
-            
-            // Value proposition - REMOVED as requested
         }
 
         function populateFAQ(club) {
