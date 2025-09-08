@@ -535,10 +535,9 @@
 /* ========= DYNAMIC CLUB DISCOVERY SYSTEM ========= */
 
 /* ========= 1) CONFIG ========= */
-const SHEET_ID = '1dLYAGkacNmKcSyIoX4p6V9KOansmctifTJwCH-GFLBQ'; // Your Google Sheet ID
-const TAB_NAME = 'Dynamic Club Page Hub';
-const URL      = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(TAB_NAME)}!A:AD?key=AIzaSyDK2LyxRj64ILoXIO37OJyo9qgjWyq18cU`;
-const CACHE_KEY = `clubs:${SHEET_ID}:${TAB_NAME}`;
+// Use backend API instead of direct Google Sheets API
+const API_BASE_URL = '/api'; // Your Vercel API endpoints
+const CACHE_KEY = 'clubs:backend:v1';
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 min
 
 /* ========= 2) GLOBALS ========= */
@@ -551,7 +550,7 @@ let _fetchController = null;
 
 window.tempCacheKey = CACHE_KEY;
 
-/* ========= 3) DATA LOAD with caching / abort ========= */
+/* ========= 3) DATA LOAD with backend API ========= */
 async function fetchClubRows(forceFresh = false) {
   const now = Date.now();
   if (!forceFresh) {
@@ -560,11 +559,26 @@ async function fetchClubRows(forceFresh = false) {
       if (cached && now - cached.t < CACHE_TTL_MS) return cached.data;
     } catch {}
   }
+  
   if (_fetchController) _fetchController.abort();
   _fetchController = new AbortController();
-  const res = await fetch(URL, { cache: 'no-store', signal: _fetchController.signal });
+  
+  // Use backend API to get all clubs
+  const res = await fetch(`${API_BASE_URL}/clubs`, { 
+    cache: 'no-store', 
+    signal: _fetchController.signal 
+  });
+  
+  if (!res.ok) {
+    throw new Error(`Failed to load clubs: ${res.status} ${res.statusText}`);
+  }
+  
   const data = await res.json();
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ t: now, data })); } catch {}
+  
+  try { 
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ t: now, data })); 
+  } catch {}
+  
   return data;
 }
 
@@ -578,53 +592,49 @@ async function loadClubData(forceFresh = false) {
   mainContent.style.display  = 'none';
 
   try {
-    const response = await fetchClubRows(forceFresh);
-    console.log('Fetched club data:', response);
+    const clubsData = await fetchClubRows(forceFresh);
+    console.log('Fetched club data:', clubsData);
     
-    if (!response.values || !Array.isArray(response.values)) {
+    if (!clubsData || !Array.isArray(clubsData)) {
       throw new Error('Invalid data format received');
     }
     
-    const rows = response.values;
-    
-    clubs = rows.slice(1).map((r, i) => { // Skip header row
-      return {
-        id: i + 1,
-        club_id: String(r[0] || ''),
-        club_code: String(r[1] || ''),
-        club_name: String(r[2] || 'Unnamed Club'),
-        activity_type: String(r[3] || ''),
-        location: String(r[4] || ''),
-        address: String(r[5] || ''),
-        monthly_fee: parseFloat(r[6]) || 0,
-        description: String(r[7] || ''),
-        image_url: String(r[8] || `https://source.unsplash.com/featured/?${r[3]||'fitness'}`),
-        website: String(r[9] || ''),
-        phone: String(r[10] || ''),
-        email: String(r[11] || ''),
-        rating: parseFloat(r[12]) || 0,
-        user_rating: parseFloat(r[13]) || 0,
-        review_count: parseFloat(r[14]) || 0,
-        total_members: parseFloat(r[15]) || 0,
-        sessions_per_week: parseFloat(r[16]) || 0,
-        age_groups: String(r[17] || ''),
-        skill_levels: String(r[18] || ''),
-        tags: String(r[19] || ''),
-        facilities: String(r[20] || ''),
-        instructor_name: String(r[21] || ''),
-        instructor_bio: String(r[22] || ''),
-        active: String(r[23] || '').toLowerCase(),
-        featured: String(r[24] || '').toLowerCase() === 'yes',
-        booking_url: String(r[25] || ''),
-        page_url: String(r[26] || ''),
-        admin_url: String(r[27] || ''),
-        
-        // Computed properties
-        is_beginner_friendly: String(r[19] || '').toLowerCase().includes('beginner'),
-        is_wheelchair_accessible: String(r[20] || '').toLowerCase().includes('wheelchair'),
-        is_all_ages: String(r[17] || '').toLowerCase().includes('all ages')
-      };
-    }).filter(club => club.active === 'yes'); // Only show active clubs
+    clubs = clubsData.map((club, i) => ({
+      id: i + 1,
+      club_id: String(club.club_id || ''),
+      club_code: String(club.club_code || club.club_name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')),
+      club_name: String(club.club_name || 'Unnamed Club'),
+      activity_type: String(club.activity_type || ''),
+      location: String(club.location || ''),
+      address: String(club.address || ''),
+      monthly_fee: parseFloat(club.monthly_fee) || 0,
+      description: String(club.description || ''),
+      image_url: String(club.image_url || `https://source.unsplash.com/featured/?${club.activity_type||'fitness'}`),
+      website: String(club.website || ''),
+      phone: String(club.phone || ''),
+      email: String(club.email || ''),
+      rating: parseFloat(club.rating) || 0,
+      user_rating: parseFloat(club.user_rating) || 0,
+      review_count: parseFloat(club.review_count) || 0,
+      total_members: parseFloat(club.total_members) || 0,
+      sessions_per_week: parseFloat(club.sessions_per_week) || 0,
+      age_groups: String(club.age_groups || ''),
+      skill_levels: String(club.skill_levels || ''),
+      tags: String(club.tags || ''),
+      facilities: String(club.facilities || ''),
+      instructor_name: String(club.instructor_name || ''),
+      instructor_bio: String(club.instructor_bio || ''),
+      active: String(club.active || '').toLowerCase() === 'yes',
+      featured: club.featured === true || String(club.featured || '').toLowerCase() === 'yes',
+      booking_url: String(club.booking_url || ''),
+      page_url: String(club.page_url || `/club/${club.club_code || club.club_name?.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`),
+      admin_url: String(club.admin_url || ''),
+      
+      // Computed properties
+      is_beginner_friendly: String(club.tags || '').toLowerCase().includes('beginner'),
+      is_wheelchair_accessible: String(club.facilities || '').toLowerCase().includes('wheelchair'),
+      is_all_ages: String(club.age_groups || '').toLowerCase().includes('all ages')
+    })).filter(club => club.active); // Only show active clubs
 
     if (!clubs.length) throw new Error('No active clubs found');
 
@@ -638,6 +648,10 @@ async function loadClubData(forceFresh = false) {
     console.error('Error loading clubs:', err);
     loadingState.style.display = 'none';
     errorState.style.display   = 'block';
+    
+    // Update error message with more details
+    const errorElement = errorState.querySelector('p');
+    errorElement.textContent = `Failed to load clubs: ${err.message}. Please check your backend API configuration.`;
   }
 }
 
@@ -665,7 +679,7 @@ function initializeApp() {
   const skillLevels = [...new Set(clubs.map(c => c.skill_levels))].filter(Boolean).sort();
   const skillSelect = document.getElementById('f-skills');
   skillSelect.innerHTML = '<option value="">Any skill level</option>';
-  skillLevels.forEach(s => { const o=document.createElement('option'); o.value=o.textContent=s; skillSelect.appendChild(o); });
+  skillLevels.forEach(s => { const o=document.createElement('option'); o.value=o.textContent=s; skillSelect.appendChild(s); });
 
   buildStarUI();
   setupEventListeners();
