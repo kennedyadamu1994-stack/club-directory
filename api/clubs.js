@@ -1,4 +1,4 @@
-// api/clubs.js - Fetch all active clubs data
+// api/clubs.js - Fetch all active clubs data with corrected column mapping
 module.exports = async (req, res) => {
     try {
         // Set CORS headers
@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
         const headers = clubRows[0];
         console.log('Club headers found:', headers.length);
         
-        // Parse all active clubs using the column structure from your Apps Script
+        // Parse all active clubs using the corrected column structure
         const clubs = [];
         
         for (let i = 1; i < clubRows.length; i++) {
@@ -63,176 +63,8 @@ module.exports = async (req, res) => {
                 continue; // Skip inactive clubs
             }
 
-            // Parse club data according to your Apps Script column structure
-            const club = {
-                // Basic Info (A-C)
-                club_id: row[0] || '',
-                club_name: row[1] || 'Unknown Club',
-                active: row[2] || 'no',
-                
-                // URLs (D-E) - auto-generated
-                page_url: row[3] || '',
-                booking_url: row[4] || '',
-                
-                // Club Details (F-S)
-                activity_type: row[5] || '',
-                club_logo_emoji: row[6] || '🏛️',
-                location: row[7] || '',
-                monthly_fee_amount: parseFloat(row[8]) || 0,
-                monthly_fee_text: row[9] || '',
-                star_rating: row[10] || '',
-                numeric_rating: parseFloat(row[11]) || 0,
-                rating_out_of: parseFloat(row[12]) || 5,
-                member_count: parseInt(row[13]) || 0,
-                ranking_position: parseInt(row[14]) || 0,
-                ranking_category: row[15] || '',
-                sessions_per_week: parseInt(row[16]) || 0,
-                average_attendance: parseInt(row[17]) || 0,
-                member_growth: row[18] || '',
-                
-                // Sessions (T-AB)
-                session_1_time: row[19] || '',
-                session_1_date: row[20] || '',
-                session_1_type: row[21] || '',
-                session_2_time: row[22] || '',
-                session_2_date: row[23] || '',
-                session_2_type: row[24] || '',
-                session_3_time: row[25] || '',
-                session_3_date: row[26] || '',
-                session_3_type: row[27] || '',
-                session_4_time: row[28] || '',
-                session_4_date: row[29] || '',
-                session_4_type: row[30] || '',
-                
-                // Testimonials (AF-AN)
-                testimonials: [
-                    {
-                        name: row[31] || '',
-                        rating: parseFloat(row[32]) || 0,
-                        text: row[33] || ''
-                    },
-                    {
-                        name: row[34] || '',
-                        rating: parseFloat(row[35]) || 0,
-                        text: row[36] || ''
-                    },
-                    {
-                        name: row[37] || '',
-                        rating: parseFloat(row[38]) || 0,
-                        text: row[39] || ''
-                    }
-                ].filter(t => t.name && t.text), // Only include complete testimonials
-                
-                // Benefits (AO-BF)
-                benefits: [
-                    {
-                        icon: row[40] || '',
-                        title: row[41] || '',
-                        description: row[42] || ''
-                    },
-                    {
-                        icon: row[43] || '',
-                        title: row[44] || '',
-                        description: row[45] || ''
-                    },
-                    {
-                        icon: row[46] || '',
-                        title: row[47] || '',
-                        description: row[48] || ''
-                    },
-                    {
-                        icon: row[49] || '',
-                        title: row[50] || '',
-                        description: row[51] || ''
-                    },
-                    {
-                        icon: row[52] || '',
-                        title: row[53] || '',
-                        description: row[54] || ''
-                    },
-                    {
-                        icon: row[55] || '',
-                        title: row[56] || '',
-                        description: row[57] || ''
-                    }
-                ].filter(b => b.title && b.description), // Only include complete benefits
-                
-                // Pricing (BG-BH)
-                pay_per_session_price: parseFloat(row[58]) || 0,
-                savings_amount: parseFloat(row[59]) || 0,
-                
-                // FAQs (BI-BR)
-                faqs: [
-                    {
-                        question: row[60] || '',
-                        answer: row[61] || ''
-                    },
-                    {
-                        question: row[62] || '',
-                        answer: row[63] || ''
-                    },
-                    {
-                        question: row[64] || '',
-                        answer: row[65] || ''
-                    },
-                    {
-                        question: row[66] || '',
-                        answer: row[67] || ''
-                    },
-                    {
-                        question: row[68] || '',
-                        answer: row[69] || ''
-                    }
-                ].filter(f => f.question && f.answer), // Only include complete FAQs
-                
-                // About & Coach (BS-BV)
-                club_bio: row[70] || '',
-                coach_name: row[71] || '',
-                coach_role: row[72] || '',
-                coach_avatar: row[73] || '',
-                
-                // Facilities & Tags (BW-BZ)
-                facilities_list: row[74] || '',
-                tags_who: row[75] || '',
-                tags_vibe: row[76] || '',
-                tags_accessibility: row[77] || '',
-                
-                // Contact (CA-CE)
-                email: row[78] || '',
-                phone: row[79] || '',
-                whatsapp: row[80] || '',
-                instagram: row[81] || '',
-                address: row[82] || '',
-                
-                // Design (CF)
-                hero_background_gradient: row[83] || '',
-                
-                // Legacy fields for compatibility
-                monthly_fee: parseFloat(row[8]) || 0,
-                description: row[70] || '', // club_bio
-                rating: parseFloat(row[11]) || 0, // numeric_rating
-                user_rating: parseFloat(row[11]) || 0,
-                review_count: 0, // Not in new structure
-                total_members: parseInt(row[13]) || 0,
-                age_groups: row[75] || '', // tags_who
-                skill_levels: 'All levels', // Default
-                tags: [row[75], row[76], row[77]].filter(Boolean).join(', '),
-                facilities: row[74] || '',
-                instructor_name: row[71] || '',
-                instructor_bio: row[72] || '',
-                featured: row[15] === 'Featured' || false,
-                website: '', // Not in new structure
-                image_url: `https://source.unsplash.com/featured/?${row[5]||'fitness'}`,
-                
-                // Generate club_code from club_name if not provided
-                club_code: row[0] || row[1]?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || '',
-                
-                // Computed properties
-                is_beginner_friendly: (row[75] || '').toLowerCase().includes('beginner'),
-                is_wheelchair_accessible: (row[77] || '').toLowerCase().includes('wheelchair'),
-                is_all_ages: (row[75] || '').toLowerCase().includes('all ages')
-            };
-            
+            // Parse club data with consistent column mapping
+            const club = parseClubDataForListing(row);
             clubs.push(club);
         }
 
@@ -248,3 +80,111 @@ module.exports = async (req, res) => {
         });
     }
 };
+
+// Helper function to parse club data from sheet row for listing (consistent with club-data.js)
+function parseClubDataForListing(row) {
+    // Helper functions for safe data extraction
+    const safeGet = (index) => row[index] || '';
+    const safeGetFloat = (index) => parseFloat(row[index]) || 0;
+    const safeGetInt = (index) => parseInt(row[index]) || 0;
+
+    const club = {
+        // Basic Info (A-C: columns 0-2)
+        club_id: safeGet(0),
+        club_name: safeGet(1) || 'Unknown Club',
+        active: safeGet(2) || 'no',
+        
+        // URLs (D-E: columns 3-4)
+        page_url: safeGet(3),
+        booking_url: safeGet(4),
+        
+        // Club Details (F-S: columns 5-18)
+        activity_type: safeGet(5),
+        club_logo_emoji: safeGet(6) || '🏛️',
+        location: safeGet(7),
+        monthly_fee_amount: safeGetFloat(8),
+        monthly_fee_text: safeGet(9),
+        star_rating: safeGet(10),
+        numeric_rating: safeGetFloat(11),
+        rating_out_of: safeGetFloat(12) || 5,
+        member_count: safeGetInt(13),
+        ranking_position: safeGetInt(14),
+        ranking_category: safeGet(15),
+        sessions_per_week: safeGetInt(16),
+        average_attendance: safeGetInt(17),
+        member_growth: safeGet(18),
+        
+        // About & Coach (BS-BV: columns 70-73)
+        club_bio: safeGet(70),
+        coach_name: safeGet(71),
+        coach_role: safeGet(72),
+        coach_avatar: safeGet(73),
+        
+        // Facilities & Tags (BW-BZ: columns 74-77)
+        facilities_list: safeGet(74),
+        tags_who: safeGet(75),
+        tags_vibe: safeGet(76),
+        tags_accessibility: safeGet(77),
+        
+        // Contact (CA-CE: columns 78-82)
+        email: safeGet(78),
+        phone: safeGet(79),
+        whatsapp: safeGet(80),
+        instagram: safeGet(81),
+        address: safeGet(82),
+        
+        // Design (CF: column 83)
+        hero_background_gradient: safeGet(83),
+    };
+
+    // Parse testimonials for review count (columns 31-39)
+    const testimonials = [];
+    for (let i = 0; i < 3; i++) {
+        const baseIndex = 31 + (i * 3);
+        const testimonial = {
+            name: safeGet(baseIndex),
+            rating: safeGetFloat(baseIndex + 1),
+            text: safeGet(baseIndex + 2)
+        };
+        if (testimonial.name && testimonial.text) {
+            testimonials.push({
+                author: testimonial.name,
+                rating: testimonial.rating,
+                text: testimonial.text
+            });
+        }
+    }
+    club.testimonials = testimonials;
+
+    // Add computed properties
+    club.tags_array = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
+    club.facilities_array = club.facilities_list ? club.facilities_list.split(',').map(f => f.trim()) : [];
+    club.is_beginner_friendly = (club.tags_who || '').toLowerCase().includes('beginner');
+    club.is_wheelchair_accessible = (club.tags_accessibility || '').toLowerCase().includes('wheelchair') || 
+                                   (club.tags_accessibility || '').toLowerCase().includes('accessible');
+    club.is_all_ages = (club.tags_who || '').toLowerCase().includes('all ages');
+
+    // Legacy fields for compatibility with existing frontend
+    club.monthly_fee = club.monthly_fee_amount;
+    club.description = club.club_bio;
+    club.rating = club.numeric_rating;
+    club.user_rating = club.numeric_rating;
+    club.review_count = club.testimonials.length;
+    club.total_members = club.member_count;
+    club.age_groups = club.tags_who;
+    club.skill_levels = 'All levels'; // Default since not specified in new structure
+    club.tags = club.tags_array.join(', ');
+    club.facilities = club.facilities_list;
+    club.instructor_name = club.coach_name;
+    club.instructor_bio = club.coach_role;
+    club.featured = club.ranking_category === 'Featured' || false;
+    club.website = ''; // Not in new structure
+    club.image_url = `https://source.unsplash.com/featured/?${club.activity_type || 'fitness'}`;
+    
+    // Generate club_code from club_id or club_name for URL routing
+    club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') || '';
+
+    return club;
+}
