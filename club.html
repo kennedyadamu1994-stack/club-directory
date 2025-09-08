@@ -97,6 +97,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 25px; /* Added to prevent clashing */
         }
 
         .card:hover {
@@ -114,6 +115,7 @@
             color: white;
             text-align: center;
             padding: 50px 20px;
+            margin-bottom: 35px; /* Added to prevent clashing */
         }
 
         .club-logo {
@@ -673,44 +675,9 @@
             display: none !important; /* Force hide */
         }
 
-        /* Value Proposition */
+        /* Value Proposition - REMOVED */
         .value-proposition {
-            background: #f0f9ff;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 25px;
-            text-align: center;
-        }
-
-        .value-comparison {
-            margin-bottom: 15px;
-        }
-
-        .comparison-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-
-        .comparison-item.membership {
-            font-weight: 700;
-            color: #FF006E;
-        }
-
-        .comparison-label {
-            color: #1c1c1e;
-        }
-
-        .comparison-price {
-            font-weight: 600;
-        }
-
-        .savings-text {
-            font-size: 16px;
-            color: #16a34a;
-            font-weight: 700;
-            margin-top: 15px;
+            display: none; /* Remove the blue box and text section */
         }
 
         /* Responsive Design with improved spacing */
@@ -948,9 +915,7 @@
                         <div class="benefits-grid" id="benefitsGrid">
                             <!-- Benefits will be populated dynamically -->
                         </div>
-                        <div class="value-proposition" id="valueProposition">
-                            <!-- Value comparison will be populated -->
-                        </div>
+                        <!-- Value Proposition REMOVED -->
                     </div>
                 </div>
             </div>
@@ -1243,7 +1208,6 @@
         // FIXED FUNCTION: Use benefits from Google Sheet instead of defaults
         function populateBenefits(club) {
             const benefitsGrid = document.getElementById('benefitsGrid');
-            const valueProposition = document.getElementById('valueProposition');
             
             // Use benefits from Google Sheet if available, otherwise fall back to defaults
             let benefitsToShow = [];
@@ -1270,26 +1234,7 @@
                 </div>
             `).join('');
             
-            // Value proposition - now using Google Sheet data where available
-            const monthlyFee = club.monthly_fee_amount || club.monthly_fee || 25;
-            const payPerSession = club.pay_per_session_price || Math.round(monthlyFee * 1.8); // Use sheet data or approximate
-            const sessions = club.sessions_per_week || 4;
-            const pricePerSession = Math.round(monthlyFee / sessions);
-            const savings = club.savings_amount || Math.round((payPerSession - pricePerSession) * sessions); // Use sheet data or calculate
-            
-            valueProposition.innerHTML = `
-                <div class="value-comparison">
-                    <div class="comparison-item">
-                        <span class="comparison-label">Pay per session:</span>
-                        <span class="comparison-price">£${payPerSession} each</span>
-                    </div>
-                    <div class="comparison-item membership">
-                        <span class="comparison-label">Monthly membership:</span>
-                        <span class="comparison-price">£${monthlyFee} (£${pricePerSession} per session)</span>
-                    </div>
-                </div>
-                <p class="savings-text">Save over £${savings} per month with membership!</p>
-            `;
+            // Value proposition - REMOVED as requested
         }
 
         function populateFAQ(club) {
