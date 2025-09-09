@@ -28,15 +28,20 @@
             min-height:100vh;
         }
 
-        /* NBRH Brand Header */
-        .nbrh-header{background:#1c1c1e; padding:15px 0; box-shadow:0 2px 10px rgba(0,0,0,0.1); position:sticky; top:0; z-index:1001;}
+        /* NBRH Brand Header (now fixed) */
+        .nbrh-header{
+            background:#1c1c1e; padding:15px 0;
+            box-shadow:0 2px 10px rgba(0,0,0,0.1);
+            position:fixed; top:0; left:0; right:0; z-index:1001;
+        }
         .nbrh-header-content{max-width:1200px; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between;}
         .nbrh-logo{height:40px; object-fit:contain;}
         .nbrh-nav{display:flex; gap:20px; align-items:center;}
         .nbrh-nav a{color:#fff; text-decoration:none; font-weight:500; transition:color .3s;}
         .nbrh-nav a:hover{color:#FF006E;}
 
-        .page-container{max-width:1200px; margin:0 auto; padding:20px; position:relative;}
+        /* push content below fixed header */
+        .page-container{max-width:1200px; margin:0 auto; padding:100px 20px 20px; position:relative;}
 
         /* Loading / Error */
         .loading{text-align:center; padding:60px 20px; color:#8e8e93;}
@@ -63,20 +68,20 @@
         .hero-cta{background:#FF006E; color:#fff; border:none; padding:16px 36px; font-size:18px; font-weight:600; border-radius:3px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .3s; box-shadow:0 4px 15px rgba(255,0,110,.3);}
         .hero-cta:hover{background:#E6005E; transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,0,110,.4);}
 
-        /* Info grid */
-        .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:15px; margin-bottom:25px;}
-        .info-item{background:#f8f9fa; border-radius:3px; padding:20px; text-align:center; transition:transform .3s;}
+        /* Info grid (tighter spacing) */
+        .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:10px; margin-bottom:18px;}
+        .info-item{background:#f8f9fa; border-radius:3px; padding:16px; text-align:center; transition:transform .3s;}
         .info-item:hover{transform:translateY(-3px);}
-        .info-icon{font-size:24px; margin-bottom:12px; display:block;}
-        .info-label{font-size:14px; color:#8e8e93; margin-bottom:8px; font-weight:500;}
-        .info-value{font-size:18px; color:#1c1c1e; font-weight:600;}
+        .info-icon{font-size:22px; margin-bottom:10px; display:block;}
+        .info-label{font-size:13px; color:#8e8e93; margin-bottom:6px; font-weight:500;}
+        .info-value{font-size:17px; color:#1c1c1e; font-weight:600;}
         .rating-display{display:flex; align-items:center; justify-content:center; gap:4px; flex-direction:column;}
         .stars{color:#FFD700; font-size:16px; letter-spacing:2px;}
         .rating-number{font-size:14px; color:#8e8e93; margin-top:4px;}
 
         /* Tags */
-        .tags-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;}
-        .tag{background:#e8f4fd; color:#007aff; padding:8px 16px; border-radius:3px; font-size:14px; font-weight:500;}
+        .tags-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:16px;}
+        .tag{background:#e8f4fd; color:#007aff; padding:8px 12px; border-radius:3px; font-size:13px; font-weight:500;}
         .tag.vibe{background:#f0f9ff; color:#0891b2;}
         .tag.accessibility{background:#f0fdf4; color:#16a34a;}
         .tag.facility{background:#fef3c7; color:#d97706;}
@@ -101,7 +106,7 @@
         .session-time{font-size:16px; color:#1c1c1e; margin-bottom:5px;}
         .session-type{font-size:14px; color:#8e8e93; font-style:italic;}
 
-        /* Collapsible (testimonials, benefits, FAQ, about) */
+        /* Collapsible (testimonials, benefits, FAQ) */
         .collapsible-card{background:#fff; border-radius:3px; box-shadow:0 4px 20px rgba(0,0,0,0.08); overflow:hidden; margin-bottom:35px; transition:transform .3s;}
         .collapsible-card:hover{transform:translateY(-5px);}
         .collapsible-header{padding:25px; background:#f8f9fa; border-bottom:1px solid #e5e5ea; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background .3s;}
@@ -133,7 +138,8 @@
         .faq-question{font-size:18px; font-weight:700; color:#1c1c1e; margin-bottom:15px;}
         .faq-answer{font-size:16px; line-height:1.6; color:#666;}
 
-        .about-content{display:grid; grid-template-columns:2fr 1fr; gap:30px; align-items:start;}
+        /* About & Coach (separated from Contact) */
+        .about-card .about-content{display:grid; grid-template-columns:2fr 1fr; gap:30px; align-items:start;}
         .about-text{line-height:1.7; color:#1c1c1e; font-size:16px; margin-bottom:20px;}
         .about-sidebar{display:flex; flex-direction:column; gap:25px;}
         .coach-info{background:#f8f9fa; border-radius:3px; padding:25px; display:flex; align-items:center; transition:transform .3s;}
@@ -147,6 +153,7 @@
         .facility-item:hover{transform:translateY(-3px);}
         .facility-item::before{content:"✓"; color:#30a330; margin-right:10px; font-weight:bold;}
 
+        /* New Contact card (separate) */
         .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px;}
         .contact-item{background:#f8f9fa; border-radius:3px; padding:20px; text-decoration:none; color:inherit; display:flex; align-items:center; transition:all .3s;}
         .contact-item:hover{background:#e8f4fd; transform:translateY(-3px);}
@@ -154,27 +161,35 @@
         .contact-info h4{font-size:16px; font-weight:600; color:#1c1c1e; margin-bottom:5px;}
         .contact-info p{font-size:14px; color:#8e8e93;}
 
-        .sticky-cta{position:fixed; bottom:25px; left:50%; transform:translateX(-50%); background:#FF006E; color:#fff; border:none; padding:18px 36px; font-size:18px; font-weight:700; border-radius:3px; cursor:pointer; box-shadow:0 8px 25px rgba(255,0,110,.35); z-index:1000; display:none; text-decoration:none; white-space:nowrap; transition:all .3s;}
+        /* Sticky Join CTA (centred text) */
+        .sticky-cta{
+            position:fixed; bottom:25px; left:50%; transform:translateX(-50%);
+            background:#FF006E; color:#fff; border:none; padding:18px 36px;
+            font-size:18px; font-weight:700; border-radius:3px; cursor:pointer;
+            box-shadow:0 8px 25px rgba(255,0,110,.35); z-index:1000; display:none;
+            text-decoration:none; white-space:nowrap; transition:all .3s;
+            text-align:center; display:flex; align-items:center; justify-content:center;
+        }
         .sticky-cta:hover{background:#E6005E; transform:translateX(-50%) translateY(-2px); box-shadow:0 10px 30px rgba(255,0,110,.45);}
 
         @media (max-width:768px){
             .nbrh-header-content{flex-direction:column; gap:15px;}
-            .page-container{padding:15px;}
+            .page-container{padding:100px 15px 15px;}
             .content-grid{gap:25px; margin-bottom:40px;}
             .collapsible-card{margin-bottom:25px;}
             .hero-title{font-size:28px;}
             .hero-subtitle{font-size:18px;}
             .section-header,.collapsible-title{font-size:20px; margin-bottom:20px;}
-            .info-grid{grid-template-columns:1fr 1fr; gap:10px;}
+            .info-grid{grid-template-columns:1fr 1fr; gap:8px;}
             .stats-grid{grid-template-columns:1fr 1fr; gap:10px;}
             .sessions-grid{grid-template-columns:1fr;}
             .testimonials-grid{grid-template-columns:1fr; gap:20px;}
             .benefits-grid{grid-template-columns:1fr; gap:15px;}
             .faq-grid{grid-template-columns:1fr; gap:20px;}
-            .about-content{grid-template-columns:1fr; gap:25px;}
+            .about-card .about-content{grid-template-columns:1fr; gap:25px;}
             .contact-grid{grid-template-columns:1fr;}
             .facilities-grid{grid-template-columns:1fr 1fr;}
-            .sticky-cta{left:20px; right:20px; transform:none; width:calc(100% - 40px); font-size:16px; padding:16px;}
+            .sticky-cta{left:20px; right:20px; transform:none; width:calc(100% - 40px); font-size:16px; padding:16px; justify-content:center;}
         }
 
         .section-hidden{display:none;}
@@ -210,7 +225,7 @@
                 <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
                 <h1 class="hero-title" id="clubName">Club Name</h1>
                 <p class="hero-subtitle" id="clubActivity">Activity Type</p>
-                <a href="#membership" class="hero-cta" id="joinButton">Join Club</a>
+                <a href="#membership" class="hero-cta" id="joinButton">Join The Club</a>
             </div>
 
             <!-- Club Info -->
@@ -325,8 +340,8 @@
                 </div>
             </div>
 
-            <!-- About & Coach -->
-            <div class="card" id="aboutCard" style="display:none;">
+            <!-- About & Coach (separate card) -->
+            <div class="card about-card" id="aboutCard" style="display:none;">
                 <div class="card-content">
                     <h2 class="section-header">About the Club</h2>
                     <div class="about-content">
@@ -343,22 +358,25 @@
                                     <p id="coachRole">–</p>
                                 </div>
                             </div>
-                            <div>
-                                <h3 class="section-header" style="margin-top:0;">Contact</h3>
-                                <div class="contact-grid" id="contactGrid"></div>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Contact (new separate card) -->
+            <div class="card" id="contactCard" style="display:none;">
+                <div class="card-content">
+                    <h2 class="section-header">Contact</h2>
+                    <div class="contact-grid" id="contactGrid"></div>
+                </div>
+            </div>
+
             <!-- Sticky Join CTA -->
-            <a id="stickyCta" class="sticky-cta" href="#" target="_blank" rel="noopener" style="display:none;">Join this Club</a>
+            <a id="stickyCta" class="sticky-cta" href="#" target="_blank" rel="noopener" style="display:none;">Join The Club</a>
         </div>
     </div>
 
     <script>
-    // Utility: get club code from query (?code=) or from URL slug
     function getClubCode(){
         const params = new URLSearchParams(location.search);
         const q = params.get('code');
@@ -381,6 +399,12 @@
         const n = Number(amount);
         if (!isFinite(n) || n <= 0) return '';
         return '£' + (Math.round(n * 100) / 100).toFixed(n % 1 ? 2 : 0);
+    }
+
+    function formatOneDecimal(n){
+        const v = Number(n);
+        if (!isFinite(v)) return '';
+        return v.toFixed(1);
     }
 
     function sanitiseHandle(v){
@@ -427,7 +451,6 @@
             if (!res.ok) throw new Error('Failed to load club');
             const d = await res.json();
 
-            // Hide loading, show content
             document.getElementById('loading').style.display='none';
             document.getElementById('content').style.display='grid';
 
@@ -462,7 +485,7 @@
                 hero.style.backgroundImage = d.hero_background_gradient;
             }
 
-            // Logo: URL image or emoji/text
+            // Logo
             const logoBox = document.getElementById('clubLogo');
             logoBox.innerHTML = '';
             if (d.club_logo_emoji){
@@ -482,7 +505,7 @@
             document.getElementById('clubName').textContent = d.club_name || 'Club';
             document.getElementById('clubActivity').textContent = d.activity_type || '';
 
-            // CTA buttons → booking_url if present
+            // CTAs
             const joinBtn = document.getElementById('joinButton');
             const sticky = document.getElementById('stickyCta');
             if (d.booking_url){
@@ -490,7 +513,7 @@
                 joinBtn.target = '_blank';
                 joinBtn.rel = 'noopener';
                 sticky.href = d.booking_url;
-                sticky.style.display = 'inline-block';
+                sticky.style.display = 'inline-flex'; // keep centred with flex
             } else {
                 joinBtn.style.display = 'none';
                 sticky.style.display = 'none';
@@ -499,7 +522,7 @@
             // Info grid
             document.getElementById('clubLocation').textContent = d.location || '—';
 
-            // Monthly fee show rules
+            // Monthly fee
             const feeBlock = document.getElementById('feeBlock');
             const feeText = d.monthly_fee_text || (d.monthly_fee_amount ? `${formatMoney(d.monthly_fee_amount)}/month` : '');
             if (feeText){
@@ -507,7 +530,7 @@
                 document.getElementById('clubFee').textContent = feeText;
             }
 
-            // Star rating (out of 5) from star_rating
+            // Star rating (out of 5)
             if (d.star_rating){
                 const n = Number(d.star_rating) || 0;
                 document.getElementById('starBlock').style.display = '';
@@ -515,11 +538,11 @@
                 document.getElementById('starRatingText').textContent = `${n}/5`;
             }
 
-            // Numeric rating (out of 10) from numeric_rating
-            if (d.numeric_rating){
+            // Numeric rating (show as one decimal only)
+            if (d.numeric_rating !== undefined && d.numeric_rating !== null && d.numeric_rating !== ''){
                 const nn = Number(d.numeric_rating) || 0;
                 document.getElementById('numericBlock').style.display = '';
-                document.getElementById('numericRating').textContent = `${nn}/10`;
+                document.getElementById('numericRating').textContent = formatOneDecimal(nn);
             }
 
             // Members
@@ -528,7 +551,7 @@
                 document.getElementById('clubMembers').textContent = d.member_count;
             }
 
-            // Tags (who / vibe / accessibility)
+            // Tags
             const tagsRow = document.getElementById('clubTags');
             if (d.tags_who){
                 d.tags_who.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t));
@@ -540,7 +563,7 @@
                 d.tags_accessibility.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t, 'accessibility'));
             }
 
-            // Performance (exactly the four metrics)
+            // Performance
             if (Number(d.ranking_position) > 0){
                 document.getElementById('rankPosBlock').style.display = '';
                 document.getElementById('rankingPosition').textContent = `#${d.ranking_position}`;
@@ -648,27 +671,31 @@
                     const cav = document.getElementById('coachAvatar');
                     const initials = (d.coach_name || '?').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase();
                     cav.textContent = initials;
-                    if (isUrl(d.coach_avatar)){ // if you later decide to show actual photo, swap to <img>
-                        // Keep initials for now to match current styling
-                    }
                     document.getElementById('coachName').textContent = d.coach_name || '';
                     document.getElementById('coachRole').textContent = d.coach_role || '';
                     ci.style.display = '';
                 }
             }
 
-            // Contact (email, phone, whatsapp, instagram, address, page/booking)
+            // Contact (email, phone, whatsapp, instagram, address, page) — booking removed
+            const contactItems = [];
             const cg = document.getElementById('contactGrid');
-            if (d.email) addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email);
-            if (d.phone) addContact(cg, '<i class="fa-solid fa-phone"></i>', 'Phone', d.phone, 'tel:'+d.phone.replace(/\s+/g,''));
-            if (d.whatsapp) addContact(cg, '<i class="fa-brands fa-whatsapp"></i>', 'WhatsApp', d.whatsapp, 'https://wa.me/'+ d.whatsapp.replace(/\D+/g,''));
+
+            if (d.email) contactItems.push(()=>addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email));
+            if (d.phone) contactItems.push(()=>addContact(cg, '<i class="fa-solid fa-phone"></i>', 'Phone', d.phone, 'tel:'+d.phone.replace(/\s+/g,'')));
+            if (d.whatsapp) contactItems.push(()=>addContact(cg, '<i class="fa-brands fa-whatsapp"></i>', 'WhatsApp', d.whatsapp, 'https://wa.me/'+ d.whatsapp.replace(/\D+/g,'')));
             if (d.instagram){
                 const ig = sanitiseHandle(d.instagram);
-                addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig);
+                contactItems.push(()=>addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig));
             }
-            if (d.address) addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address));
-            if (d.page_url) addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Club Page', 'Open website', d.page_url);
-            if (d.booking_url) addContact(cg, '<i class="fa-solid fa-ticket"></i>', 'Bookings', 'Reserve a spot', d.booking_url);
+            if (d.address) contactItems.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
+            if (d.page_url) contactItems.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Club Page', 'Open website', d.page_url));
+            // booking_url intentionally NOT added
+
+            if (contactItems.length){
+                contactItems.forEach(fn=>fn());
+                document.getElementById('contactCard').style.display = '';
+            }
 
             // Collapsibles
             document.querySelectorAll('.collapsible-header').forEach(h=>{
