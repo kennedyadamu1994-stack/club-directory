@@ -5,7 +5,8 @@ module.exports = async (req, res) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60');
+        // REDUCED CACHE TIME for faster updates (30 seconds instead of 5 minutes)
+        res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=10');
 
         if (req.method === 'OPTIONS') {
             return res.status(200).end();
@@ -166,7 +167,7 @@ function parseClubData(row) {
         average_attendance: safeGetInt(17),
         member_growth: safeGet(18),
         
-        // Sessions (T-AB: columns 19-30)
+        // Sessions (T-AC: columns 19-30)
         sessions: [],
         
         // Testimonials (AF-AN: columns 31-39)
@@ -205,7 +206,10 @@ function parseClubData(row) {
         hero_background_gradient: safeGet(83),
         
         // Image URL (CG: column 84)
-        image_url: safeGet(84) || ''
+        image_url: safeGet(84) || '',
+        
+        // Audience (CH: column 85)
+        audience: safeGet(85) || ''
     };
 
     // Parse Sessions (4 sessions: columns 19-30)
@@ -216,7 +220,7 @@ function parseClubData(row) {
             date: safeGet(baseIndex + 1),
             type: safeGet(baseIndex + 2)
         };
-        if (session.time && session.date) {
+        if (session.time || session.date || session.type) {
             club.sessions.push(session);
         }
     }
@@ -300,7 +304,7 @@ function parseClubData(row) {
 function generateSEOData(club) {
     return {
         title: `${club.club_name} - ${club.activity_type} in ${club.location}`,
-        description: `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/5 rating. From £${club.monthly_fee_amount}/month.`,
+        description: `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/10 rating. From £${club.monthly_fee_amount}/month.`,
         keywords: [
             club.activity_type,
             club.location,
@@ -338,7 +342,7 @@ function generateStructuredData(club) {
             "@type": "AggregateRating",
             "ratingValue": club.numeric_rating,
             "reviewCount": club.review_count,
-            "bestRating": club.rating_out_of || 5,
+            "bestRating": 10,
             "worstRating": 1
         } : undefined,
         "offers": {
