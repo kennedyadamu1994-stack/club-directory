@@ -284,7 +284,7 @@ function parseClubData(row) {
     club.instructor_bio = club.coach_role;
     club.featured = club.ranking_category === 'Featured' || false;
     club.website = '';
-    club.image_url = safeGet(84) || `https://source.unsplash.com/featured/?${club.activity_type || 'fitness'}`;
+    club.image_url = safeGet(84)
     
     // Generate club_code from club_id or club_name
     club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
