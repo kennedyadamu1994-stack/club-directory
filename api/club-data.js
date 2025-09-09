@@ -1,366 +1,267 @@
-// api/club-data.js - Individual club data retrieval with corrected column mapping
+// api/club-data.js — Individual club data retrieval (freshness + complete column mapping)
+
 module.exports = async (req, res) => {
-    try {
-        // Set CORS headers
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        // REDUCED CACHE TIME for faster updates (30 seconds instead of 5 minutes)
-        res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=10');
+  try {
+    // CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Faster updates without hammering Sheets: 15s edge cache, 5s stale
+    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=5');
 
-        if (req.method === 'OPTIONS') {
-            return res.status(200).end();
-        }
-
-        if (req.method !== 'GET') {
-            return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
-        }
-
-        const { code } = req.query;
-        console.log('API called with club code:', code);
-
-        if (!code) {
-            return res.status(400).json({ error: 'Club code is required' });
-        }
-
-        // Import googleapis
-        const { google } = require('googleapis');
-
-        // Parse credentials
-        const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
-
-        // Create auth and sheets client
-        const auth = new google.auth.GoogleAuth({
-            credentials: credentials,
-            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-        });
-
-        const sheets = google.sheets({ version: 'v4', auth });
-        const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-
-        console.log('Reading from Dynamic Club Page Hub sheet...');
-
-        // Read club data - using the correct sheet name and range
-        const clubResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: spreadsheetId,
-            range: 'Dynamic Club Page Hub!A:CZ', // Full range to get all club data
-        });
-
-        const clubRows = clubResponse.data.values;
-        console.log('Club rows found:', clubRows ? clubRows.length : 0);
-
-        if (!clubRows || clubRows.length === 0) {
-            return res.status(404).json({ error: 'No club data found in Dynamic Club Page Hub sheet' });
-        }
-
-        // Find the club by code (column A - club_id OR column B - club_name)
-        const headers = clubRows[0];
-        console.log('Club headers:', headers.slice(0, 10)); // Log first 10 headers
-        
-        const clubRow = clubRows.find((row, index) => {
-            if (index === 0) return false; // Skip header
-            
-            // Check if club is active (column C)
-            const isActive = row[2] && row[2].toString().toLowerCase() === 'yes';
-            if (!isActive) return false;
-            
-            // Check club_id (column A) or club_name (column B)
-            const clubId = row[0];
-            const clubName = row[1];
-            
-            // Generate URL-friendly identifier from club_id or club_name
-            const urlIdentifier = (clubId || clubName)?.toString().toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/(^-|-$)/g, '');
-            
-            return urlIdentifier === code.toLowerCase();
-        });
-
-        if (!clubRow) {
-            console.log('Club not found for code:', code);
-            
-            // Get available codes for debugging
-            const availableCodes = clubRows.slice(1)
-                .filter(row => row[2] && row[2].toString().toLowerCase() === 'yes') // Only active clubs
-                .map(row => {
-                    const clubId = row[0];
-                    const clubName = row[1];
-                    return (clubId || clubName)?.toString().toLowerCase()
-                        .replace(/[^a-z0-9]+/g, '-')
-                        .replace(/(^-|-$)/g, '');
-                })
-                .filter(Boolean);
-            
-            return res.status(404).json({
-                error: 'Club not found',
-                debug_info: {
-                    searched_code: code,
-                    available_codes: availableCodes,
-                    total_active_clubs: availableCodes.length
-                }
-            });
-        }
-
-        console.log('Found club row:', clubRow.slice(0, 5)); // Log first 5 columns
-
-        // Parse club data with corrected column mapping
-        const clubData = parseClubData(clubRow);
-
-        // Add computed properties
-        clubData.seo = generateSEOData(clubData);
-        clubData.structured_data = generateStructuredData(clubData);
-
-        console.log('Returning club data:', clubData.club_name);
-        res.status(200).json(clubData);
-
-    } catch (error) {
-        console.error('Error in club-data API:', error);
-        return res.status(500).json({ 
-            error: 'Internal server error', 
-            details: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-};
-
-// Helper function to parse club data from sheet row with corrected column structure
-function parseClubData(row) {
-    // Helper function to safely get array values, treating "N/A" as empty
-    const safeGet = (index) => {
-        const value = row[index] || '';
-        return value === 'N/A' ? '' : value;
-    };
-    const safeGetFloat = (index) => {
-        const value = row[index] || '';
-        if (value === 'N/A' || value === '') return 0;
-        return parseFloat(value) || 0;
-    };
-    const safeGetInt = (index) => {
-        const value = row[index] || '';
-        if (value === 'N/A' || value === '') return 0;
-        return parseInt(value) || 0;
-    };
-
-    const club = {
-        // Basic Info (A-C)
-        club_id: safeGet(0),
-        club_name: safeGet(1) || 'Unknown Club',
-        active: safeGet(2) || 'no',
-        
-        // URLs (D-E)
-        page_url: safeGet(3),
-        booking_url: safeGet(4),
-        
-        // Club Details (F-S)
-        activity_type: safeGet(5),
-        club_logo_emoji: safeGet(6) || '🏛️',
-        location: safeGet(7),
-        monthly_fee_amount: safeGetFloat(8),
-        monthly_fee_text: safeGet(9),
-        star_rating: safeGet(10),
-        numeric_rating: safeGetFloat(11),
-        rating_out_of: safeGetFloat(12) || 5,
-        member_count: safeGetInt(13),
-        ranking_position: safeGetInt(14),
-        ranking_category: safeGet(15),
-        sessions_per_week: safeGetInt(16),
-        average_attendance: safeGetInt(17),
-        member_growth: safeGet(18),
-        
-        // Sessions (T-AC: columns 19-30)
-        sessions: [],
-        
-        // Testimonials (AF-AN: columns 31-39)
-        testimonials: [],
-        
-        // Benefits (AO-BF: columns 40-57)
-        benefits: [],
-        
-        // Pricing (BG-BH: columns 58-59)
-        pay_per_session_price: safeGetFloat(58),
-        savings_amount: safeGetFloat(59),
-        
-        // FAQs (BI-BR: columns 60-69)
-        faqs: [],
-        
-        // About & Coach (BS-BV: columns 70-73)
-        club_bio: safeGet(70),
-        coach_name: safeGet(71),
-        coach_role: safeGet(72),
-        coach_avatar: safeGet(73),
-        
-        // Facilities & Tags (BW-BZ: columns 74-77)
-        facilities_list: safeGet(74),
-        tags_who: safeGet(75),
-        tags_vibe: safeGet(76),
-        tags_accessibility: safeGet(77),
-        
-        // Contact (CA-CE: columns 78-82)
-        email: safeGet(78),
-        phone: safeGet(79),
-        whatsapp: safeGet(80),
-        instagram: safeGet(81),
-        address: safeGet(82),
-        
-        // Design (CF: column 83)
-        hero_background_gradient: safeGet(83),
-        
-        // Image URL (CG: column 84)
-        image_url: safeGet(84) || '',
-        
-        // Audience (CH: column 85)
-        audience: safeGet(85) || ''
-    };
-
-    // Parse Sessions (4 sessions: columns 19-30)
-    for (let i = 0; i < 4; i++) {
-        const baseIndex = 19 + (i * 3);
-        const session = {
-            time: safeGet(baseIndex),
-            date: safeGet(baseIndex + 1),
-            type: safeGet(baseIndex + 2)
-        };
-        if (session.time || session.date || session.type) {
-            club.sessions.push(session);
-        }
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
     }
 
-    // Parse Testimonials (3 testimonials: columns 31-39)
-    for (let i = 0; i < 3; i++) {
-        const baseIndex = 31 + (i * 3);
-        const testimonial = {
-            name: safeGet(baseIndex),
-            rating: safeGetFloat(baseIndex + 1),
-            text: safeGet(baseIndex + 2)
-        };
-        if (testimonial.name && testimonial.text) {
-            club.testimonials.push({
-                author: testimonial.name,
-                rating: testimonial.rating,
-                text: testimonial.text
-            });
-        }
+    const code = (req.query.code || '').toString().trim().toLowerCase();
+    if (!code) return res.status(400).json({ error: 'Club code is required' });
+
+    // Google Sheets client
+    const { google } = require('googleapis');
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
+    const sheets = google.sheets({ version: 'v4', auth });
+    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+
+    const range = 'Dynamic Club Page Hub!A:CZ';
+    const resp = await sheets.spreadsheets.values.get({ spreadsheetId, range });
+    const rows = resp.data.values || [];
+    if (!rows.length) return res.status(404).json({ error: 'No club data found' });
+
+    const header = rows[0];
+
+    // Find the club row by URL-safe slug of club_id or club_name, and active = yes/true/1
+    let found = null;
+    for (let i = 1; i < rows.length; i++) {
+      const r = rows[i] || [];
+      const activeCell = (r[2] || '').toString().trim().toLowerCase();
+      const isActive = ['yes', 'true', '1'].includes(activeCell);
+      if (!isActive) continue;
+
+      const clubId = (r[0] || '').toString();
+      const clubName = (r[1] || '').toString();
+      const slug = makeSlug(clubId || clubName);
+      if (slug === code) { found = r; break; }
     }
 
-    // Parse Benefits (6 benefits: columns 40-57)
-    for (let i = 0; i < 6; i++) {
-        const baseIndex = 40 + (i * 3);
-        const benefit = {
-            icon: safeGet(baseIndex),
-            title: safeGet(baseIndex + 1),
-            description: safeGet(baseIndex + 2)
-        };
-        if (benefit.title && benefit.description) {
-            club.benefits.push(benefit);
-        }
+    if (!found) {
+      // Provide some debug hints of available codes
+      const available = rows.slice(1).filter(r => {
+        const activeCell = (r[2] || '').toString().trim().toLowerCase();
+        return ['yes', 'true', '1'].includes(activeCell);
+      }).map(r => makeSlug((r[0] || r[1] || '').toString())).filter(Boolean);
+
+      return res.status(404).json({
+        error: 'Club not found',
+        debug_info: { searched_code: code, available_codes: available.slice(0, 50), total_active_clubs: available.length }
+      });
     }
 
-    // Parse FAQs (5 FAQs: columns 60-69)
-    for (let i = 0; i < 5; i++) {
-        const baseIndex = 60 + (i * 2);
-        const faq = {
-            question: safeGet(baseIndex),
-            answer: safeGet(baseIndex + 1)
-        };
-        if (faq.question && faq.answer) {
-            club.faqs.push(faq);
-        }
-    }
+    const club = parseClubRow(found);
 
-    // Add computed properties
+    // Derived / compatibility
     club.tags_array = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
-    club.facilities_array = club.facilities_list ? club.facilities_list.split(',').map(f => f.trim()) : [];
+    club.facilities_array = club.facilities_list
+      ? club.facilities_list.split(',').map(s => s.trim()).filter(Boolean)
+      : [];
     club.is_beginner_friendly = (club.tags_who || '').toLowerCase().includes('beginner');
-    club.is_wheelchair_accessible = (club.tags_accessibility || '').toLowerCase().includes('wheelchair');
+    const acc = (club.tags_accessibility || '').toLowerCase();
+    club.is_wheelchair_accessible = acc.includes('wheelchair') || acc.includes('accessible');
     club.is_all_ages = (club.tags_who || '').toLowerCase().includes('all ages');
-    
-    // Calculate review count from testimonials
-    club.review_count = club.testimonials.length;
+    club.review_count = (club.testimonials || []).length;
 
-    // Legacy fields for compatibility
+    // Legacy fields for front-end compatibility
     club.monthly_fee = club.monthly_fee_amount;
     club.description = club.club_bio;
     club.rating = club.numeric_rating;
     club.user_rating = club.numeric_rating;
     club.total_members = club.member_count;
     club.age_groups = club.tags_who;
-    club.skill_levels = 'All levels';
+    club.skill_levels = 'All levels'; // not rendered on page
     club.tags = club.tags_array.join(', ');
     club.facilities = club.facilities_list;
     club.instructor_name = club.coach_name;
     club.instructor_bio = club.coach_role;
     club.featured = club.ranking_category === 'Featured' || false;
-    club.website = '';
-    
-    // Generate club_code from club_id or club_name
-    club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '') || '';
 
-    return club;
+    // SEO helpers
+    club.seo = generateSEOData(club);
+    club.structured_data = generateStructuredData(club);
+
+    return res.status(200).json(club);
+  } catch (err) {
+    console.error('Error in club-data API:', err);
+    return res.status(500).json({
+      error: 'Internal server error',
+      details: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    });
+  }
+};
+
+// ---------- Helpers ----------
+function safeGet(row, index) {
+  const v = row[index] ?? '';
+  return v === 'N/A' ? '' : v;
+}
+function safeFloat(row, index) {
+  const v = safeGet(row, index);
+  if (v === '') return 0;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : 0;
+}
+function safeInt(row, index) {
+  const v = safeGet(row, index);
+  if (v === '') return 0;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+function makeSlug(s) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
 }
 
-// Helper function to generate SEO data
-function generateSEOData(club) {
-    return {
-        title: `${club.club_name} - ${club.activity_type} in ${club.location}`,
-        description: `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/10 rating. From £${club.monthly_fee_amount}/month.`,
-        keywords: [
-            club.activity_type,
-            club.location,
-            club.club_name,
-            ...club.tags_array,
-            'fitness club',
-            'local community',
-            'sports'
-        ].filter(Boolean).join(', '),
-        canonical_url: club.page_url,
-        og_image: club.image_url,
-        og_type: 'website'
-    };
+function parseClubRow(row) {
+  const club = {
+    // Basic (A-C)
+    club_id: safeGet(row, 0),
+    club_name: safeGet(row, 1) || 'Unknown Club',
+    active: safeGet(row, 2) || 'no',
+
+    // URLs (D-E)
+    page_url: safeGet(row, 3),
+    booking_url: safeGet(row, 4),
+
+    // Details (F-S)
+    activity_type: safeGet(row, 5),
+    // May contain emoji OR an image URL — front-end handles either
+    club_logo_emoji: safeGet(row, 6),
+    location: safeGet(row, 7),
+    monthly_fee_amount: safeFloat(row, 8),
+    monthly_fee_text: safeGet(row, 9),
+    star_rating: safeGet(row, 10),       // out of 5 (display as stars)
+    numeric_rating: safeFloat(row, 11),  // out of 10 (numeric)
+    rating_out_of: safeFloat(row, 12) || 5,
+    member_count: safeInt(row, 13),
+    ranking_position: safeInt(row, 14),
+    ranking_category: safeGet(row, 15),
+    sessions_per_week: safeInt(row, 16),
+    average_attendance: safeInt(row, 17),
+    member_growth: safeGet(row, 18),
+
+    // Sessions (T-AC: 19–30) — 4 sessions * (time, date, type)
+    sessions: [],
+
+    // Testimonials (AF-AN: 31–39) — 3 * (name, rating, text)
+    testimonials: [],
+
+    // Benefits (AO-BF: 40–57) — 6 * (icon, title, description)
+    benefits: [],
+
+    // Pricing (BG-BH: 58–59)
+    pay_per_session_price: safeFloat(row, 58),
+    savings_amount: safeFloat(row, 59),
+
+    // FAQs (BI-BR: 60–69) — 5 * (q, a)
+    faqs: [],
+
+    // About & Coach (BS-BV: 70–73)
+    club_bio: safeGet(row, 70),
+    coach_name: safeGet(row, 71),
+    coach_role: safeGet(row, 72),
+    coach_avatar: safeGet(row, 73),
+
+    // Facilities & Tags (BW-BZ: 74–77)
+    facilities_list: safeGet(row, 74),
+    tags_who: safeGet(row, 75),
+    tags_vibe: safeGet(row, 76),
+    tags_accessibility: safeGet(row, 77),
+
+    // Contact (CA-CE: 78–82)
+    email: safeGet(row, 78),
+    phone: safeGet(row, 79),
+    whatsapp: safeGet(row, 80),
+    instagram: safeGet(row, 81),
+    address: safeGet(row, 82),
+
+    // Design (CF: 83)
+    hero_background_gradient: safeGet(row, 83),
+
+    // Image URL (CG: 84)
+    image_url: safeGet(row, 84) || '',
+
+    // Audience (CH: 85)
+    audience: safeGet(row, 85) || '',
+  };
+
+  // Sessions: up to 4 rows (time, date, type)
+  for (let i = 0; i < 4; i++) {
+    const base = 19 + i * 3;
+    const time = safeGet(row, base);
+    const date = safeGet(row, base + 1);
+    const type = safeGet(row, base + 2);
+    if (time || date || type) club.sessions.push({ time, date, type });
+  }
+
+  // Testimonials: 3 blocks
+  for (let i = 0; i < 3; i++) {
+    const base = 31 + i * 3;
+    const name = safeGet(row, base);
+    const rating = safeFloat(row, base + 1);
+    const text = safeGet(row, base + 2);
+    if (name && text) club.testimonials.push({ author: name, rating, text });
+  }
+
+  // Benefits: 6 blocks
+  for (let i = 0; i < 6; i++) {
+    const base = 40 + i * 3;
+    const icon = safeGet(row, base);
+    const title = safeGet(row, base + 1);
+    const description = safeGet(row, base + 2);
+    if (title && description) club.benefits.push({ icon, title, description });
+  }
+
+  // FAQs: 5 pairs
+  for (let i = 0; i < 5; i++) {
+    const base = 60 + i * 2;
+    const question = safeGet(row, base);
+    const answer = safeGet(row, base + 1);
+    if (question && answer) club.faqs.push({ question, answer });
+  }
+
+  return club;
 }
 
-// Helper function to generate structured data
-function generateStructuredData(club) {
-    return {
-        "@context": "https://schema.org",
-        "@type": "SportsClub",
-        "name": club.club_name,
-        "description": club.club_bio,
-        "logo": club.image_url,
-        "image": club.image_url,
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": club.address,
-            "addressLocality": club.location,
-            "addressCountry": "GB"
-        },
-        "telephone": club.phone,
-        "email": club.email,
-        "priceRange": club.monthly_fee_amount > 0 ? `£${club.monthly_fee_amount}` : "Free",
-        "aggregateRating": club.review_count > 0 ? {
-            "@type": "AggregateRating",
-            "ratingValue": club.numeric_rating,
-            "reviewCount": club.review_count,
-            "bestRating": 10,
-            "worstRating": 1
-        } : undefined,
-        "offers": {
-            "@type": "Offer",
-            "name": `${club.club_name} Membership`,
-            "price": club.monthly_fee_amount,
-            "priceCurrency": "GBP",
-            "availability": "https://schema.org/InStock",
-            "validFrom": new Date().toISOString().split('T')[0]
-        },
-        "amenityFeature": club.facilities_array.map(facility => ({
-            "@type": "LocationFeatureSpecification",
-            "name": facility
-        })),
-        "sport": club.activity_type,
-        "memberOf": {
-            "@type": "Organization",
-            "name": "NBRH Network"
-        }
-    };
+function generateSEOData(c) {
+  const title = [c.club_name, c.activity_type, c.location].filter(Boolean).join(' • ');
+  const desc =
+    c.club_bio ||
+    `Join ${c.club_name || 'our club'} for ${c.activity_type || 'activities'} in ${c.location || 'your area'}.`;
+  const image = c.image_url || '';
+  return { title, description: desc, image };
+}
+
+function generateStructuredData(c) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SportsClub',
+    name: c.club_name || '',
+    description: c.club_bio || '',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: c.address || '',
+      addressLocality: c.location || '',
+    },
+    telephone: c.phone || '',
+    email: c.email || '',
+    url: c.page_url || '',
+    sameAs: (c.instagram ? [`https://instagram.com/${String(c.instagram).replace(/^@/, '')}`] : []),
+    priceRange: c.monthly_fee_amount ? `£${c.monthly_fee_amount}/mo` : '',
+  };
 }
