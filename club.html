@@ -30,6 +30,8 @@
     </script>
     
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -37,11 +39,52 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'ITC Avant Garde Gothic Pro', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: #1c1c1e;
             background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
             min-height: 100vh;
+        }
+
+        /* NBRH Brand Header */
+        .nbrh-header {
+            background: #1c1c1e;
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1001;
+        }
+
+        .nbrh-header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nbrh-logo {
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .nbrh-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nbrh-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nbrh-nav a:hover {
+            color: #FF006E;
         }
 
         .page-container {
@@ -60,7 +103,7 @@
 
         .loading-spinner {
             border: 3px solid #f3f3f3;
-            border-top: 3px solid #007aff;
+            border-top: 3px solid #FF006E;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -109,7 +152,7 @@
             padding: 25px;
         }
 
-        /* Hero Section - REPLACED GRADIENT WITH IMAGE */
+        /* Hero Section */
         .hero-card {
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
             background-size: cover;
@@ -133,6 +176,13 @@
             color: #333;
             font-weight: 600;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .club-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .hero-title {
@@ -212,6 +262,7 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
+            flex-direction: column;
         }
 
         .stars {
@@ -223,7 +274,7 @@
         .rating-number {
             font-size: 14px;
             color: #8e8e93;
-            margin-left: 4px;
+            margin-top: 4px;
         }
 
         /* Tags */
@@ -310,6 +361,51 @@
         .stat-label {
             font-size: 14px;
             color: #8e8e93;
+        }
+
+        /* Sessions Section */
+        .sessions-card {
+            background: #fff;
+            border-radius: 3px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 35px;
+        }
+
+        .sessions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .session-item {
+            background: #f8f9fa;
+            border-radius: 3px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .session-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .session-day {
+            font-size: 18px;
+            font-weight: 600;
+            color: #FF006E;
+            margin-bottom: 10px;
+        }
+
+        .session-time {
+            font-size: 16px;
+            color: #1c1c1e;
+            margin-bottom: 5px;
+        }
+
+        .session-type {
+            font-size: 14px;
+            color: #8e8e93;
+            font-style: italic;
         }
 
         /* Collapsible Sections */
@@ -622,28 +718,6 @@
             color: #8e8e93;
         }
 
-        /* Navigation */
-        .back-nav {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 3px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .back-nav:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.05);
-        }
-
         /* Sticky CTA */
         .sticky-cta {
             position: fixed;
@@ -672,18 +746,13 @@
             box-shadow: 0 10px 30px rgba(255, 0, 110, 0.45);
         }
 
-        /* Sessions - HIDDEN */
-        .sessions-container {
-            display: none !important;
-        }
-
-        /* Value Proposition - REMOVED */
-        .value-proposition {
-            display: none;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
+            .nbrh-header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
             .page-container {
                 padding: 15px;
             }
@@ -718,6 +787,10 @@
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 10px;
+            }
+
+            .sessions-grid {
+                grid-template-columns: 1fr;
             }
 
             .testimonials-grid {
@@ -757,14 +830,6 @@
                 font-size: 16px;
                 padding: 16px;
             }
-
-            .back-nav {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin-bottom: 20px;
-                display: inline-block;
-            }
         }
 
         /* Tablet adjustments */
@@ -801,8 +866,16 @@
     </style>
 </head>
 <body>
-    <!-- Back Navigation -->
-    <a href="/" class="back-nav"><i class="fas fa-arrow-left"></i> Back to Clubs</a>
+    <!-- NBRH Brand Header -->
+    <div class="nbrh-header">
+        <div class="nbrh-header-content">
+            <img src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng" alt="NBRH" class="nbrh-logo">
+            <div class="nbrh-nav">
+                <a href="/">Browse Clubs</a>
+                <a href="https://www.thenbrh.co.uk/" target="_blank">NBRH Home</a>
+            </div>
+        </div>
+    </div>
 
     <div class="page-container">
         <!-- Loading State -->
@@ -844,13 +917,18 @@
                         </div>
                         <div class="info-item">
                             <span class="info-icon"><i class="fas fa-star"></i></span>
-                            <div class="info-label">Rating</div>
+                            <div class="info-label">Star Rating</div>
                             <div class="info-value">
                                 <div class="rating-display">
                                     <span class="stars" id="clubStars">★★★★☆</span>
-                                    <span class="rating-number" id="clubRating">4.0</span>
+                                    <span class="rating-number" id="starRatingText">4/5</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon"><i class="fas fa-chart-line"></i></span>
+                            <div class="info-label">Numeric Rating</div>
+                            <div class="info-value" id="numericRating">0/10</div>
                         </div>
                         <div class="info-item">
                             <span class="info-icon"><i class="fas fa-users"></i></span>
@@ -870,21 +948,31 @@
                     <h2 class="section-header">Club Performance</h2>
                     <div class="stats-grid">
                         <div class="stat-card">
+                            <span class="stat-number" id="rankingPosition">#0</span>
+                            <div class="stat-label">Ranking Position</div>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number" id="rankingCategory">Standard</span>
+                            <div class="stat-label">Category</div>
+                        </div>
+                        <div class="stat-card">
                             <span class="stat-number" id="sessionsPerWeek">0</span>
-                            <div class="stat-label">Sessions per Week</div>
+                            <div class="stat-label">Sessions/Week</div>
                         </div>
                         <div class="stat-card">
-                            <span class="stat-number" id="userRating">0</span>
-                            <div class="stat-label">Community Rating</div>
+                            <span class="stat-number" id="memberGrowth">+0%</span>
+                            <div class="stat-label">Member Growth</div>
                         </div>
-                        <div class="stat-card">
-                            <span class="stat-number" id="reviewCount">0</span>
-                            <div class="stat-label">Reviews</div>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-number" id="skillLevels">All</span>
-                            <div class="stat-label">Skill Levels</div>
-                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sessions Card -->
+            <div class="sessions-card" id="sessionsCard" style="display: none;">
+                <div class="card-content">
+                    <h2 class="section-header">Weekly Sessions</h2>
+                    <div class="sessions-grid" id="sessionsGrid">
+                        <!-- Sessions will be populated dynamically -->
                     </div>
                 </div>
             </div>
@@ -1037,9 +1125,15 @@
             document.getElementById('clubName').textContent = club.club_name;
             document.getElementById('clubActivity').textContent = club.activity_type;
             
-            // Club logo (emoji or icon based on activity)
-            const logo = club.club_logo_emoji || getActivityIcon(club.activity_type);
-            document.getElementById('clubLogo').innerHTML = logo;
+            // Club logo - check if it's an image URL or emoji
+            const logoElement = document.getElementById('clubLogo');
+            if (club.club_logo_emoji && (club.club_logo_emoji.startsWith('http') || club.club_logo_emoji.startsWith('https'))) {
+                logoElement.innerHTML = `<img src="${club.club_logo_emoji}" alt="${club.club_name}">`;
+            } else if (club.club_logo_emoji) {
+                logoElement.innerHTML = club.club_logo_emoji;
+            } else {
+                logoElement.innerHTML = getActivityIcon(club.activity_type);
+            }
             
             // Set hero background image if available
             if (club.image_url) {
@@ -1055,16 +1149,20 @@
             document.getElementById('clubFee').textContent = club.monthly_fee_text || `£${club.monthly_fee_amount}/month`;
             document.getElementById('clubMembers').textContent = club.member_count.toString();
             
-            // Ratings
-            const stars = generateStars(club.numeric_rating);
+            // Star Rating (out of 5)
+            const starRating = parseFloat(club.star_rating) || 0;
+            const stars = generateStars(starRating, 5);
             document.getElementById('clubStars').innerHTML = stars;
-            document.getElementById('clubRating').textContent = club.numeric_rating.toFixed(1);
+            document.getElementById('starRatingText').textContent = `${starRating}/5`;
             
-            // Stats
+            // Numeric Rating (out of 10)
+            document.getElementById('numericRating').textContent = `${club.numeric_rating.toFixed(1)}/10`;
+            
+            // Performance Stats
+            document.getElementById('rankingPosition').textContent = club.ranking_position ? `#${club.ranking_position}` : 'N/A';
+            document.getElementById('rankingCategory').textContent = club.ranking_category || 'Standard';
             document.getElementById('sessionsPerWeek').textContent = club.sessions_per_week.toString();
-            document.getElementById('userRating').textContent = club.numeric_rating.toFixed(1);
-            document.getElementById('reviewCount').textContent = club.testimonials?.length || 0;
-            document.getElementById('skillLevels').textContent = club.skill_levels || 'All levels';
+            document.getElementById('memberGrowth').textContent = club.member_growth || 'N/A';
             
             // Description
             document.getElementById('clubDescription').textContent = club.club_bio || club.description;
@@ -1072,13 +1170,16 @@
             // Tags
             populateTags(club);
             
+            // Sessions
+            populateSessions(club);
+            
             // Facilities
             populateFacilities(club);
             
             // Coach/Instructor
             populateInstructor(club);
             
-            // Contact information
+            // Contact information (including Instagram)
             populateContact(club);
             
             // Testimonials
@@ -1092,6 +1193,24 @@
             
             // Join button
             setupJoinButton(club);
+        }
+
+        function populateSessions(club) {
+            if (club.sessions && club.sessions.length > 0) {
+                const sessionsCard = document.getElementById('sessionsCard');
+                const sessionsGrid = document.getElementById('sessionsGrid');
+                
+                const sessionItems = club.sessions.map(session => `
+                    <div class="session-item">
+                        <div class="session-day">${session.date || 'TBD'}</div>
+                        <div class="session-time">${session.time || 'Time TBD'}</div>
+                        ${session.type ? `<div class="session-type">${session.type}</div>` : ''}
+                    </div>
+                `).join('');
+                
+                sessionsGrid.innerHTML = sessionItems;
+                sessionsCard.style.display = 'block';
+            }
         }
 
         function populateTags(club) {
@@ -1177,6 +1296,20 @@
                 `);
             }
             
+            // Add Instagram if available
+            if (club.instagram) {
+                const instagramHandle = club.instagram.replace('@', '').replace('https://instagram.com/', '').replace('https://www.instagram.com/', '');
+                contactItems.push(`
+                    <a href="https://instagram.com/${instagramHandle}" class="contact-item" target="_blank">
+                        <div class="contact-icon"><i class="fab fa-instagram"></i></div>
+                        <div class="contact-info">
+                            <h4>Instagram</h4>
+                            <p>@${instagramHandle}</p>
+                        </div>
+                    </a>
+                `);
+            }
+            
             if (club.address) {
                 const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(club.address)}`;
                 contactItems.push(`
@@ -1201,7 +1334,7 @@
                 const testimonialItems = club.testimonials.map(testimonial => `
                     <div class="testimonial-item">
                         <div class="testimonial-rating">
-                            <span class="stars">${generateStars(testimonial.rating || 5)}</span>
+                            <span class="stars">${generateStars(testimonial.rating || 5, 5)}</span>
                             <span class="testimonial-author">${testimonial.author || 'Anonymous'}</span>
                         </div>
                         <p class="testimonial-text">"${testimonial.text}"</p>
@@ -1380,11 +1513,10 @@
             ];
         }
 
-        function generateStars(rating) {
-            const maxStars = 5;
+        function generateStars(rating, maxRating = 5) {
             let starsHtml = '';
             
-            for (let i = 1; i <= maxStars; i++) {
+            for (let i = 1; i <= maxRating; i++) {
                 if (rating >= i) {
                     starsHtml += '★';
                 } else if (rating >= i - 0.5) {
@@ -1432,7 +1564,7 @@
             document.getElementById('pageTitle').textContent = document.title;
             
             // Update meta description
-            const description = `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/5 rating. From £${club.monthly_fee_amount}/month.`;
+            const description = `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/10 rating. From £${club.monthly_fee_amount}/month.`;
             document.getElementById('pageDescription').setAttribute('content', description);
             
             // Update Open Graph tags
