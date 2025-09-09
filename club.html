@@ -1,868 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Loading Club...</title>
-    <meta name="description" id="pageDescription" content="Club information">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title id="pageTitle">Loading Club…</title>
+    <meta name="description" id="pageDescription" content="Club information" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- SEO Meta Tags -->
-    <meta property="og:title" id="ogTitle" content="">
-    <meta property="og:description" id="ogDescription" content="">
-    <meta property="og:image" id="ogImage" content="">
-    <meta property="og:url" id="ogUrl" content="">
-    <meta property="og:type" content="website">
-    
-    <!-- Structured Data for SEO -->
-    <script type="application/ld+json" id="structuredData">
-    {
-      "@context": "https://schema.org",
-      "@type": "SportsClub",
-      "name": "",
-      "description": "",
-      "address": {},
-      "telephone": "",
-      "email": "",
-      "url": "",
-      "priceRange": ""
-    }
-    </script>
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        body {
-            font-family: 'ITC Avant Garde Gothic Pro', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #1c1c1e;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
-            min-height: 100vh;
+    <!-- Open Graph -->
+    <meta property="og:title" id="ogTitle" content="" />
+    <meta property="og:description" id="ogDescription" content="" />
+    <meta property="og:image" id="ogImage" content="" />
+    <meta property="og:url" id="ogUrl" content="" />
+    <meta property="og:type" content="website" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" id="structuredData">
+    { "@context":"https://schema.org", "@type":"SportsClub", "name":"", "description":"", "address":{}, "telephone":"", "email":"", "url":"", "priceRange":"" }
+    </script>
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body{
+            font-family:'ITC Avant Garde Gothic Pro','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
+            line-height:1.6; color:#1c1c1e;
+            background:linear-gradient(135deg,#f5f7fa 0%,#e4e8f0 100%);
+            min-height:100vh;
         }
 
         /* NBRH Brand Header */
-        .nbrh-header {
-            background: #1c1c1e;
-            padding: 15px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1001;
-        }
+        .nbrh-header{background:#1c1c1e; padding:15px 0; box-shadow:0 2px 10px rgba(0,0,0,0.1); position:sticky; top:0; z-index:1001;}
+        .nbrh-header-content{max-width:1200px; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between;}
+        .nbrh-logo{height:40px; object-fit:contain;}
+        .nbrh-nav{display:flex; gap:20px; align-items:center;}
+        .nbrh-nav a{color:#fff; text-decoration:none; font-weight:500; transition:color .3s;}
+        .nbrh-nav a:hover{color:#FF006E;}
 
-        .nbrh-header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+        .page-container{max-width:1200px; margin:0 auto; padding:20px; position:relative;}
 
-        .nbrh-logo {
-            height: 40px;
-            object-fit: contain;
-        }
+        /* Loading / Error */
+        .loading{text-align:center; padding:60px 20px; color:#8e8e93;}
+        .loading-spinner{border:3px solid #f3f3f3; border-top:3px solid #FF006E; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; margin:0 auto 20px;}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        .error{background:#ffeaea; color:#ff3b30; padding:20px; border-radius:3px; margin:20px; text-align:center;}
 
-        .nbrh-nav {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
+        .content-grid{display:grid; gap:35px; margin-bottom:50px;}
 
-        .nbrh-nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
+        .card{background:#fff; border-radius:3px; box-shadow:0 4px 20px rgba(0,0,0,0.08); overflow:hidden; transition:transform .3s, box-shadow .3s; margin-bottom:25px;}
+        .card:hover{transform:translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.12);}
+        .card-content{padding:25px;}
 
-        .nbrh-nav a:hover {
-            color: #FF006E;
+        /* Hero */
+        .hero-card{
+            background:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80');
+            background-size:cover; background-position:center;
+            color:#fff; text-align:center; padding:50px 20px; margin-bottom:35px;
         }
+        .club-logo{width:80px; height:80px; border-radius:3px; margin:0 auto 20px; background:rgba(255,255,255,.9); display:flex; align-items:center; justify-content:center; font-size:36px; color:#333; font-weight:600; box-shadow:0 4px 15px rgba(0,0,0,0.2); overflow:hidden;}
+        .club-logo img{width:100%; height:100%; object-fit:cover;}
+        .hero-title{font-size:32px; font-weight:700; margin-bottom:10px;}
+        .hero-subtitle{font-size:20px; opacity:.9; margin-bottom:30px;}
+        .hero-cta{background:#FF006E; color:#fff; border:none; padding:16px 36px; font-size:18px; font-weight:600; border-radius:3px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .3s; box-shadow:0 4px 15px rgba(255,0,110,.3);}
+        .hero-cta:hover{background:#E6005E; transform:translateY(-2px); box-shadow:0 6px 20px rgba(255,0,110,.4);}
 
-        .page-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 60px 20px;
-            color: #8e8e93;
-        }
-
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #FF006E;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Error State */
-        .error {
-            background: #ffeaea;
-            color: #ff3b30;
-            padding: 20px;
-            border-radius: 3px;
-            margin: 20px;
-            text-align: center;
-        }
-
-        /* Main Content - INCREASED SPACING */
-        .content-grid {
-            display: grid;
-            gap: 35px;
-            margin-bottom: 50px;
-        }
-
-        /* Card Styling - ALL BORDER RADIUS SET TO 3px */
-        .card {
-            background: #fff;
-            border-radius: 3px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 25px;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-
-        .card-content {
-            padding: 25px;
-        }
-
-        /* Hero Section */
-        .hero-card {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            text-align: center;
-            padding: 50px 20px;
-            margin-bottom: 35px;
-        }
-
-        .club-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 3px;
-            margin: 0 auto 20px;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            color: #333;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .club-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .hero-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .hero-subtitle {
-            font-size: 20px;
-            opacity: 0.9;
-            margin-bottom: 30px;
-        }
-
-        .hero-cta {
-            background: #FF006E;
-            color: white;
-            border: none;
-            padding: 16px 36px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 3px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 0, 110, 0.3);
-        }
-
-        .hero-cta:hover {
-            background: #E6005E;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 0, 110, 0.4);
-        }
-
-        /* Info Grid */
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .info-item {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .info-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .info-icon {
-            font-size: 24px;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        .info-label {
-            font-size: 14px;
-            color: #8e8e93;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-size: 18px;
-            color: #1c1c1e;
-            font-weight: 600;
-        }
-
-        .rating-display {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            flex-direction: column;
-        }
-
-        .stars {
-            color: #FFD700;
-            font-size: 16px;
-            letter-spacing: 2px;
-        }
-
-        .rating-number {
-            font-size: 14px;
-            color: #8e8e93;
-            margin-top: 4px;
-        }
+        /* Info grid */
+        .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:15px; margin-bottom:25px;}
+        .info-item{background:#f8f9fa; border-radius:3px; padding:20px; text-align:center; transition:transform .3s;}
+        .info-item:hover{transform:translateY(-3px);}
+        .info-icon{font-size:24px; margin-bottom:12px; display:block;}
+        .info-label{font-size:14px; color:#8e8e93; margin-bottom:8px; font-weight:500;}
+        .info-value{font-size:18px; color:#1c1c1e; font-weight:600;}
+        .rating-display{display:flex; align-items:center; justify-content:center; gap:4px; flex-direction:column;}
+        .stars{color:#FFD700; font-size:16px; letter-spacing:2px;}
+        .rating-number{font-size:14px; color:#8e8e93; margin-top:4px;}
 
         /* Tags */
-        .tags-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .tag {
-            background: #e8f4fd;
-            color: #007aff;
-            padding: 8px 16px;
-            border-radius: 3px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .tag.vibe {
-            background: #f0f9ff;
-            color: #0891b2;
-        }
-
-        .tag.accessibility {
-            background: #f0fdf4;
-            color: #16a34a;
-        }
-
-        .tag.facility {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        /* Section Headers */
-        .section-header {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1c1c1e;
-            margin-bottom: 25px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-
-        .section-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 4px;
-            background: linear-gradient(90deg, #FF006E, #764ba2);
-            border-radius: 3px;
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 20px;
-            text-align: center;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-        }
-
-        .stat-number {
-            font-size: 24px;
-            font-weight: 700;
-            color: #FF006E;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #8e8e93;
-        }
-
-        /* Sessions Section */
-        .sessions-card {
-            background: #fff;
-            border-radius: 3px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-            margin-bottom: 35px;
-        }
-
-        .sessions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .session-item {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .session-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .session-day {
-            font-size: 18px;
-            font-weight: 600;
-            color: #FF006E;
-            margin-bottom: 10px;
-        }
-
-        .session-time {
-            font-size: 16px;
-            color: #1c1c1e;
-            margin-bottom: 5px;
-        }
-
-        .session-type {
-            font-size: 14px;
-            color: #8e8e93;
-            font-style: italic;
-        }
-
-        /* Collapsible Sections */
-        .collapsible-card {
-            background: #fff;
-            border-radius: 3px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            overflow: hidden;
-            margin-bottom: 35px;
-            transition: transform 0.3s ease;
-        }
-
-        .collapsible-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .collapsible-header {
-            padding: 25px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e5e5ea;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s ease;
-        }
-
-        .collapsible-header:hover {
-            background: #e8f4fd;
-        }
-
-        .collapsible-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1c1c1e;
-        }
-
-        .collapsible-icon {
-            font-size: 18px;
-            color: #8e8e93;
-            transition: transform 0.3s ease;
-        }
-
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease;
-        }
-
-        .collapsible-content.expanded {
-            max-height: 2000px;
-        }
-
-        .collapsible-header.expanded .collapsible-icon {
-            transform: rotate(180deg);
-        }
-
-        /* Testimonials */
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-        }
-
-        .testimonial-item {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 25px;
-            transition: transform 0.3s ease;
-        }
-
-        .testimonial-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .testimonial-rating {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .testimonial-rating .stars {
-            color: #FFD700;
-            font-size: 16px;
-        }
-
-        .testimonial-author {
-            font-size: 14px;
-            color: #8e8e93;
-            font-weight: 500;
-        }
-
-        .testimonial-text {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #1c1c1e;
-            font-style: italic;
-        }
-
-        /* Benefits */
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .benefit-item {
-            display: flex;
-            align-items: flex-start;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 3px;
-            transition: transform 0.3s ease;
-        }
-
-        .benefit-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .benefit-icon {
-            font-size: 28px;
-            margin-right: 20px;
-            margin-top: 5px;
-            color: #007aff;
-        }
-
-        .benefit-content h4 {
-            font-size: 18px;
-            font-weight: 600;
-            color: #1c1c1e;
-            margin-bottom: 8px;
-        }
-
-        .benefit-content p {
-            font-size: 15px;
-            color: #8e8e93;
-            line-height: 1.5;
-        }
-
-        /* FAQ */
-        .faq-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-        }
-
-        .faq-item {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 25px;
-            transition: transform 0.3s ease;
-        }
-
-        .faq-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .faq-question {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1c1c1e;
-            margin-bottom: 15px;
-        }
-
-        .faq-answer {
-            font-size: 16px;
-            line-height: 1.6;
-            color: #666;
-        }
-
-        /* About */
-        .about-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
-            align-items: start;
-        }
-
-        .about-text {
-            line-height: 1.7;
-            color: #1c1c1e;
-            font-size: 16px;
-            margin-bottom: 20px;
-        }
-
-        .about-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .coach-info {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 25px;
-            display: flex;
-            align-items: center;
-            transition: transform 0.3s ease;
-        }
-
-        .coach-info:hover {
-            transform: translateY(-3px);
-        }
-
-        .coach-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #007aff;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 20px;
-            margin-right: 20px;
-        }
-
-        .coach-details h4 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #1c1c1e;
-            margin-bottom: 5px;
-        }
-
-        .coach-details p {
-            font-size: 14px;
-            color: #8e8e93;
-        }
-
-        /* Facilities */
-        .facilities-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .facility-item {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 15px;
-            font-size: 14px;
-            color: #1c1c1e;
-            display: flex;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-
-        .facility-item:hover {
-            transform: translateY(-3px);
-        }
-
-        .facility-item::before {
-            content: "✓";
-            color: #30a330;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        /* Contact Grid */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-        }
+        .tags-row{display:flex; flex-wrap:wrap; gap:10px; margin-top:20px;}
+        .tag{background:#e8f4fd; color:#007aff; padding:8px 16px; border-radius:3px; font-size:14px; font-weight:500;}
+        .tag.vibe{background:#f0f9ff; color:#0891b2;}
+        .tag.accessibility{background:#f0fdf4; color:#16a34a;}
+        .tag.facility{background:#fef3c7; color:#d97706;}
+
+        /* Section headers */
+        .section-header{font-size:22px; font-weight:700; color:#1c1c1e; margin-bottom:25px; position:relative; padding-bottom:10px;}
+        .section-header::after{content:''; position:absolute; bottom:0; left:0; width:50px; height:4px; background:linear-gradient(90deg,#FF006E,#764ba2); border-radius:3px;}
+
+        /* Stats */
+        .stats-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:15px; margin-bottom:30px;}
+        .stat-card{background:#f8f9fa; border-radius:3px; padding:20px; text-align:center; transition:transform .3s;}
+        .stat-card:hover{transform:translateY(-3px);}
+        .stat-number{font-size:24px; font-weight:700; color:#FF006E; display:block; margin-bottom:8px;}
+        .stat-label{font-size:14px; color:#8e8e93;}
+
+        /* Sessions */
+        .sessions-card{background:#fff; border-radius:3px; box-shadow:0 4px 20px rgba(0,0,0,0.08); overflow:hidden; margin-bottom:35px;}
+        .sessions-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px;}
+        .session-item{background:#f8f9fa; border-radius:3px; padding:20px; transition:transform .3s;}
+        .session-item:hover{transform:translateY(-3px);}
+        .session-day{font-size:18px; font-weight:600; color:#FF006E; margin-bottom:10px;}
+        .session-time{font-size:16px; color:#1c1c1e; margin-bottom:5px;}
+        .session-type{font-size:14px; color:#8e8e93; font-style:italic;}
+
+        /* Collapsible (testimonials, benefits, FAQ, about) */
+        .collapsible-card{background:#fff; border-radius:3px; box-shadow:0 4px 20px rgba(0,0,0,0.08); overflow:hidden; margin-bottom:35px; transition:transform .3s;}
+        .collapsible-card:hover{transform:translateY(-5px);}
+        .collapsible-header{padding:25px; background:#f8f9fa; border-bottom:1px solid #e5e5ea; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:background .3s;}
+        .collapsible-header:hover{background:#e8f4fd;}
+        .collapsible-title{font-size:20px; font-weight:700; color:#1c1c1e;}
+        .collapsible-icon{font-size:18px; color:#8e8e93; transition:transform .3s;}
+        .collapsible-content{max-height:0; overflow:hidden; transition:max-height .5s ease;}
+        .collapsible-content.expanded{max-height:2000px;}
+        .collapsible-header.expanded .collapsible-icon{transform:rotate(180deg);}
+
+        .testimonials-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:25px;}
+        .testimonial-item{background:#f8f9fa; border-radius:3px; padding:25px; transition:transform .3s;}
+        .testimonial-item:hover{transform:translateY(-3px);}
+        .testimonial-rating{display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;}
+        .testimonial-rating .stars{color:#FFD700; font-size:16px;}
+        .testimonial-author{font-size:14px; color:#8e8e93; font-weight:500;}
+        .testimonial-text{font-size:16px; line-height:1.6; color:#1c1c1e; font-style:italic;}
+
+        .benefits-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; margin-bottom:30px;}
+        .benefit-item{display:flex; align-items:flex-start; padding:20px; background:#f8f9fa; border-radius:3px; transition:transform .3s;}
+        .benefit-item:hover{transform:translateY(-3px);}
+        .benefit-icon{font-size:28px; margin-right:20px; margin-top:5px; color:#007aff;}
+        .benefit-content h4{font-size:18px; font-weight:600; color:#1c1c1e; margin-bottom:8px;}
+        .benefit-content p{font-size:15px; color:#8e8e93; line-height:1.5;}
+
+        .faq-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(350px,1fr)); gap:25px;}
+        .faq-item{background:#f8f9fa; border-radius:3px; padding:25px; transition:transform .3s;}
+        .faq-item:hover{transform:translateY(-3px);}
+        .faq-question{font-size:18px; font-weight:700; color:#1c1c1e; margin-bottom:15px;}
+        .faq-answer{font-size:16px; line-height:1.6; color:#666;}
+
+        .about-content{display:grid; grid-template-columns:2fr 1fr; gap:30px; align-items:start;}
+        .about-text{line-height:1.7; color:#1c1c1e; font-size:16px; margin-bottom:20px;}
+        .about-sidebar{display:flex; flex-direction:column; gap:25px;}
+        .coach-info{background:#f8f9fa; border-radius:3px; padding:25px; display:flex; align-items:center; transition:transform .3s;}
+        .coach-info:hover{transform:translateY(-3px);}
+        .coach-avatar{width:60px; height:60px; border-radius:50%; background:#007aff; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px; margin-right:20px;}
+        .coach-details h4{font-size:18px; font-weight:700; color:#1c1c1e; margin-bottom:5px;}
+        .coach-details p{font-size:14px; color:#8e8e93;}
+
+        .facilities-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:15px; margin-top:20px;}
+        .facility-item{background:#f8f9fa; border-radius:3px; padding:15px; font-size:14px; color:#1c1c1e; display:flex; align-items:center; justify-content:center; text-align:center; transition:transform .3s;}
+        .facility-item:hover{transform:translateY(-3px);}
+        .facility-item::before{content:"✓"; color:#30a330; margin-right:10px; font-weight:bold;}
+
+        .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:15px;}
+        .contact-item{background:#f8f9fa; border-radius:3px; padding:20px; text-decoration:none; color:inherit; display:flex; align-items:center; transition:all .3s;}
+        .contact-item:hover{background:#e8f4fd; transform:translateY(-3px);}
+        .contact-icon{width:48px; height:48px; border-radius:3px; background:#007aff; color:#fff; display:flex; align-items:center; justify-content:center; margin-right:15px; font-size:18px;}
+        .contact-info h4{font-size:16px; font-weight:600; color:#1c1c1e; margin-bottom:5px;}
+        .contact-info p{font-size:14px; color:#8e8e93;}
+
+        .sticky-cta{position:fixed; bottom:25px; left:50%; transform:translateX(-50%); background:#FF006E; color:#fff; border:none; padding:18px 36px; font-size:18px; font-weight:700; border-radius:3px; cursor:pointer; box-shadow:0 8px 25px rgba(255,0,110,.35); z-index:1000; display:none; text-decoration:none; white-space:nowrap; transition:all .3s;}
+        .sticky-cta:hover{background:#E6005E; transform:translateX(-50%) translateY(-2px); box-shadow:0 10px 30px rgba(255,0,110,.45);}
+
+        @media (max-width:768px){
+            .nbrh-header-content{flex-direction:column; gap:15px;}
+            .page-container{padding:15px;}
+            .content-grid{gap:25px; margin-bottom:40px;}
+            .collapsible-card{margin-bottom:25px;}
+            .hero-title{font-size:28px;}
+            .hero-subtitle{font-size:18px;}
+            .section-header,.collapsible-title{font-size:20px; margin-bottom:20px;}
+            .info-grid{grid-template-columns:1fr 1fr; gap:10px;}
+            .stats-grid{grid-template-columns:1fr 1fr; gap:10px;}
+            .sessions-grid{grid-template-columns:1fr;}
+            .testimonials-grid{grid-template-columns:1fr; gap:20px;}
+            .benefits-grid{grid-template-columns:1fr; gap:15px;}
+            .faq-grid{grid-template-columns:1fr; gap:20px;}
+            .about-content{grid-template-columns:1fr; gap:25px;}
+            .contact-grid{grid-template-columns:1fr;}
+            .facilities-grid{grid-template-columns:1fr 1fr;}
+            .sticky-cta{left:20px; right:20px; transform:none; width:calc(100% - 40px); font-size:16px; padding:16px;}
+        }
 
-        .contact-item {
-            background: #f8f9fa;
-            border-radius: 3px;
-            padding: 20px;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .contact-item:hover {
-            background: #e8f4fd;
-            transform: translateY(-3px);
-        }
-
-        .contact-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 3px;
-            background: #007aff;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            font-size: 18px;
-        }
-
-        .contact-info h4 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #1c1c1e;
-            margin-bottom: 5px;
-        }
-
-        .contact-info p {
-            font-size: 14px;
-            color: #8e8e93;
-        }
-
-        /* Sticky CTA */
-        .sticky-cta {
-            position: fixed;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #FF006E;
-            color: white;
-            border: none;
-            padding: 18px 36px;
-            font-size: 18px;
-            font-weight: 700;
-            border-radius: 3px;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(255, 0, 110, 0.35);
-            z-index: 1000;
-            display: none;
-            text-decoration: none;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-        }
-
-        .sticky-cta:hover {
-            background: #E6005E;
-            transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.45);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nbrh-header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .page-container {
-                padding: 15px;
-            }
-            
-            .content-grid {
-                gap: 25px;
-                margin-bottom: 40px;
-            }
-
-            .collapsible-card {
-                margin-bottom: 25px;
-            }
-
-            .hero-title {
-                font-size: 28px;
-            }
-
-            .hero-subtitle {
-                font-size: 18px;
-            }
-
-            .section-header, .collapsible-title {
-                font-size: 20px;
-                margin-bottom: 20px;
-            }
-
-            .info-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-
-            .sessions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .benefits-grid {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .faq-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .about-content {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .contact-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .facilities-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .sticky-cta {
-                left: 20px;
-                right: 20px;
-                transform: none;
-                text-align: center;
-                width: calc(100% - 40px);
-                font-size: 16px;
-                padding: 16px;
-            }
-        }
-
-        /* Tablet adjustments */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .page-container {
-                padding: 20px;
-            }
-
-            .content-grid {
-                gap: 30px;
-            }
-
-            .collapsible-card {
-                margin-bottom: 30px;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Hide sections by default */
-        .section-hidden {
-            display: none;
-        }
+        .section-hidden{display:none;}
     </style>
 </head>
 <body>
@@ -872,94 +187,90 @@
             <img src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng" alt="NBRH" class="nbrh-logo">
             <div class="nbrh-nav">
                 <a href="/">Browse Clubs</a>
-                <a href="https://www.thenbrh.co.uk/" target="_blank">NBRH Home</a>
+                <a href="https://www.thenbrh.co.uk/" target="_blank" rel="noopener">NBRH Home</a>
             </div>
         </div>
     </div>
 
     <div class="page-container">
-        <!-- Loading State -->
         <div id="loading" class="loading">
             <div class="loading-spinner"></div>
-            <p>Loading club information...</p>
+            <p>Loading club information…</p>
         </div>
 
-        <!-- Error State -->
-        <div id="error" class="error" style="display: none;">
+        <div id="error" class="error" style="display:none;">
             <h2>Club Not Found</h2>
-            <p>The club you're looking for doesn't exist or is no longer available.</p>
-            <a href="/" style="color: #ff3b30; text-decoration: underline;">Browse all clubs</a>
+            <p>The club you’re looking for doesn’t exist or is no longer available.</p>
+            <a href="/" style="color:#ff3b30; text-decoration:underline;">Browse all clubs</a>
         </div>
 
-        <!-- Main Content -->
-        <div id="content" class="content-grid" style="display: none;">
-            <!-- Hero Card -->
-            <div class="card hero-card">
+        <div id="content" class="content-grid" style="display:none;">
+            <!-- Hero -->
+            <div class="card hero-card" id="heroCard">
                 <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
                 <h1 class="hero-title" id="clubName">Club Name</h1>
                 <p class="hero-subtitle" id="clubActivity">Activity Type</p>
                 <a href="#membership" class="hero-cta" id="joinButton">Join Club</a>
             </div>
 
-            <!-- Club Info Card -->
+            <!-- Club Info -->
             <div class="card">
                 <div class="card-content">
                     <div class="info-grid">
                         <div class="info-item">
                             <span class="info-icon"><i class="fas fa-map-marker-alt"></i></span>
                             <div class="info-label">Location</div>
-                            <div class="info-value" id="clubLocation">Location</div>
+                            <div class="info-value" id="clubLocation">–</div>
                         </div>
-                        <div class="info-item">
+                        <div class="info-item" id="feeBlock" style="display:none;">
                             <span class="info-icon"><i class="fas fa-pound-sign"></i></span>
                             <div class="info-label">Monthly Fee</div>
-                            <div class="info-value" id="clubFee">£0/month</div>
+                            <div class="info-value" id="clubFee">–</div>
                         </div>
-                        <div class="info-item">
+                        <div class="info-item" id="starBlock" style="display:none;">
                             <span class="info-icon"><i class="fas fa-star"></i></span>
                             <div class="info-label">Star Rating</div>
                             <div class="info-value">
                                 <div class="rating-display">
-                                    <span class="stars" id="clubStars">★★★★☆</span>
-                                    <span class="rating-number" id="starRatingText">4/5</span>
+                                    <span class="stars" id="clubStars">–</span>
+                                    <span class="rating-number" id="starRatingText">–</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="info-item">
+                        <div class="info-item" id="numericBlock" style="display:none;">
                             <span class="info-icon"><i class="fas fa-chart-line"></i></span>
                             <div class="info-label">Numeric Rating</div>
-                            <div class="info-value" id="numericRating">0/10</div>
+                            <div class="info-value" id="numericRating">–</div>
                         </div>
-                        <div class="info-item">
+                        <div class="info-item" id="membersBlock" style="display:none;">
                             <span class="info-icon"><i class="fas fa-users"></i></span>
                             <div class="info-label">Members</div>
-                            <div class="info-value" id="clubMembers">0</div>
+                            <div class="info-value" id="clubMembers">–</div>
                         </div>
                     </div>
-                    <div class="tags-row" id="clubTags">
-                        <!-- Tags will be populated dynamically -->
-                    </div>
+
+                    <div class="tags-row" id="clubTags"></div>
                 </div>
             </div>
 
-            <!-- Club Performance Card -->
+            <!-- Club Performance -->
             <div class="card" id="membership">
                 <div class="card-content">
                     <h2 class="section-header">Club Performance</h2>
                     <div class="stats-grid">
-                        <div class="stat-card">
+                        <div class="stat-card" id="rankPosBlock" style="display:none;">
                             <span class="stat-number" id="rankingPosition">#0</span>
                             <div class="stat-label">Ranking Position</div>
                         </div>
-                        <div class="stat-card">
-                            <span class="stat-number" id="rankingCategory">Standard</span>
+                        <div class="stat-card" id="rankCatBlock" style="display:none;">
+                            <span class="stat-number" id="rankingCategory">–</span>
                             <div class="stat-label">Category</div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card" id="spwBlock" style="display:none;">
                             <span class="stat-number" id="sessionsPerWeek">0</span>
                             <div class="stat-label">Sessions/Week</div>
                         </div>
-                        <div class="stat-card">
+                        <div class="stat-card" id="growthBlock" style="display:none;">
                             <span class="stat-number" id="memberGrowth">+0%</span>
                             <div class="stat-label">Member Growth</div>
                         </div>
@@ -967,659 +278,420 @@
                 </div>
             </div>
 
-            <!-- Sessions Card -->
-            <div class="sessions-card" id="sessionsCard" style="display: none;">
+            <!-- Sessions -->
+            <div class="sessions-card" id="sessionsCard" style="display:none;">
                 <div class="card-content">
                     <h2 class="section-header">Weekly Sessions</h2>
-                    <div class="sessions-grid" id="sessionsGrid">
-                        <!-- Sessions will be populated dynamically -->
+                    <div class="sessions-grid" id="sessionsGrid"></div>
+                </div>
+            </div>
+
+            <!-- Testimonials -->
+            <div class="collapsible-card" id="testimonialsCard" style="display:none;">
+                <div class="collapsible-header" data-target="#testimonialsContent">
+                    <h3 class="collapsible-title">Member Testimonials</h3>
+                    <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="collapsible-content" id="testimonialsContent">
+                    <div class="card-content">
+                        <div class="testimonials-grid" id="testimonialsGrid"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Member Testimonials Card - Collapsible -->
-            <div class="collapsible-card" id="testimonialsCard" style="display: none;">
-                <div class="collapsible-header" onclick="toggleSection('testimonials')">
-                    <div class="collapsible-title">What Members Say</div>
-                    <div class="collapsible-icon">▼</div>
+            <!-- Benefits -->
+            <div class="collapsible-card" id="benefitsCard" style="display:none;">
+                <div class="collapsible-header" data-target="#benefitsContent">
+                    <h3 class="collapsible-title">Why Join</h3>
+                    <i class="collapsible-icon fa-solid fa-chevron-down"></i>
                 </div>
-                <div class="collapsible-content" id="testimonials">
+                <div class="collapsible-content" id="benefitsContent">
                     <div class="card-content">
-                        <div class="testimonials-grid" id="testimonialsGrid">
-                            <!-- Testimonials will be populated dynamically -->
+                        <div class="benefits-grid" id="benefitsGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="collapsible-card" id="faqCard" style="display:none;">
+                <div class="collapsible-header" data-target="#faqContent">
+                    <h3 class="collapsible-title">FAQs</h3>
+                    <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+                </div>
+                <div class="collapsible-content" id="faqContent">
+                    <div class="card-content">
+                        <div class="faq-grid" id="faqGrid"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About & Coach -->
+            <div class="card" id="aboutCard" style="display:none;">
+                <div class="card-content">
+                    <h2 class="section-header">About the Club</h2>
+                    <div class="about-content">
+                        <div>
+                            <p class="about-text" id="aboutText"></p>
+                            <h3 class="section-header" style="margin-top:10px;">Facilities</h3>
+                            <div class="facilities-grid" id="facilitiesGrid"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Membership Benefits Card - Collapsible -->
-            <div class="collapsible-card">
-                <div class="collapsible-header" onclick="toggleSection('benefits')">
-                    <div class="collapsible-title">Membership Benefits</div>
-                    <div class="collapsible-icon">▼</div>
-                </div>
-                <div class="collapsible-content" id="benefits">
-                    <div class="card-content">
-                        <div class="benefits-grid" id="benefitsGrid">
-                            <!-- Benefits will be populated dynamically -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FAQ Card - Collapsible -->
-            <div class="collapsible-card">
-                <div class="collapsible-header" onclick="toggleSection('faq')">
-                    <div class="collapsible-title">Frequently Asked Questions</div>
-                    <div class="collapsible-icon">▼</div>
-                </div>
-                <div class="collapsible-content" id="faq">
-                    <div class="card-content">
-                        <div class="faq-grid" id="faqGrid">
-                            <!-- FAQ items will be populated based on activity type -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- About Card - Collapsible -->
-            <div class="collapsible-card">
-                <div class="collapsible-header" onclick="toggleSection('about')">
-                    <div class="collapsible-title">About This Club</div>
-                    <div class="collapsible-icon">▼</div>
-                </div>
-                <div class="collapsible-content" id="about">
-                    <div class="card-content">
-                        <div class="about-content">
+                        <div class="about-sidebar">
+                            <div class="coach-info" id="coachInfo" style="display:none;">
+                                <div class="coach-avatar" id="coachAvatar">C</div>
+                                <div class="coach-details">
+                                    <h4 id="coachName">–</h4>
+                                    <p id="coachRole">–</p>
+                                </div>
+                            </div>
                             <div>
-                                <p class="about-text" id="clubDescription">Club description will appear here...</p>
-                                
-                                <div id="facilitiesSection" style="display: none;">
-                                    <div class="facilities-grid" id="facilitiesList">
-                                        <!-- Facilities will be populated dynamically -->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="about-sidebar">
-                                <div class="coach-info" id="instructorSection" style="display: none;">
-                                    <div class="coach-avatar" id="instructorAvatar">?</div>
-                                    <div class="coach-details">
-                                        <h4 id="instructorName">Coach Name</h4>
-                                        <p id="instructorBio">Coach details</p>
-                                    </div>
-                                </div>
+                                <h3 class="section-header" style="margin-top:0;">Contact</h3>
+                                <div class="contact-grid" id="contactGrid"></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Contact & Location Card - Collapsible -->
-            <div class="collapsible-card">
-                <div class="collapsible-header" onclick="toggleSection('contact')">
-                    <div class="collapsible-title">Get In Touch</div>
-                    <div class="collapsible-icon">▼</div>
-                </div>
-                <div class="collapsible-content" id="contact">
-                    <div class="card-content">
-                        <div class="contact-grid" id="contactGrid">
-                            <!-- Contact items will be populated dynamically -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Sticky Join CTA -->
+            <a id="stickyCta" class="sticky-cta" href="#" target="_blank" rel="noopener" style="display:none;">Join this Club</a>
         </div>
-
-        <!-- Sticky CTA -->
-        <a href="#membership" class="sticky-cta" id="stickyCTA">Join Club</a>
     </div>
 
     <script>
-        // Get club code from URL path
-        const pathParts = window.location.pathname.split('/');
-        const clubCode = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
-        
-        console.log('Loading club with code:', clubCode);
-        
-        // Load club data on page load
-        if (clubCode && clubCode !== 'club') {
-            loadClubData(clubCode);
-        } else {
-            showError('No club code provided in URL');
+    // Utility: get club code from query (?code=) or from URL slug
+    function getClubCode(){
+        const params = new URLSearchParams(location.search);
+        const q = params.get('code');
+        if (q) return q.trim().toLowerCase();
+        const parts = location.pathname.split('/').filter(Boolean);
+        return (parts[parts.length - 1] || '').toLowerCase();
+    }
+
+    function isUrl(v){ return /^https?:\/\//i.test(v || ''); }
+
+    function makeStars(outOf5){
+        const n = Math.max(0, Math.min(5, Number(outOf5) || 0));
+        const full = Math.floor(n);
+        const half = n - full >= 0.5 ? 1 : 0;
+        const empty = 5 - full - half;
+        return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
+    }
+
+    function formatMoney(amount){
+        const n = Number(amount);
+        if (!isFinite(n) || n <= 0) return '';
+        return '£' + (Math.round(n * 100) / 100).toFixed(n % 1 ? 2 : 0);
+    }
+
+    function sanitiseHandle(v){
+        if (!v) return '';
+        const t = v.trim();
+        if (isUrl(t)) return t;
+        const handle = t.replace(/^@/, '');
+        return 'https://instagram.com/' + handle;
+    }
+
+    function addTag(container, text, className){
+        const el = document.createElement('span');
+        el.className = 'tag' + (className ? ' ' + className : '');
+        el.textContent = text;
+        container.appendChild(el);
+    }
+
+    function addContact(container, iconHtml, label, subtext, href){
+        const a = document.createElement('a');
+        a.className = 'contact-item';
+        a.target = '_blank';
+        a.rel = 'noopener';
+        if (href) a.href = href; else a.href = 'javascript:void(0)';
+        a.innerHTML = `
+            <div class="contact-icon">${iconHtml}</div>
+            <div class="contact-info">
+                <h4>${label}</h4>
+                <p>${subtext || ''}</p>
+            </div>`;
+        container.appendChild(a);
+    }
+
+    async function loadClub(){
+        const code = getClubCode();
+        if (!code){
+            document.getElementById('loading').style.display='none';
+            document.getElementById('error').style.display='block';
+            return;
         }
 
-        async function loadClubData(code) {
-            try {
-                // Use backend API instead of direct Google Sheets API
-                const response = await fetch(`/api/club-data?code=${encodeURIComponent(code)}`);
-                
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Failed to load club data');
-                }
-                
-                const club = await response.json();
-                console.log('Club loaded successfully:', club);
-                
-                // Display club information
-                displayClub(club);
-                
-                // Update SEO meta tags
-                updateSEO(club);
-                
-                // Initialize interactive features
-                initializeStickyButton();
-                
-            } catch (error) {
-                console.error('Error loading club:', error);
-                showError(error.message);
-            }
-        }
+        try{
+            const url = `/api/club-data?code=${encodeURIComponent(code)}&t=${Date.now()}`;
+            const res = await fetch(url, { cache:'no-store' });
+            if (!res.ok) throw new Error('Failed to load club');
+            const d = await res.json();
 
-        function displayClub(club) {
             // Hide loading, show content
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-            
-            // Hero section
-            document.getElementById('clubName').textContent = club.club_name;
-            document.getElementById('clubActivity').textContent = club.activity_type;
-            
-            // Club logo - check if it's an image URL or emoji
-            const logoElement = document.getElementById('clubLogo');
-            if (club.club_logo_emoji && (club.club_logo_emoji.startsWith('http') || club.club_logo_emoji.startsWith('https'))) {
-                logoElement.innerHTML = `<img src="${club.club_logo_emoji}" alt="${club.club_name}">`;
-            } else if (club.club_logo_emoji) {
-                logoElement.innerHTML = club.club_logo_emoji;
+            document.getElementById('loading').style.display='none';
+            document.getElementById('content').style.display='grid';
+
+            // Title/meta
+            const title = `${d.club_name || 'Club'} | NBRH`;
+            document.getElementById('pageTitle').textContent = title;
+            document.getElementById('pageDescription').setAttribute('content', d.club_bio || d.activity_type || '');
+            document.getElementById('ogTitle').setAttribute('content', title);
+            document.getElementById('ogDescription').setAttribute('content', d.club_bio || '');
+            if (d.image_url) document.getElementById('ogImage').setAttribute('content', d.image_url);
+            document.getElementById('ogUrl').setAttribute('content', location.href);
+
+            // Structured data (basic)
+            const sd = {
+                "@context":"https://schema.org",
+                "@type":"SportsClub",
+                "name": d.club_name || '',
+                "description": d.club_bio || '',
+                "address": { "@type":"PostalAddress", "streetAddress": d.address || '', "addressLocality": d.location || '' },
+                "telephone": d.phone || '',
+                "email": d.email || '',
+                "url": d.page_url || location.href,
+                "priceRange": d.monthly_fee_amount ? formatMoney(d.monthly_fee_amount) + '/mo' : ''
+            };
+            document.getElementById('structuredData').textContent = JSON.stringify(sd);
+
+            // Hero visuals
+            const hero = document.getElementById('heroCard');
+            if (d.image_url){
+                hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)), url('${d.image_url}')`;
+            }else if (d.hero_background_gradient){
+                hero.style.backgroundImage = d.hero_background_gradient;
+            }
+
+            // Logo: URL image or emoji/text
+            const logoBox = document.getElementById('clubLogo');
+            logoBox.innerHTML = '';
+            if (d.club_logo_emoji){
+                if (isUrl(d.club_logo_emoji)){
+                    const img = document.createElement('img');
+                    img.src = d.club_logo_emoji;
+                    img.alt = d.club_name ? `${d.club_name} logo` : 'Club logo';
+                    logoBox.appendChild(img);
+                } else {
+                    logoBox.textContent = d.club_logo_emoji;
+                }
             } else {
-                logoElement.innerHTML = getActivityIcon(club.activity_type);
+                logoBox.innerHTML = '<i class="fas fa-dumbbell"></i>';
             }
-            
-            // Set hero background image if available
-            if (club.image_url) {
-                const heroCard = document.querySelector('.hero-card');
-                heroCard.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${club.image_url}')`;
-                heroCard.style.backgroundSize = 'cover';
-                heroCard.style.backgroundPosition = 'center';
-                heroCard.style.backgroundRepeat = 'no-repeat';
+
+            // Names / activity
+            document.getElementById('clubName').textContent = d.club_name || 'Club';
+            document.getElementById('clubActivity').textContent = d.activity_type || '';
+
+            // CTA buttons → booking_url if present
+            const joinBtn = document.getElementById('joinButton');
+            const sticky = document.getElementById('stickyCta');
+            if (d.booking_url){
+                joinBtn.href = d.booking_url;
+                joinBtn.target = '_blank';
+                joinBtn.rel = 'noopener';
+                sticky.href = d.booking_url;
+                sticky.style.display = 'inline-block';
+            } else {
+                joinBtn.style.display = 'none';
+                sticky.style.display = 'none';
             }
-            
+
             // Info grid
-            document.getElementById('clubLocation').textContent = club.location;
-            document.getElementById('clubFee').textContent = club.monthly_fee_text || `£${club.monthly_fee_amount}/month`;
-            document.getElementById('clubMembers').textContent = club.member_count.toString();
-            
-            // Star Rating (out of 5)
-            const starRating = parseFloat(club.star_rating) || 0;
-            const stars = generateStars(starRating, 5);
-            document.getElementById('clubStars').innerHTML = stars;
-            document.getElementById('starRatingText').textContent = `${starRating}/5`;
-            
-            // Numeric Rating (out of 10)
-            document.getElementById('numericRating').textContent = `${club.numeric_rating.toFixed(1)}/10`;
-            
-            // Performance Stats
-            document.getElementById('rankingPosition').textContent = club.ranking_position ? `#${club.ranking_position}` : 'N/A';
-            document.getElementById('rankingCategory').textContent = club.ranking_category || 'Standard';
-            document.getElementById('sessionsPerWeek').textContent = club.sessions_per_week.toString();
-            document.getElementById('memberGrowth').textContent = club.member_growth || 'N/A';
-            
-            // Description
-            document.getElementById('clubDescription').textContent = club.club_bio || club.description;
-            
-            // Tags
-            populateTags(club);
-            
+            document.getElementById('clubLocation').textContent = d.location || '—';
+
+            // Monthly fee show rules
+            const feeBlock = document.getElementById('feeBlock');
+            const feeText = d.monthly_fee_text || (d.monthly_fee_amount ? `${formatMoney(d.monthly_fee_amount)}/month` : '');
+            if (feeText){
+                feeBlock.style.display = '';
+                document.getElementById('clubFee').textContent = feeText;
+            }
+
+            // Star rating (out of 5) from star_rating
+            if (d.star_rating){
+                const n = Number(d.star_rating) || 0;
+                document.getElementById('starBlock').style.display = '';
+                document.getElementById('clubStars').textContent = makeStars(n);
+                document.getElementById('starRatingText').textContent = `${n}/5`;
+            }
+
+            // Numeric rating (out of 10) from numeric_rating
+            if (d.numeric_rating){
+                const nn = Number(d.numeric_rating) || 0;
+                document.getElementById('numericBlock').style.display = '';
+                document.getElementById('numericRating').textContent = `${nn}/10`;
+            }
+
+            // Members
+            if (Number(d.member_count) > 0){
+                document.getElementById('membersBlock').style.display = '';
+                document.getElementById('clubMembers').textContent = d.member_count;
+            }
+
+            // Tags (who / vibe / accessibility)
+            const tagsRow = document.getElementById('clubTags');
+            if (d.tags_who){
+                d.tags_who.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t));
+            }
+            if (d.tags_vibe){
+                d.tags_vibe.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t, 'vibe'));
+            }
+            if (d.tags_accessibility){
+                d.tags_accessibility.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t, 'accessibility'));
+            }
+
+            // Performance (exactly the four metrics)
+            if (Number(d.ranking_position) > 0){
+                document.getElementById('rankPosBlock').style.display = '';
+                document.getElementById('rankingPosition').textContent = `#${d.ranking_position}`;
+            }
+            if (d.ranking_category){
+                document.getElementById('rankCatBlock').style.display = '';
+                document.getElementById('rankingCategory').textContent = d.ranking_category;
+            }
+            if (Number(d.sessions_per_week) > 0){
+                document.getElementById('spwBlock').style.display = '';
+                document.getElementById('sessionsPerWeek').textContent = d.sessions_per_week;
+            }
+            if (d.member_growth){
+                document.getElementById('growthBlock').style.display = '';
+                document.getElementById('memberGrowth').textContent = d.member_growth;
+            }
+
             // Sessions
-            populateSessions(club);
-            
-            // Facilities
-            populateFacilities(club);
-            
-            // Coach/Instructor
-            populateInstructor(club);
-            
-            // Contact information (including Instagram)
-            populateContact(club);
-            
+            if (Array.isArray(d.sessions) && d.sessions.length){
+                const sg = document.getElementById('sessionsGrid');
+                d.sessions.forEach(s=>{
+                    if (!(s.date || s.time || s.type)) return;
+                    const el = document.createElement('div');
+                    el.className = 'session-item';
+                    el.innerHTML = `
+                        <div class="session-day">${s.date || 'Date TBC'}</div>
+                        <div class="session-time">${s.time || 'Time TBC'}</div>
+                        <div class="session-type">${s.type || ''}</div>
+                    `;
+                    sg.appendChild(el);
+                });
+                document.getElementById('sessionsCard').style.display = '';
+            }
+
             // Testimonials
-            populateTestimonials(club);
-            
-            // Benefits
-            populateBenefits(club);
-            
-            // FAQ
-            populateFAQ(club);
-            
-            // Join button
-            setupJoinButton(club);
-        }
-
-        function populateSessions(club) {
-            if (club.sessions && club.sessions.length > 0) {
-                const sessionsCard = document.getElementById('sessionsCard');
-                const sessionsGrid = document.getElementById('sessionsGrid');
-                
-                const sessionItems = club.sessions.map(session => `
-                    <div class="session-item">
-                        <div class="session-day">${session.date || 'TBD'}</div>
-                        <div class="session-time">${session.time || 'Time TBD'}</div>
-                        ${session.type ? `<div class="session-type">${session.type}</div>` : ''}
-                    </div>
-                `).join('');
-                
-                sessionsGrid.innerHTML = sessionItems;
-                sessionsCard.style.display = 'block';
-            }
-        }
-
-        function populateTags(club) {
-            const tagsContainer = document.getElementById('clubTags');
-            const tags = [];
-            
-            if (club.tags_who) tags.push({text: club.tags_who, class: 'tag'});
-            if (club.tags_vibe) tags.push({text: club.tags_vibe, class: 'tag vibe'});
-            if (club.tags_accessibility) tags.push({text: club.tags_accessibility, class: 'tag accessibility'});
-            
-            if (tags.length > 0) {
-                tagsContainer.innerHTML = tags.map(tag => 
-                    `<span class="${tag.class}">${tag.text}</span>`
-                ).join('');
-            }
-        }
-
-        function populateFacilities(club) {
-            if (club.facilities_list) {
-                const facilitiesContainer = document.getElementById('facilitiesList');
-                const facilitiesSection = document.getElementById('facilitiesSection');
-                
-                const facilities = club.facilities_list.split(',').map(facility => facility.trim());
-                facilitiesContainer.innerHTML = facilities.map(facility => 
-                    `<div class="facility-item">${facility}</div>`
-                ).join('');
-                
-                facilitiesSection.style.display = 'block';
-            }
-        }
-
-        function populateInstructor(club) {
-            if (club.coach_name) {
-                const instructorSection = document.getElementById('instructorSection');
-                document.getElementById('instructorName').textContent = club.coach_name;
-                document.getElementById('instructorBio').textContent = club.coach_role || club.instructor_bio || 'Certified Instructor';
-                
-                const initials = club.coach_name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2);
-                document.getElementById('instructorAvatar').textContent = initials;
-                
-                instructorSection.style.display = 'flex';
-            }
-        }
-
-        function populateContact(club) {
-            const contactGrid = document.getElementById('contactGrid');
-            let contactItems = [];
-            
-            if (club.email) {
-                contactItems.push(`
-                    <a href="mailto:${club.email}" class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-envelope"></i></div>
-                        <div class="contact-info">
-                            <h4>Email</h4>
-                            <p>${club.email}</p>
-                        </div>
-                    </a>
-                `);
-            }
-            
-            if (club.phone) {
-                contactItems.push(`
-                    <a href="tel:${club.phone}" class="contact-item">
-                        <div class="contact-icon"><i class="fas fa-phone"></i></div>
-                        <div class="contact-info">
-                            <h4>Phone</h4>
-                            <p>${club.phone}</p>
-                        </div>
-                    </a>
-                `);
-            }
-            
-            if (club.whatsapp) {
-                const whatsappNumber = club.whatsapp.replace(/[^0-9]/g, '');
-                contactItems.push(`
-                    <a href="https://wa.me/${whatsappNumber}" class="contact-item" target="_blank">
-                        <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
-                        <div class="contact-info">
-                            <h4>WhatsApp</h4>
-                            <p>Message us</p>
-                        </div>
-                    </a>
-                `);
-            }
-            
-            // Add Instagram if available
-            if (club.instagram) {
-                const instagramHandle = club.instagram.replace('@', '').replace('https://instagram.com/', '').replace('https://www.instagram.com/', '');
-                contactItems.push(`
-                    <a href="https://instagram.com/${instagramHandle}" class="contact-item" target="_blank">
-                        <div class="contact-icon"><i class="fab fa-instagram"></i></div>
-                        <div class="contact-info">
-                            <h4>Instagram</h4>
-                            <p>@${instagramHandle}</p>
-                        </div>
-                    </a>
-                `);
-            }
-            
-            if (club.address) {
-                const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(club.address)}`;
-                contactItems.push(`
-                    <a href="${mapsUrl}" class="contact-item" target="_blank">
-                        <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <div class="contact-info">
-                            <h4>Location</h4>
-                            <p>${club.address}</p>
-                        </div>
-                    </a>
-                `);
-            }
-            
-            contactGrid.innerHTML = contactItems.join('');
-        }
-
-        function populateTestimonials(club) {
-            if (club.testimonials && club.testimonials.length > 0) {
-                const testimonialsCard = document.getElementById('testimonialsCard');
-                const testimonialsGrid = document.getElementById('testimonialsGrid');
-                
-                const testimonialItems = club.testimonials.map(testimonial => `
-                    <div class="testimonial-item">
+            if (Array.isArray(d.testimonials) && d.testimonials.length){
+                const tg = document.getElementById('testimonialsGrid');
+                d.testimonials.forEach(t=>{
+                    const el = document.createElement('div');
+                    el.className = 'testimonial-item';
+                    const st = t.rating ? makeStars(Math.min(5, Number(t.rating))) : '';
+                    el.innerHTML = `
                         <div class="testimonial-rating">
-                            <span class="stars">${generateStars(testimonial.rating || 5, 5)}</span>
-                            <span class="testimonial-author">${testimonial.author || 'Anonymous'}</span>
+                            <div class="stars">${st}</div>
+                            <div class="testimonial-author">${t.author || ''}</div>
                         </div>
-                        <p class="testimonial-text">"${testimonial.text}"</p>
-                    </div>
-                `).join('');
-                
-                testimonialsGrid.innerHTML = testimonialItems;
-                testimonialsCard.style.display = 'block';
+                        <div class="testimonial-text">“${t.text || ''}”</div>
+                    `;
+                    tg.appendChild(el);
+                });
+                document.getElementById('testimonialsCard').style.display = '';
             }
-        }
 
-        function populateBenefits(club) {
-            const benefitsGrid = document.getElementById('benefitsGrid');
-            
-            // Use benefits from Google Sheet if available, otherwise fall back to defaults
-            let benefitsToShow = [];
-            
-            if (club.benefits && club.benefits.length > 0) {
-                // Use benefits from Google Sheet
-                benefitsToShow = club.benefits.map(benefit => ({
-                    icon: benefit.icon || 'fas fa-check-circle',
-                    title: benefit.title,
-                    description: benefit.description
-                }));
-            } else {
-                // Fallback to default benefits based on activity type
-                benefitsToShow = getBenefitsByActivity(club.activity_type);
+            // Benefits
+            if (Array.isArray(d.benefits) && d.benefits.length){
+                const bg = document.getElementById('benefitsGrid');
+                d.benefits.forEach(b=>{
+                    if (!(b.title && b.description)) return;
+                    const el = document.createElement('div');
+                    el.className = 'benefit-item';
+                    el.innerHTML = `
+                        <div class="benefit-icon">${b.icon || '✨'}</div>
+                        <div class="benefit-content">
+                            <h4>${b.title}</h4>
+                            <p>${b.description}</p>
+                        </div>`;
+                    bg.appendChild(el);
+                });
+                document.getElementById('benefitsCard').style.display = '';
             }
-            
-            benefitsGrid.innerHTML = benefitsToShow.map(benefit => `
-                <div class="benefit-item">
-                    <div class="benefit-icon"><i class="${benefit.icon}"></i></div>
-                    <div class="benefit-content">
-                        <h4>${benefit.title}</h4>
-                        <p>${benefit.description}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
 
-        function populateFAQ(club) {
-            const faqGrid = document.getElementById('faqGrid');
-            
-            // Use actual FAQs from Google Sheet if available, otherwise use defaults
-            let faqsToShow = [];
-            
-            if (club.faqs && club.faqs.length > 0) {
-                // Use FAQs from Google Sheet
-                faqsToShow = club.faqs;
-            } else {
-                // Fallback to default FAQs based on activity type
-                faqsToShow = getFAQByActivity(club.activity_type);
+            // FAQs
+            if (Array.isArray(d.faqs) && d.faqs.length){
+                const fq = document.getElementById('faqGrid');
+                d.faqs.forEach(f=>{
+                    if (!(f.question && f.answer)) return;
+                    const el = document.createElement('div');
+                    el.className = 'faq-item';
+                    el.innerHTML = `
+                        <div class="faq-question">${f.question}</div>
+                        <div class="faq-answer">${f.answer}</div>`;
+                    fq.appendChild(el);
+                });
+                document.getElementById('faqCard').style.display = '';
             }
-            
-            faqGrid.innerHTML = faqsToShow.map(faq => `
-                <div class="faq-item">
-                    <h4 class="faq-question">${faq.question}</h4>
-                    <p class="faq-answer">${faq.answer}</p>
-                </div>
-            `).join('');
-        }
 
-        function setupJoinButton(club) {
-            const joinButton = document.getElementById('joinButton');
-            const stickyCTA = document.getElementById('stickyCTA');
-            const buttonText = `Join for ${club.monthly_fee_text || '£' + club.monthly_fee_amount + '/month'}`;
-            
-            if (club.booking_url) {
-                joinButton.href = club.booking_url;
-                stickyCTA.href = club.booking_url;
-            } else {
-                joinButton.href = `mailto:${club.email || 'info@example.com'}?subject=Joining ${club.club_name}`;
-                stickyCTA.href = joinButton.href;
-            }
-            
-            joinButton.textContent = buttonText;
-            stickyCTA.textContent = buttonText;
-        }
+            // About / Facilities / Coach
+            const aboutText = d.club_bio || '';
+            const facilities = (d.facilities_list || '').split(',').map(s=>s.trim()).filter(Boolean);
+            if (aboutText || facilities.length || d.coach_name || d.coach_role || d.coach_avatar){
+                const aboutCard = document.getElementById('aboutCard');
+                aboutCard.style.display = '';
+                document.getElementById('aboutText').textContent = aboutText;
 
-        function getActivityIcon(activityType) {
-            const icons = {
-                'Swimming': '<i class="fas fa-swimmer"></i>',
-                'Fitness': '<i class="fas fa-dumbbell"></i>',
-                'Yoga': '<i class="fas fa-user-plus"></i>',
-                'Running': '<i class="fas fa-running"></i>',
-                'Cycling': '<i class="fas fa-bicycle"></i>',
-                'Tennis': '<i class="fas fa-table-tennis"></i>',
-                'Football': '<i class="fas fa-futbol"></i>',
-                'Basketball': '<i class="fas fa-basketball-ball"></i>',
-                'Boxing': '<i class="fas fa-fist-raised"></i>',
-                'Dance': '<i class="fas fa-music"></i>',
-                'Martial Arts': '<i class="fas fa-fist-raised"></i>',
-                'Rock Climbing': '<i class="fas fa-mountain"></i>',
-                'Badminton': '<i class="fas fa-table-tennis"></i>',
-                'Squash': '<i class="fas fa-table-tennis"></i>'
-            };
-            return icons[activityType] || '<i class="fas fa-users"></i>';
-        }
+                const fg = document.getElementById('facilitiesGrid');
+                facilities.forEach(f=>{
+                    const el = document.createElement('div');
+                    el.className = 'facility-item';
+                    el.textContent = f;
+                    fg.appendChild(el);
+                });
 
-        function getBenefitsByActivity(activityType) {
-            const commonBenefits = [
-                {
-                    icon: 'fas fa-infinity',
-                    title: 'Unlimited Sessions',
-                    description: 'Access to all weekly sessions included in your membership'
-                },
-                {
-                    icon: 'fas fa-user-friends',
-                    title: 'Community Access',
-                    description: 'Join a supportive community of like-minded members'
-                },
-                {
-                    icon: 'fas fa-mobile-alt',
-                    title: 'Easy Booking',
-                    description: 'Book sessions and manage your membership through our app'
-                },
-                {
-                    icon: 'fas fa-calendar-check',
-                    title: 'Flexible Membership',
-                    description: 'Cancel anytime with 30 days notice - no long-term contracts'
-                }
-            ];
-
-            const activitySpecific = {
-                'Swimming': [
-                    {
-                        icon: 'fas fa-swimmer',
-                        title: 'Pool Access',
-                        description: 'Access to heated pool facilities during all sessions'
-                    },
-                    {
-                        icon: 'fas fa-dumbbell',
-                        title: 'Equipment Provided',
-                        description: 'All aqua fitness equipment and floats included'
+                if (d.coach_name || d.coach_role || d.coach_avatar){
+                    const ci = document.getElementById('coachInfo');
+                    const cav = document.getElementById('coachAvatar');
+                    const initials = (d.coach_name || '?').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase();
+                    cav.textContent = initials;
+                    if (isUrl(d.coach_avatar)){ // if you later decide to show actual photo, swap to <img>
+                        // Keep initials for now to match current styling
                     }
-                ],
-                'Fitness': [
-                    {
-                        icon: 'fas fa-dumbbell',
-                        title: 'Equipment Included',
-                        description: 'All gym equipment and weights provided during sessions'
-                    },
-                    {
-                        icon: 'fas fa-heartbeat',
-                        title: 'Fitness Tracking',
-                        description: 'Monitor your progress with regular fitness assessments'
+                    document.getElementById('coachName').textContent = d.coach_name || '';
+                    document.getElementById('coachRole').textContent = d.coach_role || '';
+                    ci.style.display = '';
+                }
+            }
+
+            // Contact (email, phone, whatsapp, instagram, address, page/booking)
+            const cg = document.getElementById('contactGrid');
+            if (d.email) addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email);
+            if (d.phone) addContact(cg, '<i class="fa-solid fa-phone"></i>', 'Phone', d.phone, 'tel:'+d.phone.replace(/\s+/g,''));
+            if (d.whatsapp) addContact(cg, '<i class="fa-brands fa-whatsapp"></i>', 'WhatsApp', d.whatsapp, 'https://wa.me/'+ d.whatsapp.replace(/\D+/g,''));
+            if (d.instagram){
+                const ig = sanitiseHandle(d.instagram);
+                addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig);
+            }
+            if (d.address) addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address));
+            if (d.page_url) addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Club Page', 'Open website', d.page_url);
+            if (d.booking_url) addContact(cg, '<i class="fa-solid fa-ticket"></i>', 'Bookings', 'Reserve a spot', d.booking_url);
+
+            // Collapsibles
+            document.querySelectorAll('.collapsible-header').forEach(h=>{
+                h.addEventListener('click', ()=>{
+                    const target = document.querySelector(h.dataset.target);
+                    h.classList.toggle('expanded');
+                    target.classList.toggle('expanded');
+                    if (target.classList.contains('expanded')){
+                        target.style.maxHeight = target.scrollHeight+'px';
+                    } else {
+                        target.style.maxHeight = '0px';
                     }
-                ]
-            };
-
-            return [...commonBenefits, ...(activitySpecific[activityType] || [])];
-        }
-
-        function getFAQByActivity(activityType) {
-            return [
-                {
-                    question: 'Can I cancel my membership anytime?',
-                    answer: 'Yes! We offer flexible monthly memberships with just 30 days notice required for cancellation. No long-term contracts.'
-                },
-                {
-                    question: 'What should I bring to sessions?',
-                    answer: 'Just bring appropriate sportswear and a water bottle. All necessary equipment is provided, and we have secure storage available.'
-                },
-                {
-                    question: 'Is it suitable for beginners?',
-                    answer: 'Absolutely! We welcome all skill levels and our instructors help newcomers feel comfortable and confident.'
-                },
-                {
-                    question: 'What if I miss sessions?',
-                    answer: 'No problem! Your membership includes unlimited access to sessions, so you can attend as many or as few as you like each month.'
-                },
-                {
-                    question: 'Do you offer a trial session?',
-                    answer: 'Yes! New members can try their first session completely free. Just contact us to arrange your trial.'
-                }
-            ];
-        }
-
-        function generateStars(rating, maxRating = 5) {
-            let starsHtml = '';
-            
-            for (let i = 1; i <= maxRating; i++) {
-                if (rating >= i) {
-                    starsHtml += '★';
-                } else if (rating >= i - 0.5) {
-                    starsHtml += '⭐';
-                } else {
-                    starsHtml += '☆';
-                }
-            }
-            
-            return starsHtml;
-        }
-
-        function toggleSection(sectionId) {
-            const content = document.getElementById(sectionId);
-            const header = content.previousElementSibling;
-            
-            if (content.classList.contains('expanded')) {
-                content.classList.remove('expanded');
-                header.classList.remove('expanded');
-            } else {
-                content.classList.add('expanded');
-                header.classList.add('expanded');
-            }
-        }
-
-        function initializeStickyButton() {
-            const stickyCta = document.querySelector('.sticky-cta');
-            const heroCard = document.querySelector('.hero-card');
-            
-            window.addEventListener('scroll', () => {
-                const heroBottom = heroCard.offsetTop + heroCard.offsetHeight;
-                
-                // Show CTA when past hero
-                if (window.scrollY > heroBottom - 100) {
-                    stickyCta.style.display = 'block';
-                } else {
-                    stickyCta.style.display = 'none';
-                }
+                });
             });
-        }
 
-        function updateSEO(club) {
-            // Update page title
-            document.title = `${club.club_name} - ${club.activity_type} in ${club.location}`;
-            document.getElementById('pageTitle').textContent = document.title;
-            
-            // Update meta description
-            const description = `Join ${club.club_name} for ${club.activity_type} in ${club.location}. ${club.member_count} members, ${club.numeric_rating}/10 rating. From £${club.monthly_fee_amount}/month.`;
-            document.getElementById('pageDescription').setAttribute('content', description);
-            
-            // Update Open Graph tags
-            document.getElementById('ogTitle').setAttribute('content', club.club_name);
-            document.getElementById('ogDescription').setAttribute('content', description);
-            document.getElementById('ogUrl').setAttribute('content', window.location.href);
-            
-            if (club.image_url) {
-                document.getElementById('ogImage').setAttribute('content', club.image_url);
-            }
-            
-            // Update structured data
-            const structuredData = {
-                "@context": "https://schema.org",
-                "@type": "SportsClub",
-                "name": club.club_name,
-                "description": club.club_bio,
-                "address": {
-                    "@type": "PostalAddress",
-                    "streetAddress": club.address
-                },
-                "telephone": club.phone,
-                "email": club.email,
-                "priceRange": `£${club.monthly_fee_amount}`,
-                "aggregateRating": {
-                    "@type": "AggregateRating",
-                    "ratingValue": club.numeric_rating,
-                    "reviewCount": club.testimonials?.length || 0
-                }
-            };
-            
-            document.getElementById('structuredData').textContent = JSON.stringify(structuredData);
+        }catch(e){
+            console.error(e);
+            document.getElementById('loading').style.display='none';
+            document.getElementById('error').style.display='block';
         }
+    }
 
-        function showError(message) {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
-            
-            // Update page title for error
-            document.title = 'Club Not Found';
-        }
-
-        // Initialize page when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            // Smooth scrolling for anchor links
-            document.addEventListener('click', (e) => {
-                if (e.target.matches('a[href^="#"]')) {
-                    e.preventDefault();
-                    const target = document.querySelector(e.target.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }
-            });
-        });
+    document.addEventListener('DOMContentLoaded', loadClub);
     </script>
 </body>
 </html>
