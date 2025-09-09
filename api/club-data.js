@@ -42,7 +42,7 @@ module.exports = async (req, res) => {
         // Read club data - using the correct sheet name and range
         const clubResponse = await sheets.spreadsheets.values.get({
             spreadsheetId: spreadsheetId,
-            range: 'Dynamic Club Page Hub!A:CF', // Full range to get all club data
+            range: 'Dynamic Club Page Hub!A:CZ', // Full range to get all club data
         });
 
         const clubRows = clubResponse.data.values;
@@ -224,7 +224,7 @@ function parseClubData(row) {
         hero_background_gradient: safeGet(83),
         
         // Try multiple possible locations for image_url
-        image_url: safeGet(84) || safeGet(85) || safeGet(86) || safeGet(87) || safeGet(88) || ''
+        image_url: safeGet(85) || ''
     };
 
     // Debug logging for image_url specifically
