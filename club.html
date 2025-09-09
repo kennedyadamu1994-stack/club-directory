@@ -23,7 +23,6 @@
     :root{
       --brand:#FF006E;
       --brand-dark:#E6005E;
-      --header-h: 64px;
     }
 
     * { margin:0; padding:0; box-sizing:border-box; }
@@ -34,28 +33,23 @@
       min-height:100vh;
     }
 
-    /* Fixed, streamlined NBRH Header */
+    /* ---------- NBRH Brand Header (same as directory) ---------- */
     .nbrh-header{
-      position:fixed; inset:0 0 auto 0; z-index:1001; width:100%;
-      background:#1c1c1e;
-      border-bottom:1px solid #2a2a2a;        /* cleaner than shadow */
+      background:#1c1c1e; color:#fff;
+      position:sticky; top:0; z-index:1000;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1);
     }
-    .nbrh-header-content{
-      max-width:1200px; margin:0 auto; height:var(--header-h);
-      padding:0 20px; display:flex; align-items:center; justify-content:space-between;
+    .nbrh-header-inner{
+      max-width:1400px; margin:0 auto; padding:12px 20px;
+      display:flex; align-items:center; justify-content:space-between;
     }
-    .nbrh-logo{height:40px; object-fit:contain;}
-    .nbrh-nav{display:flex; gap:28px; align-items:center;}
-    .nbrh-nav a{
-      color:#fff; text-decoration:none; font-weight:700;
-      font-size:20px; letter-spacing:.2px;
-      transition:color .2s ease, opacity .2s ease;
-      opacity:.95;
-    }
-    .nbrh-nav a:hover{ color:var(--brand); opacity:1; }
+    .nbrh-logo{ height:36px; object-fit:contain; }
+    .nbrh-nav{ display:flex; gap:16px; align-items:center; }
+    .nbrh-nav a{ color:#fff; text-decoration:none; font-weight:500; }
+    .nbrh-nav a:hover{ color:var(--brand); }
 
-    /* Push content below fixed header (JS updates --header-h if it changes) */
-    .page-container{max-width:1200px; margin:0 auto; padding:calc(var(--header-h) + 16px) 20px 20px; position:relative;}
+    /* Page container (no header offset needed with sticky header) */
+    .page-container{max-width:1200px; margin:0 auto; padding:16px 20px 20px; position:relative;}
 
     /* Loading / Error */
     .loading{text-align:center; padding:40px 20px; color:#8e8e93;}
@@ -63,7 +57,7 @@
     @keyframes spin{to{transform:rotate(360deg)}}
     .error{background:#ffeaea; color:#ff3b30; padding:16px; border-radius:3px; margin:16px 0; text-align:center;}
 
-    /* Layout and card spacing (tight) */
+    /* Layout and card spacing */
     .content-grid{display:grid; gap:18px; margin-bottom:28px;}
     .card{background:#fff; border-radius:3px; box-shadow:0 3px 14px rgba(0,0,0,0.08); overflow:hidden; transition:transform .25s, box-shadow .25s;}
     .card:hover{transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,0.12);}
@@ -87,7 +81,7 @@
     /* Info grid */
     .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:8px;}
     .info-item{background:#f8f9fa; border-radius:3px; padding:14px; text-align:center;}
-    .info-icon{font-size:20px; margin-bottom:8px; display:block; color:var(--brand);}  /* brand pink icons */
+    .info-icon{font-size:20px; margin-bottom:8px; display:block; color:var(--brand);}
     .info-label{font-size:12px; color:#8e8e93; margin-bottom:4px; font-weight:600;}
     .info-value{font-size:16px; color:#1c1c1e; font-weight:700;}
     .rating-display{display:flex; align-items:center; justify-content:center; gap:4px; flex-direction:column;}
@@ -119,10 +113,14 @@
 
     /* Collapsibles */
     .collapsible-card{}
-    .collapsible-header{padding:16px 20px; background:#f8f9fa; border-bottom:1px solid #e5e5ea; cursor:pointer; display:flex; justify-content:space-between; align-items:center;}
+    .collapsible-header{
+      padding:16px 20px; background:#f8f9fa; border-bottom:1px solid #e5e5ea;
+      cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    }
     .collapsible-title{font-size:18px; font-weight:800; color:#1c1c1e;}
-    .collapsible-icon{font-size:16px; color:var(--brand); transition:transform .25s;} /* brand colour */
-    .collapsible-header:hover{ background:#fff1f7; } /* subtle brand tint */
+    .collapsible-icon{font-size:16px; color:var(--brand); transition:transform .25s;}
+    /* Removed pink hover tint */
+    .collapsible-header:hover{ background:#f8f9fa; }
     .collapsible-content{max-height:0; overflow:hidden; transition:max-height .4s ease;}
     .collapsible-content.expanded{max-height:2000px;}
     .collapsible-header.expanded .collapsible-icon{transform:rotate(180deg);}
@@ -133,11 +131,10 @@
     .testimonial-rating{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
     .benefits-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px;}
     .benefit-item{display:flex; align-items:flex-start; padding:14px; background:#f0f2f5; border-radius:3px;}
-    .benefit-icon{font-size:22px; margin-right:14px; margin-top:3px; color:var(--brand);} /* brand colour */
+    .benefit-icon{font-size:22px; margin-right:14px; margin-top:3px; color:var(--brand);}
 
     .faq-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px;}
     .faq-item{background:#f0f2f5; border-radius:3px; padding:16px;}
-    /* Bold Qs, non-bold As */
     .faq-question{font-size:18px; font-weight:800; color:#1c1c1e; margin-bottom:8px;}
     .faq-answer{font-size:16px; line-height:1.6; color:#666; font-weight:400;}
     .faq-answer b, .faq-answer strong { font-weight:400 !important; }
@@ -151,7 +148,7 @@
     .coach-details h4{font-size:16px; font-weight:800; color:#1c1c1e; margin-bottom:4px;}
     .coach-details p{font-size:13px; color:#8e8e93;}
 
-    /* Contact card (brand icons) */
+    /* Contact card */
     .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;}
     .contact-item{background:#f8f9fa; border-radius:3px; padding:16px; text-decoration:none; color:inherit; display:flex; align-items:center;}
     .contact-icon{width:44px; height:44px; border-radius:3px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; margin-right:12px; font-size:16px;}
@@ -170,8 +167,7 @@
     .sticky-cta:hover{background:var(--brand-dark); transform:translateX(-50%) translateY(-2px); box-shadow:0 10px 28px rgba(255,0,110,.45);}
 
     @media (max-width:768px){
-      .nbrh-header-content{flex-direction:column; gap:8px; height:auto; padding:10px 16px;}
-      .page-container{padding:calc(var(--header-h) + 12px) 15px 15px;}
+      .page-container{padding:12px 15px 15px;}
       .content-grid{gap:14px; margin-bottom:24px;}
       .hero-title{font-size:26px;}
       .hero-subtitle{font-size:16px;}
@@ -189,16 +185,16 @@
   </style>
 </head>
 <body>
-  <!-- Fixed NBRH Header -->
-  <div class="nbrh-header" id="siteHeader">
-    <div class="nbrh-header-content">
-      <img src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng" alt="NBRH" class="nbrh-logo">
-      <div class="nbrh-nav">
+  <!-- NBRH Brand Header (directory version) -->
+  <header class="nbrh-header">
+    <div class="nbrh-header-inner">
+      <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
+      <nav class="nbrh-nav">
         <a href="/">Browse Clubs</a>
         <a href="https://www.thenbrh.co.uk/" target="_blank" rel="noopener">NBRH Home</a>
-      </div>
+      </nav>
     </div>
-  </div>
+  </header>
 
   <div class="page-container">
     <div id="loading" class="loading">
@@ -338,20 +334,25 @@
         </div>
       </div>
 
-      <!-- About & Coach (Facilities removed) -->
-      <div class="card about-card" id="aboutCard" style="display:none;">
-        <div class="card-content">
-          <h2 class="section-header">About the Club</h2>
-          <div class="about-content">
-            <div>
-              <p class="about-text" id="aboutText"></p>
-            </div>
-            <div class="about-sidebar">
-              <div class="coach-info" id="coachInfo" style="display:none;">
-                <div class="coach-avatar" id="coachAvatar">C</div>
-                <div class="coach-details">
-                  <h4 id="coachName">–</h4>
-                  <p id="coachRole">–</p>
+      <!-- About & Coach (now collapsible) -->
+      <div class="card collapsible-card" id="aboutCard" style="display:none;">
+        <div class="collapsible-header" data-target="#aboutContent">
+          <h3 class="collapsible-title">About the Club</h3>
+          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="collapsible-content" id="aboutContent">
+          <div class="collapsible-inner">
+            <div class="about-content">
+              <div>
+                <p class="about-text" id="aboutText"></p>
+              </div>
+              <div class="about-sidebar">
+                <div class="coach-info" id="coachInfo" style="display:none;">
+                  <div class="coach-avatar" id="coachAvatar">C</div>
+                  <div class="coach-details">
+                    <h4 id="coachName">–</h4>
+                    <p id="coachRole">–</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -359,11 +360,16 @@
         </div>
       </div>
 
-      <!-- Contact (separate card) -->
-      <div class="card" id="contactCard" style="display:none;">
-        <div class="card-content">
-          <h2 class="section-header">Contact</h2>
-          <div class="contact-grid" id="contactGrid"></div>
+      <!-- Contact (now collapsible) -->
+      <div class="card collapsible-card" id="contactCard" style="display:none;">
+        <div class="collapsible-header" data-target="#contactContent">
+          <h3 class="collapsible-title">Contact</h3>
+          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="collapsible-content" id="contactContent">
+          <div class="collapsible-inner">
+            <div class="contact-grid" id="contactGrid"></div>
+          </div>
         </div>
       </div>
 
@@ -373,16 +379,6 @@
   </div>
 
   <script>
-  // Set header height CSS var so the page never slides under it
-  function setHeaderOffset(){
-    const h = document.getElementById('siteHeader');
-    if (!h) return;
-    const px = h.offsetHeight + 'px';
-    document.documentElement.style.setProperty('--header-h', px);
-  }
-  window.addEventListener('load', setHeaderOffset);
-  window.addEventListener('resize', setHeaderOffset);
-
   function getClubCode(){
     const params = new URLSearchParams(location.search);
     const q = params.get('code');
@@ -521,7 +517,7 @@
       // Info grid
       document.getElementById('clubLocation').textContent = d.location || '—';
 
-      // Audience (new)
+      // Audience
       if (d.audience){
         const ab = document.getElementById('audienceBlock');
         ab.style.display = '';
@@ -535,7 +531,7 @@
         document.getElementById('clubFee').textContent = feeText;
       }
 
-      // Star rating (out of 5)
+      // Star rating
       if (d.star_rating){
         const n = Number(d.star_rating) || 0;
         document.getElementById('starBlock').style.display = '';
@@ -543,7 +539,7 @@
         document.getElementById('starRatingText').textContent = `${n}/5`;
       }
 
-      // Numeric rating (one decimal only)
+      // Numeric rating
       if (d.numeric_rating !== undefined && d.numeric_rating !== null && d.numeric_rating !== ''){
         const nn = Number(d.numeric_rating) || 0;
         document.getElementById('numericBlock').style.display = '';
@@ -640,7 +636,7 @@
         document.getElementById('benefitsCard').style.display = '';
       }
 
-      // FAQs (questions bold, answers normal already enforced in CSS)
+      // FAQs
       if (Array.isArray(d.faqs) && d.faqs.length){
         const fq = document.getElementById('faqGrid');
         d.faqs.forEach(f=>{
@@ -655,7 +651,7 @@
         document.getElementById('faqCard').style.display = '';
       }
 
-      // About (no Facilities) + Coach
+      // About & Coach (show when any content present)
       const aboutText = d.club_bio || '';
       if (aboutText || d.coach_name || d.coach_role){
         const aboutCard = document.getElementById('aboutCard');
@@ -673,7 +669,7 @@
         }
       }
 
-      // Contact (no Bookings link)
+      // Contact
       const cg = document.getElementById('contactGrid');
       const items = [];
       if (d.email) items.push(()=>addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email));
@@ -708,7 +704,7 @@
     }
   }
 
-  document.addEventListener('DOMContentLoaded', ()=>{ setHeaderOffset(); loadClub(); });
+  document.addEventListener('DOMContentLoaded', loadClub);
   </script>
 </body>
 </html>
