@@ -1045,6 +1045,9 @@
             if (club.image_url) {
                 const heroCard = document.querySelector('.hero-card');
                 heroCard.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${club.image_url}')`;
+                heroCard.style.backgroundSize = 'cover';
+                heroCard.style.backgroundPosition = 'center';
+                heroCard.style.backgroundRepeat = 'no-repeat';
             }
             
             // Info grid
