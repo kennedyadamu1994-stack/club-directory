@@ -140,25 +140,6 @@ function parseClubData(row) {
         return parseInt(value) || 0;
     };
 
-    // DEBUG: Log the row data to see what's in each column
-    console.log('=== IMAGE URL DEBUGGING ===');
-    console.log('Total row length:', row.length);
-    console.log('Looking for image URLs in columns 80-90:');
-    
-    for (let i = 80; i < Math.min(row.length, 90); i++) {
-        if (row[i] && row[i].toString().trim() !== '' && row[i] !== 'N/A') {
-            console.log(`Column ${i} (${String.fromCharCode(65 + Math.floor(i/26) - 1)}${String.fromCharCode(65 + (i % 26))}):`, row[i]);
-        }
-    }
-
-    // Let's also check for any column that contains "http"
-    console.log('Checking all columns for URLs:');
-    for (let i = 0; i < row.length; i++) {
-        if (row[i] && row[i].toString().includes('http')) {
-            console.log(`Found URL in column ${i}:`, row[i]);
-        }
-    }
-
     const club = {
         // Basic Info (A-C)
         club_id: safeGet(0),
@@ -223,19 +204,9 @@ function parseClubData(row) {
         // Design (CF: column 83)
         hero_background_gradient: safeGet(83),
         
-        // Try multiple possible locations for image_url
-        image_url: safeGet(85) ||
+        // Image URL (CG: column 84)
+        image_url: safeGet(84) || ''
     };
-
-    // Debug logging for image_url specifically
-    console.log('Checking image_url candidates:');
-    console.log('Column 84:', safeGet(84));
-    console.log('Column 85:', safeGet(85));
-    console.log('Column 86:', safeGet(86));
-    console.log('Column 87:', safeGet(87));
-    console.log('Column 88:', safeGet(88));
-    console.log('Final image_url value:', club.image_url);
-    console.log('=== END IMAGE URL DEBUGGING ===');
 
     // Parse Sessions (4 sessions: columns 19-30)
     for (let i = 0; i < 4; i++) {
