@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
         // Read club data - using the correct sheet name from your Apps Script
         const clubResponse = await sheets.spreadsheets.values.get({
             spreadsheetId: spreadsheetId,
-            range: 'Dynamic Club Page Hub!A:CF', // Full range to get all club data including new columns
+            range: 'Dynamic Club Page Hub!A:CZ', // Full range to get all club data including new columns
         });
 
         const clubRows = clubResponse.data.values;
@@ -190,7 +190,7 @@ function parseClubDataForListing(row) {
     club.instructor_bio = club.coach_role;
     club.featured = club.ranking_category === 'Featured' || false;
     club.website = ''; // Not in new structure
-   club.image_url = safeGet(84) || `https://source.unsplash.com/featured/?${club.activity_type || 'fitness'}`;
+   club.image_url = safeGet(85) || ";
     
     // Generate club_code from club_id or club_name for URL routing
     club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
