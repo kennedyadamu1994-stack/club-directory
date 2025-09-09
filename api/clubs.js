@@ -190,7 +190,7 @@ function parseClubDataForListing(row) {
     club.instructor_bio = club.coach_role;
     club.featured = club.ranking_category === 'Featured' || false;
     club.website = ''; // Not in new structure
-   club.image_url = safeGet(85) || ";
+   club.image_url = safeGet(84) || ''
     
     // Generate club_code from club_id or club_name for URL routing
     club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
