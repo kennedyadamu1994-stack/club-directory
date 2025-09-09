@@ -224,7 +224,7 @@ function parseClubData(row) {
         hero_background_gradient: safeGet(83),
         
         // Try multiple possible locations for image_url
-        image_url: safeGet(85) || ''
+        image_url: safeGet(85) ||
     };
 
     // Debug logging for image_url specifically
