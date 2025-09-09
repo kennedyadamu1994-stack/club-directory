@@ -5,7 +5,8 @@ module.exports = async (req, res) => {
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=60');
+        // REDUCED CACHE TIME for faster updates (30 seconds instead of 5 minutes)
+        res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=10');
 
         if (req.method === 'OPTIONS') {
             return res.status(200).end();
@@ -146,6 +147,12 @@ function parseClubDataForListing(row) {
         
         // Design (CF: column 83)
         hero_background_gradient: safeGet(83),
+        
+        // Image URL (CG: column 84)
+        image_url: safeGet(84) || '',
+        
+        // Audience (CH: column 85)
+        audience: safeGet(85) || ''
     };
 
     // Parse testimonials for review count (columns 31-39)
@@ -190,7 +197,6 @@ function parseClubDataForListing(row) {
     club.instructor_bio = club.coach_role;
     club.featured = club.ranking_category === 'Featured' || false;
     club.website = ''; // Not in new structure
-   club.image_url = safeGet(84) || ''
     
     // Generate club_code from club_id or club_name for URL routing
     club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
