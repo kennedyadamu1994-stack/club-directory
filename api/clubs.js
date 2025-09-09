@@ -1,207 +1,166 @@
-// api/clubs.js - Fetch all active clubs data with corrected column mapping
+// api/clubs.js - Fetch all active clubs data with corrected column mapping and faster freshness
 module.exports = async (req, res) => {
-    try {
-        // Set CORS headers
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        // REDUCED CACHE TIME for faster updates (30 seconds instead of 5 minutes)
-        res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=10');
+  try {
+    // CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // Faster updates without hammering Sheets: 15s edge cache, 5s stale
+    res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=5');
 
-        if (req.method === 'OPTIONS') {
-            return res.status(200).end();
-        }
-
-        if (req.method !== 'GET') {
-            return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
-        }
-
-        console.log('Loading all clubs data...');
-
-        // Import googleapis
-        const { google } = require('googleapis');
-
-        // Parse credentials
-        const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
-
-        // Create auth and sheets client
-        const auth = new google.auth.GoogleAuth({
-            credentials: credentials,
-            scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
-        });
-
-        const sheets = google.sheets({ version: 'v4', auth });
-        const spreadsheetId = process.env.GOOGLE_SHEET_ID;
-
-        console.log('Reading from Dynamic Club Page Hub sheet...');
-
-        // Read club data - using the correct sheet name from your Apps Script
-        const clubResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: spreadsheetId,
-            range: 'Dynamic Club Page Hub!A:CZ', // Full range to get all club data including new columns
-        });
-
-        const clubRows = clubResponse.data.values;
-        console.log('Club rows found:', clubRows ? clubRows.length : 0);
-
-        if (!clubRows || clubRows.length === 0) {
-            return res.status(404).json({ error: 'No club data found in Dynamic Club Page Hub sheet' });
-        }
-
-        const headers = clubRows[0];
-        console.log('Club headers found:', headers.length);
-        
-        // Parse all active clubs using the corrected column structure
-        const clubs = [];
-        
-        for (let i = 1; i < clubRows.length; i++) {
-            const row = clubRows[i];
-            
-            // Check if club is active (column C - index 2)
-            const isActive = row[2] && row[2].toString().toLowerCase() === 'yes';
-            
-            if (!isActive) {
-                continue; // Skip inactive clubs
-            }
-
-            // Parse club data with consistent column mapping
-            const club = parseClubDataForListing(row);
-            clubs.push(club);
-        }
-
-        console.log(`Returning ${clubs.length} active clubs`);
-        res.status(200).json(clubs);
-
-    } catch (error) {
-        console.error('Error in clubs API:', error);
-        return res.status(500).json({ 
-            error: 'Internal server error', 
-            details: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'GET') {
+      return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
     }
+
+    // Google Sheets client
+    const { google } = require('googleapis');
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT);
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
+    });
+    const sheets = google.sheets({ version: 'v4', auth });
+    const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+
+    // Pull everything we might need
+    const range = 'Dynamic Club Page Hub!A:CZ';
+    const clubResponse = await sheets.spreadsheets.values.get({ spreadsheetId, range });
+    const rows = clubResponse.data.values || [];
+    if (!rows.length) return res.status(404).json({ error: 'No club data found' });
+
+    const headers = rows[0] || [];
+    const out = [];
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i] || [];
+
+      // Active (column C) supports yes/true/1
+      const activeCell = (row[2] || '').toString().trim().toLowerCase();
+      const isActive = ['yes', 'true', '1'].includes(activeCell);
+      if (!isActive) continue;
+
+      const club = parseClubRow(row);
+
+      // Derive / legacy compatibility
+      club.tags_array = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
+      club.facilities_array = club.facilities_list
+        ? club.facilities_list.split(',').map(s => s.trim()).filter(Boolean)
+        : [];
+      club.is_beginner_friendly = (club.tags_who || '').toLowerCase().includes('beginner');
+      const acc = (club.tags_accessibility || '').toLowerCase();
+      club.is_wheelchair_accessible = acc.includes('wheelchair') || acc.includes('accessible');
+      club.is_all_ages = (club.tags_who || '').toLowerCase().includes('all ages');
+
+      // Keep some legacy fields your front-end expects
+      club.monthly_fee = club.monthly_fee_amount;
+      club.description = club.club_bio;
+      club.rating = club.numeric_rating;
+      club.user_rating = club.numeric_rating;
+      club.review_count = 0; // directory doesn’t need the full testimonials payload
+      club.total_members = club.member_count;
+      club.age_groups = club.tags_who;
+      // Keep skill_levels for filter menu; don’t render it in the card UI
+      club.skill_levels = 'All levels';
+      club.tags = club.tags_array.join(', ');
+      club.facilities = club.facilities_list;
+      club.instructor_name = club.coach_name;
+      club.instructor_bio = club.coach_role;
+      club.featured = club.ranking_category === 'Featured' || false;
+
+      // URL routing code
+      club.club_code = makeSlug((club.club_id || club.club_name || '').toString());
+
+      out.push(club);
+    }
+
+    return res.status(200).json(out);
+  } catch (err) {
+    console.error('Error in clubs API:', err);
+    return res.status(500).json({
+      error: 'Internal server error',
+      details: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    });
+  }
 };
 
-// Helper function to parse club data from sheet row for listing (consistent with club-data.js)
-function parseClubDataForListing(row) {
-    // Helper functions for safe data extraction, treating "N/A" as empty
-    const safeGet = (index) => {
-        const value = row[index] || '';
-        return value === 'N/A' ? '' : value;
-    };
-    const safeGetFloat = (index) => {
-        const value = row[index] || '';
-        if (value === 'N/A' || value === '') return 0;
-        return parseFloat(value) || 0;
-    };
-    const safeGetInt = (index) => {
-        const value = row[index] || '';
-        if (value === 'N/A' || value === '') return 0;
-        return parseInt(value) || 0;
-    };
+// ---------- Helpers ----------
+function safeGet(row, index) {
+  const v = row[index] ?? '';
+  return v === 'N/A' ? '' : v;
+}
+function safeFloat(row, index) {
+  const v = safeGet(row, index);
+  if (v === '') return 0;
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : 0;
+}
+function safeInt(row, index) {
+  const v = safeGet(row, index);
+  if (v === '') return 0;
+  const n = parseInt(v, 10);
+  return Number.isFinite(n) ? n : 0;
+}
+function makeSlug(s) {
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
 
-    const club = {
-        // Basic Info (A-C: columns 0-2)
-        club_id: safeGet(0),
-        club_name: safeGet(1) || 'Unknown Club',
-        active: safeGet(2) || 'no',
-        
-        // URLs (D-E: columns 3-4)
-        page_url: safeGet(3),
-        booking_url: safeGet(4),
-        
-        // Club Details (F-S: columns 5-18)
-        activity_type: safeGet(5),
-        club_logo_emoji: safeGet(6) || '',
-        location: safeGet(7),
-        monthly_fee_amount: safeGetFloat(8),
-        monthly_fee_text: safeGet(9),
-        star_rating: safeGet(10),
-        numeric_rating: safeGetFloat(11),
-        rating_out_of: safeGetFloat(12) || 5,
-        member_count: safeGetInt(13),
-        ranking_position: safeGetInt(14),
-        ranking_category: safeGet(15),
-        sessions_per_week: safeGetInt(16),
-        average_attendance: safeGetInt(17),
-        member_growth: safeGet(18),
-        
-        // About & Coach (BS-BV: columns 70-73)
-        club_bio: safeGet(70),
-        coach_name: safeGet(71),
-        coach_role: safeGet(72),
-        coach_avatar: safeGet(73),
-        
-        // Facilities & Tags (BW-BZ: columns 74-77)
-        facilities_list: safeGet(74),
-        tags_who: safeGet(75),
-        tags_vibe: safeGet(76),
-        tags_accessibility: safeGet(77),
-        
-        // Contact (CA-CE: columns 78-82)
-        email: safeGet(78),
-        phone: safeGet(79),
-        whatsapp: safeGet(80),
-        instagram: safeGet(81),
-        address: safeGet(82),
-        
-        // Design (CF: column 83)
-        hero_background_gradient: safeGet(83),
-        
-        // Image URL (CG: column 84)
-        image_url: safeGet(84) || '',
-        
-        // Audience (CH: column 85)
-        audience: safeGet(85) || ''
-    };
+function parseClubRow(row) {
+  // Columns aligned to the sheet structure used in club-data.js
+  return {
+    // Basic (A-C)
+    club_id: safeGet(row, 0),
+    club_name: safeGet(row, 1) || 'Unknown Club',
+    active: safeGet(row, 2) || 'no',
 
-    // Parse testimonials for review count (columns 31-39)
-    const testimonials = [];
-    for (let i = 0; i < 3; i++) {
-        const baseIndex = 31 + (i * 3);
-        const testimonial = {
-            name: safeGet(baseIndex),
-            rating: safeGetFloat(baseIndex + 1),
-            text: safeGet(baseIndex + 2)
-        };
-        if (testimonial.name && testimonial.text) {
-            testimonials.push({
-                author: testimonial.name,
-                rating: testimonial.rating,
-                text: testimonial.text
-            });
-        }
-    }
-    club.testimonials = testimonials;
+    // URLs (D-E)
+    page_url: safeGet(row, 3),
+    booking_url: safeGet(row, 4),
 
-    // Add computed properties
-    club.tags_array = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
-    club.facilities_array = club.facilities_list ? club.facilities_list.split(',').map(f => f.trim()) : [];
-    club.is_beginner_friendly = (club.tags_who || '').toLowerCase().includes('beginner');
-    club.is_wheelchair_accessible = (club.tags_accessibility || '').toLowerCase().includes('wheelchair') || 
-                                   (club.tags_accessibility || '').toLowerCase().includes('accessible');
-    club.is_all_ages = (club.tags_who || '').toLowerCase().includes('all ages');
+    // Details (F-S)
+    activity_type: safeGet(row, 5),
+    club_logo_emoji: safeGet(row, 6), // may be emoji or image URL; front-end handles it
+    location: safeGet(row, 7),
+    monthly_fee_amount: safeFloat(row, 8),
+    monthly_fee_text: safeGet(row, 9),
+    star_rating: safeGet(row, 10), // out of 5 (display as stars)
+    numeric_rating: safeFloat(row, 11), // out of 10 (overlay + numeric)
+    rating_out_of: safeFloat(row, 12) || 5,
+    member_count: safeInt(row, 13),
+    ranking_position: safeInt(row, 14),
+    ranking_category: safeGet(row, 15),
+    sessions_per_week: safeInt(row, 16),
+    average_attendance: safeInt(row, 17),
+    member_growth: safeGet(row, 18),
 
-    // Legacy fields for compatibility with existing frontend
-    club.monthly_fee = club.monthly_fee_amount;
-    club.description = club.club_bio;
-    club.rating = club.numeric_rating;
-    club.user_rating = club.numeric_rating;
-    club.review_count = club.testimonials.length;
-    club.total_members = club.member_count;
-    club.age_groups = club.tags_who;
-    club.skill_levels = 'All levels'; // Default since not specified in new structure
-    club.tags = club.tags_array.join(', ');
-    club.facilities = club.facilities_list;
-    club.instructor_name = club.coach_name;
-    club.instructor_bio = club.coach_role;
-    club.featured = club.ranking_category === 'Featured' || false;
-    club.website = ''; // Not in new structure
-    
-    // Generate club_code from club_id or club_name for URL routing
-    club.club_code = (club.club_id || club.club_name)?.toString().toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)/g, '') || '';
+    // About & Coach (BS-BV: 70-73)
+    club_bio: safeGet(row, 70),
+    coach_name: safeGet(row, 71),
+    coach_role: safeGet(row, 72),
+    coach_avatar: safeGet(row, 73),
 
-    return club;
+    // Facilities & Tags (BW-BZ: 74-77)
+    facilities_list: safeGet(row, 74),
+    tags_who: safeGet(row, 75),
+    tags_vibe: safeGet(row, 76),
+    tags_accessibility: safeGet(row, 77),
+
+    // Contact (CA-CE: 78-82)
+    email: safeGet(row, 78),
+    phone: safeGet(row, 79),
+    whatsapp: safeGet(row, 80),
+    instagram: safeGet(row, 81),
+    address: safeGet(row, 82),
+
+    // Design + Image (CF-CG: 83-84)
+    hero_background_gradient: safeGet(row, 83),
+    image_url: safeGet(row, 84) || '',
+
+    // Audience (CH: 85)
+    audience: safeGet(row, 85) || '',
+  };
 }
