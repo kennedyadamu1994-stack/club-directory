@@ -111,7 +111,7 @@ function parseClubDataForListing(row) {
         
         // Club Details (F-S: columns 5-18)
         activity_type: safeGet(5),
-        club_logo_emoji: safeGet(6) || '🏛️',
+        club_logo_emoji: safeGet(6) || '',
         location: safeGet(7),
         monthly_fee_amount: safeGetFloat(8),
         monthly_fee_text: safeGet(9),
