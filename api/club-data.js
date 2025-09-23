@@ -198,6 +198,10 @@ function parseClubRow(row) {
 
     // Audience (CH: 85)
     audience: safeGet(row, 85) || '',
+
+    // Review and Shop Links (CI-CJ: 86-87)
+    review_link: safeGet(row, 86) || '',
+    shop_link: safeGet(row, 87) || '',
   };
 
   // Sessions: up to 4 rows (time, date, type)
