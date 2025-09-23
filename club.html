@@ -73,10 +73,18 @@
     .club-logo img{width:100%; height:100%; object-fit:cover;}
     .hero-title{font-size:30px; font-weight:700; margin-bottom:8px;}
     .hero-subtitle{font-size:18px; opacity:.95; margin-bottom:22px;}
+    .hero-buttons{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
     .hero-cta{
       background:var(--brand); color:#fff; border:none; padding:14px 28px; font-size:16px; font-weight:700; border-radius:3px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .25s; box-shadow:0 4px 12px rgba(255,0,110,.3);
     }
     .hero-cta:hover{background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 16px rgba(255,0,110,.4);}
+    .hero-cta.secondary{
+      background:rgba(255,255,255,.2); color:#fff; box-shadow:0 4px 12px rgba(255,255,255,.1);
+      backdrop-filter:blur(10px);
+    }
+    .hero-cta.secondary:hover{
+      background:rgba(255,255,255,.3); transform:translateY(-1px); box-shadow:0 6px 16px rgba(255,255,255,.2);
+    }
 
     /* Info grid */
     .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:8px;}
@@ -171,6 +179,8 @@
       .content-grid{gap:14px; margin-bottom:24px;}
       .hero-title{font-size:26px;}
       .hero-subtitle{font-size:16px;}
+      .hero-buttons{flex-direction:column; align-items:center;}
+      .hero-cta{width:100%; max-width:280px; text-align:center;}
       .section-header,.collapsible-title{font-size:18px; margin-bottom:14px;}
       .info-grid{grid-template-columns:1fr 1fr; gap:6px;}
       .stats-grid{grid-template-columns:1fr 1fr; gap:8px;}
@@ -215,7 +225,15 @@
         <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
         <h1 class="hero-title" id="clubName">Club Name</h1>
         <p class="hero-subtitle" id="clubActivity">Activity Type</p>
-        <a href="#membership" class="hero-cta" id="joinButton">Join The Club</a>
+        <div class="hero-buttons">
+          <a href="#membership" class="hero-cta" id="joinButton">Join The Club</a>
+          <a href="#" class="hero-cta secondary" id="reviewButton" style="display:none;" target="_blank" rel="noopener">
+            <i class="fas fa-star" style="margin-right:8px;"></i>Review
+          </a>
+          <a href="#" class="hero-cta secondary" id="shopButton" style="display:none;" target="_blank" rel="noopener">
+            <i class="fas fa-shopping-bag" style="margin-right:8px;"></i>Shop
+          </a>
+        </div>
       </div>
 
       <!-- Club Info -->
@@ -501,7 +519,7 @@
       document.getElementById('clubName').textContent = d.club_name || 'Club';
       document.getElementById('clubActivity').textContent = d.activity_type || '';
 
-      // CTAs
+      // CTAs - Main Join Button
       const joinBtn = document.getElementById('joinButton');
       const sticky = document.getElementById('stickyCta');
       if (d.booking_url){
@@ -513,6 +531,24 @@
       } else {
         joinBtn.style.display = 'none';
         sticky.style.display = 'none';
+      }
+
+      // Review Button (assuming API will return review_link)
+      const reviewBtn = document.getElementById('reviewButton');
+      if (d.review_link && isUrl(d.review_link)){
+        reviewBtn.href = d.review_link;
+        reviewBtn.style.display = 'inline-block';
+      } else {
+        reviewBtn.style.display = 'none';
+      }
+
+      // Shop Button (assuming API will return shop_link)
+      const shopBtn = document.getElementById('shopButton');
+      if (d.shop_link && isUrl(d.shop_link)){
+        shopBtn.href = d.shop_link;
+        shopBtn.style.display = 'inline-block';
+      } else {
+        shopBtn.style.display = 'none';
       }
 
       // Info grid
