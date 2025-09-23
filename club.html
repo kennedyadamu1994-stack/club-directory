@@ -533,22 +533,31 @@
         sticky.style.display = 'none';
       }
 
-      // Review Button (assuming API will return review_link)
+      // Debug: Log the API response to see what fields we're getting
+      console.log('API Response:', d);
+      console.log('Review link value:', d.review_link);
+      console.log('Shop link value:', d.shop_link);
+
+      // Review Button
       const reviewBtn = document.getElementById('reviewButton');
       if (d.review_link && isUrl(d.review_link)){
         reviewBtn.href = d.review_link;
         reviewBtn.style.display = 'inline-block';
+        console.log('Review button shown with URL:', d.review_link);
       } else {
         reviewBtn.style.display = 'none';
+        console.log('Review button hidden - no valid URL');
       }
 
-      // Shop Button (assuming API will return shop_link)
+      // Shop Button
       const shopBtn = document.getElementById('shopButton');
       if (d.shop_link && isUrl(d.shop_link)){
         shopBtn.href = d.shop_link;
         shopBtn.style.display = 'inline-block';
+        console.log('Shop button shown with URL:', d.shop_link);
       } else {
         shopBtn.style.display = 'none';
+        console.log('Shop button hidden - no valid URL');
       }
 
       // Info grid
