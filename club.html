@@ -48,8 +48,8 @@
     .nbrh-nav a{ color:#fff; text-decoration:none; font-weight:500; }
     .nbrh-nav a:hover{ color:var(--brand); }
 
-    /* Page container (no header offset needed with sticky header) */
-    .page-container{max-width:1200px; margin:0 auto; padding:16px 20px 100px; position:relative;}
+    /* Page container */
+    .page-container{max-width:1200px; margin:0 auto; padding:0 20px 100px; position:relative;}
 
     /* Loading / Error */
     .loading{text-align:center; padding:40px 20px; color:#8e8e93;}
@@ -63,19 +63,37 @@
     .card:hover{transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,0.12);}
     .card-content{padding:20px;}
 
-    /* Hero */
+    /* Hero - FULL WIDTH */
     .hero-card{
       background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80');
       background-size:cover; background-position:center;
-      color:#fff; text-align:center; padding:40px 20px;
+      color:#fff; text-align:center; padding:60px 20px;
+      /* Remove from card flow */
+      margin-left: calc(-50vw + 50%);
+      margin-right: calc(-50vw + 50%);
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      transform: translateX(-50%);
+      border-radius: 0;
+      box-shadow: none;
+      min-height: 400px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
-    .club-logo{width:80px; height:80px; border-radius:3px; margin:0 auto 16px; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; font-size:36px; color:#333; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.2); overflow:hidden;}
+    .hero-card:hover{
+      transform: translateX(-50%);
+    }
+    .club-logo{width:120px; height:120px; border-radius:12px; margin:0 auto 20px; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.3); overflow:hidden;}
     .club-logo img{width:100%; height:100%; object-fit:cover;}
-    .hero-title{font-size:30px; font-weight:700; margin-bottom:8px;}
-    .hero-subtitle{font-size:18px; opacity:.95; margin-bottom:22px;}
+    .hero-title{font-size:32px; font-weight:700; margin-bottom:8px;}
+    .hero-subtitle{font-size:18px; opacity:.95; margin-bottom:28px;}
     .hero-buttons{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
     .hero-cta{
-      background:var(--brand); color:#fff; border:none; padding:14px 28px; font-size:16px; font-weight:700; border-radius:3px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .25s; box-shadow:0 4px 12px rgba(255,0,110,.3);
+      background:var(--brand); color:#fff; border:none; padding:14px 28px; font-size:16px; font-weight:700; border-radius:24px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .25s; box-shadow:0 4px 12px rgba(255,0,110,.3);
     }
     .hero-cta:hover{background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 16px rgba(255,0,110,.4);}
     .hero-cta.secondary{
@@ -127,7 +145,6 @@
     }
     .collapsible-title{font-size:18px; font-weight:800; color:#1c1c1e;}
     .collapsible-icon{font-size:16px; color:var(--brand); transition:transform .25s;}
-    /* Removed pink hover tint */
     .collapsible-header:hover{ background:#f8f9fa; }
     .collapsible-content{max-height:0; overflow:hidden; transition:max-height .4s ease;}
     .collapsible-content.expanded{max-height:2000px;}
@@ -167,7 +184,7 @@
     .sticky-cta{
       position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
       background:var(--brand); color:#fff; border:none; padding:16px 28px;
-      font-size:16px; font-weight:800; border-radius:3px; cursor:pointer;
+      font-size:16px; font-weight:800; border-radius:24px; cursor:pointer;
       box-shadow:0 8px 24px rgba(255,0,110,.35); z-index:1000; display:none;
       text-decoration:none; white-space:nowrap; transition:all .25s;
       display:flex; align-items:center; justify-content:center; text-align:center;
@@ -175,12 +192,37 @@
     .sticky-cta:hover{background:var(--brand-dark); transform:translateX(-50%) translateY(-2px); box-shadow:0 10px 28px rgba(255,0,110,.45);}
 
     @media (max-width:768px){
-      .page-container{padding:12px 15px 120px;}
+      .page-container{padding:0 15px 120px;}
       .content-grid{gap:14px; margin-bottom:24px;}
-      .hero-title{font-size:26px;}
-      .hero-subtitle{font-size:16px;}
-      .hero-buttons{flex-direction:column; align-items:center;}
-      .hero-cta{width:100%; max-width:280px; text-align:center;}
+      
+      /* Mobile hero - taller and Apple Music style */
+      .hero-card{
+        min-height: 70vh;
+        padding: 40px 20px;
+      }
+      .club-logo{
+        width: 200px;
+        height: 200px;
+        border-radius: 16px;
+        font-size: 64px;
+        margin-bottom: 24px;
+      }
+      .hero-title{font-size:28px; margin-bottom: 12px;}
+      .hero-subtitle{font-size:16px; margin-bottom: 32px;}
+      
+      /* Keep buttons in ONE LINE on mobile */
+      .hero-buttons{
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+      .hero-cta{
+        padding: 12px 20px;
+        font-size: 14px;
+        white-space: nowrap;
+      }
+      
       .section-header,.collapsible-title{font-size:18px; margin-bottom:14px;}
       .info-grid{grid-template-columns:1fr 1fr; gap:6px;}
       .stats-grid{grid-template-columns:1fr 1fr; gap:8px;}
@@ -533,20 +575,13 @@
         sticky.style.display = 'none';
       }
 
-      // Debug: Log the API response to see what fields we're getting
-      console.log('API Response:', d);
-      console.log('Review link value:', d.review_link);
-      console.log('Shop link value:', d.shop_link);
-
       // Review Button
       const reviewBtn = document.getElementById('reviewButton');
       if (d.review_link && isUrl(d.review_link)){
         reviewBtn.href = d.review_link;
         reviewBtn.style.display = 'inline-block';
-        console.log('Review button shown with URL:', d.review_link);
       } else {
         reviewBtn.style.display = 'none';
-        console.log('Review button hidden - no valid URL');
       }
 
       // Shop Button
@@ -554,10 +589,8 @@
       if (d.shop_link && isUrl(d.shop_link)){
         shopBtn.href = d.shop_link;
         shopBtn.style.display = 'inline-block';
-        console.log('Shop button shown with URL:', d.shop_link);
       } else {
         shopBtn.style.display = 'none';
-        console.log('Shop button hidden - no valid URL');
       }
 
       // Info grid
