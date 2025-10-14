@@ -12,14 +12,14 @@
 <style>
   :root{
     --brand:#FF006E;
-    --bg:#f5f5f7;
-    --card-bg:#ffffff;
-    --text:#1c1c1e;
-    --text-secondary:#8e8e93;
-    --border:#d1d1d6;
-    --radius:3px;              /* Rounded corners = 3px */
-    --shadow:0 1px 3px rgba(0,0,0,0.1);
-    --shadow-hover:0 4px 12px rgba(0,0,0,0.15);
+    --bg:#1B1B1B;
+    --card-bg:#2a2a2a;
+    --text:#ffffff;
+    --text-secondary:#999;
+    --border:#444;
+    --radius:3px;
+    --shadow:0 1px 3px rgba(0,0,0,0.3);
+    --shadow-hover:0 4px 12px rgba(0,0,0,0.5);
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -57,9 +57,11 @@
   }
   .club-header h1{
     font-size:36px; font-weight:600; margin-bottom:12px; letter-spacing:-0.5px;
+    color:var(--text);
   }
   .club-header p{
     font-size:18px; opacity:0.8; max-width:700px; margin:0 auto;
+    color:var(--text);
   }
 
   /* ---------- Loading / error ---------- */
@@ -72,13 +74,13 @@
   .club-loading{ color:var(--text-secondary); }
   .club-spinner{
     display:inline-block; width:40px; height:40px;
-    border:3px solid var(--border); border-top-color:var(--brand);
+    border:3px solid #333; border-top-color:var(--brand);
     border-radius:50%; animation:spin 1s linear infinite; margin-bottom:1rem;
   }
   @keyframes spin{to{transform:rotate(360deg)}}
   .club-error{
     background:var(--card-bg);
-    border:1px solid #ffcccc;
+    border:1px solid #ff3b30;
     border-radius:var(--radius);
     color:#ff3b30;
     padding:20px;
@@ -95,7 +97,9 @@
     border:1px solid var(--border); border-radius:var(--radius);
     font-size:16px; background:var(--card-bg); box-shadow:var(--shadow);
     transition:all 0.3s ease; font-family:inherit;
+    color:var(--text);
   }
+  .search-input::placeholder{ color:var(--text-secondary); }
   .search-input:focus{ outline:none; border-color:var(--brand); box-shadow:0 4px 12px rgba(255,0,110,0.15); }
   .search-icon{ position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-secondary); font-size:16px; }
 
@@ -109,7 +113,7 @@
     background:var(--card-bg); color:var(--text); font-weight:500; cursor:pointer;
     font-size:14px; transition:all 0.2s ease; font-family:inherit; box-shadow:var(--shadow);
   }
-  .club-btn:hover{ background:#f8f9fa; box-shadow:var(--shadow-hover); }
+  .club-btn:hover{ background:#3a3a3a; box-shadow:var(--shadow-hover); }
   .club-btn.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
   .club-btn.primary:hover{ background:#e60062; border-color:#e60062; }
   .club-btn:disabled{ opacity:0.5; cursor:not-allowed; }
@@ -142,7 +146,7 @@
   .club-img{ width:100%; height:100%; object-fit:cover; transition:transform 0.3s ease; }
   .club-card:hover .club-img{ transform:scale(1.05); }
 
-  /* ---------- Overlay: rating only (arrow removed) ---------- */
+  /* ---------- Overlay: rating only ---------- */
   .club-rating-overlay{
     position:absolute; top:12px; left:12px; font-weight:600; padding:6px 10px;
     border-radius:3px; color:#fff; font-size:14px; min-width:32px; text-align:center;
@@ -187,7 +191,7 @@
     display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:12px 0 4px;
   }
   .club-stat{
-    text-align:center; padding:12px 8px; background:#f8f9fa; border-radius:3px;
+    text-align:center; padding:12px 8px; background:#333; border-radius:3px;
   }
   .club-stat-number{ font-size:16px; font-weight:600; color:var(--brand); display:block; margin-bottom:2px; }
   .club-stat-label{ font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; font-weight:500; }
@@ -210,28 +214,28 @@
   .club-btn.details:hover{ background:#e60062; border-color:#e60062; }
 
   /* ---------- Modal ---------- */
-  .club-modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:99999; backdrop-filter:blur(4px); padding:20px; }
+  .club-modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:99999; backdrop-filter:blur(4px); padding:20px; }
   .club-modal.active{ display:flex; }
   .club-dialog{
-    background:var(--card-bg); border-radius:var(--radius); width:100%; max-width:420px; padding:24px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,0.15);
+    background:var(--card-bg); border-radius:var(--radius); width:100%; max-width:420px; padding:24px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,0.5);
   }
   .club-dialog h2{ margin:0 0 20px; font-size:20px; font-weight:600; color:var(--text); }
   .club-field{ margin-bottom:16px; display:flex; flex-direction:column; }
   .club-label{ font-weight:500; margin-bottom:6px; color:var(--text); font-size:14px; }
   .club-dialog select, .club-dialog input[type="number"]{
-    padding:12px 16px; border:1px solid var(--border); border-radius:var(--radius); font-size:16px; background:var(--card-bg); color:var(--text); font-family:inherit;
+    padding:12px 16px; border:1px solid var(--border); border-radius:var(--radius); font-size:16px; background:#333; color:var(--text); font-family:inherit;
   }
   .club-dialog select:focus, .club-dialog input:focus{ outline:none; border-color:var(--brand); }
-  .club-check{ display:flex; align-items:center; gap:8px; font-size:14px; margin-bottom:8px; }
+  .club-check{ display:flex; align-items:center; gap:8px; font-size:14px; margin-bottom:8px; color:var(--text); }
   .club-actions{ display:flex; gap:12px; margin-top:24px; }
   .club-actions .club-btn{ flex:1; }
 
   /* ---------- Advanced toggle ---------- */
   .club-advanced-toggle{
-    width:100%; padding:12px 16px; margin:16px 0; background:#f8f9fa; border:1px solid var(--border); border-radius:var(--radius);
+    width:100%; padding:12px 16px; margin:16px 0; background:#333; border:1px solid var(--border); border-radius:var(--radius);
     cursor:pointer; font-size:14px; font-weight:500; color:var(--text); display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s ease;
   }
-  .club-advanced-toggle:hover{ background:#f0f0f0; }
+  .club-advanced-toggle:hover{ background:#3a3a3a; }
   .club-advanced-toggle:after{ content:'▼'; font-size:12px; transition:transform 0.3s ease; }
   .club-advanced-toggle.active:after{ transform:rotate(180deg); }
 
@@ -297,7 +301,6 @@
 
 <div id="main-content" style="display:none;">
   <div class="club-toolbar">
-    <!-- Home button removed -->
     <button class="club-btn primary" id="open-filter">Filter Clubs</button>
     <button class="club-btn" id="open-sort">Sort</button>
     <button class="club-btn" id="reload">Refresh Data</button>
@@ -511,7 +514,6 @@
         <div class="club-img-container">
           <img class="club-img" alt="${c.club_name || 'Club photo'}" src="${img}">
           <div class="${overlayClass}">${isFinite(rating)?rating:0}</div>
-          <!-- arrow button removed -->
         </div>
         <div class="club-content">
           <h3 class="club-title">${c.club_name || 'Unknown Club'}</h3>
@@ -575,7 +577,7 @@
   els.search.addEventListener('input', ()=>applyFilters());
 
   els.filterOpen.addEventListener('click', ()=>open(els.filterModal));
-  els.sortOpen.addEventListener('click', ()=>open(els.sortModal)); // fixed
+  els.sortOpen.addEventListener('click', ()=>open(els.sortModal));
   els.reload.addEventListener('click', ()=>loadClubData(true));
 
   els.advToggle.addEventListener('click', ()=>{
