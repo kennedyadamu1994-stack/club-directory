@@ -807,7 +807,7 @@
         items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.website, d.website));
       } else if (d.address) {
         // If website doesn't exist but address does, show address with map link
-        items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
+        items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Website', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
       }
       
       if (items.length){ items.forEach(fn=>fn()); document.getElementById('contactCard').style.display = ''; }
