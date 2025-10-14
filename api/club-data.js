@@ -202,6 +202,9 @@ function parseClubRow(row) {
     // Review and Shop Links (CI-CJ: 86-87)
     review_link: safeGet(row, 86) || '',
     shop_link: safeGet(row, 87) || '',
+
+    // Club Snippet (CL: 89) ← NEW FIELD ADDED HERE
+    club_snippet: safeGet(row, 89) || '',
   };
 
   // Sessions: up to 4 rows (time, date, type)
