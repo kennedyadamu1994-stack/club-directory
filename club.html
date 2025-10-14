@@ -573,9 +573,17 @@
 
       // Names / activity
       document.getElementById('clubName').textContent = d.club_name || 'Club';
-      document.getElementById('clubActivity').textContent = d.activity_type || '';
       
-      // Club snippet (BT column)
+      // Activity type as tag
+      const activityEl = document.getElementById('clubActivity');
+      if (d.activity_type){
+        activityEl.textContent = d.activity_type;
+        activityEl.style.display = 'inline-block';
+      } else {
+        activityEl.style.display = 'none';
+      }
+      
+      // Club snippet (CL column) - appears under the category tag
       const snippetEl = document.getElementById('clubSnippet');
       if (d.club_snippet){
         snippetEl.textContent = d.club_snippet;
