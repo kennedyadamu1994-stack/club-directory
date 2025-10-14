@@ -86,8 +86,20 @@
     }
     .club-logo{width:120px; height:120px; border-radius:12px; margin:0 auto 20px; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.3); overflow:hidden;}
     .club-logo img{width:100%; height:100%; object-fit:cover;}
-    .hero-title{font-size:32px; font-weight:700; margin-bottom:8px;}
-    .hero-subtitle{font-size:18px; opacity:.95; margin-bottom:28px;}
+    .hero-title{font-size:32px; font-weight:700; margin-bottom:12px;}
+    .hero-category-tag{
+      display:inline-block;
+      background:rgba(255,255,255,.2);
+      color:#fff;
+      padding:6px 14px;
+      border-radius:3px;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:12px;
+      backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.3);
+    }
+    .hero-subtitle{font-size:16px; opacity:.95; margin-bottom:28px; max-width:600px;}
     .hero-buttons{display:flex; gap:12px; justify-content:center; flex-wrap:wrap;}
     .hero-cta{
       background:var(--brand); color:#fff; border:none; padding:14px 28px; font-size:16px; font-weight:700; border-radius:3px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .25s; box-shadow:0 4px 12px rgba(255,0,110,.3);
@@ -208,7 +220,8 @@
         margin-bottom: 24px;
       }
       .hero-title{font-size:28px; margin-bottom: 12px;}
-      .hero-subtitle{font-size:16px; margin-bottom: 32px;}
+      .hero-category-tag{font-size:12px; padding:5px 12px; margin-bottom:10px;}
+      .hero-subtitle{font-size:15px; margin-bottom: 32px;}
       
       /* Keep buttons in ONE LINE on mobile */
       .hero-buttons{
@@ -266,7 +279,8 @@
       <div class="card hero-card" id="heroCard">
         <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
         <h1 class="hero-title" id="clubName">Club Name</h1>
-        <p class="hero-subtitle" id="clubActivity">Activity Type</p>
+        <span class="hero-category-tag" id="clubActivity">Activity Type</span>
+        <p class="hero-subtitle" id="clubSnippet"></p>
         <div class="hero-buttons">
           <a href="#membership" class="hero-cta" id="joinButton">Join The Club</a>
           <a href="#" class="hero-cta secondary" id="reviewButton" style="display:none;" target="_blank" rel="noopener">
@@ -525,10 +539,10 @@
         "@type":"SportsClub",
         "name": d.club_name || '',
         "description": d.club_bio || '',
-        "address": { "@type":"PostalAddress", "streetAddress": d.address || '', "addressLocality": d.location || '' },
+        "address": { "@type":"PostalAddress", "streetAddress": d.website || '', "addressLocality": d.location || '' },
         "telephone": d.phone || '',
         "email": d.email || '',
-        "url": d.page_url || location.href,
+        "url": d.website || d.page_url || location.href,
         "priceRange": d.monthly_fee_amount ? formatMoney(d.monthly_fee_amount) + '/mo' : ''
       };
       document.getElementById('structuredData').textContent = JSON.stringify(sd);
@@ -560,6 +574,15 @@
       // Names / activity
       document.getElementById('clubName').textContent = d.club_name || 'Club';
       document.getElementById('clubActivity').textContent = d.activity_type || '';
+      
+      // Club snippet
+      const snippetEl = document.getElementById('clubSnippet');
+      if (d.club_snippet){
+        snippetEl.textContent = d.club_snippet;
+        snippetEl.style.display = 'block';
+      } else {
+        snippetEl.style.display = 'none';
+      }
 
       // CTAs - Main Join Button
       const joinBtn = document.getElementById('joinButton');
@@ -758,8 +781,7 @@
         const ig = sanitiseHandle(d.instagram);
         items.push(()=>addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig));
       }
-      if (d.address) items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
-      if (d.page_url) items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Club Page', 'Open website', d.page_url));
+      if (d.website) items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.website, d.website));
       if (items.length){ items.forEach(fn=>fn()); document.getElementById('contactCard').style.display = ''; }
 
       // Collapsibles
