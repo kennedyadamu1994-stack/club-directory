@@ -1,4 +1,4 @@
-// api/clubs.js - Fetch all active clubs data with corrected column mapping and faster freshness
+// api/clubs.js - Fetch all active clubs data with corrected column mapping and verification support
 module.exports = async (req, res) => {
   try {
     // CORS
@@ -57,10 +57,10 @@ module.exports = async (req, res) => {
       club.description = club.club_bio;
       club.rating = club.numeric_rating;
       club.user_rating = club.numeric_rating;
-      club.review_count = 0; // directory doesn’t need the full testimonials payload
+      club.review_count = 0; // directory doesn't need the full testimonials payload
       club.total_members = club.member_count;
       club.age_groups = club.tags_who;
-      // Keep skill_levels for filter menu; don’t render it in the card UI
+      // Keep skill_levels for filter menu; don't render it in the card UI
       club.skill_levels = 'All levels';
       club.tags = club.tags_array.join(', ');
       club.facilities = club.facilities_list;
@@ -101,6 +101,10 @@ function safeInt(row, index) {
   if (v === '') return 0;
   const n = parseInt(v, 10);
   return Number.isFinite(n) ? n : 0;
+}
+function safeBool(row, index) {
+  const v = safeGet(row, index).toString().trim().toLowerCase();
+  return ['yes', 'true', '1'].includes(v);
 }
 function makeSlug(s) {
   return s
@@ -162,5 +166,8 @@ function parseClubRow(row) {
 
     // Audience (CH: 85)
     audience: safeGet(row, 85) || '',
+
+    // Verified (CM: 90) — NEW FIELD
+    verified: safeBool(row, 90),
   };
 }
