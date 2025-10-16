@@ -102,16 +102,35 @@
     .club-logo{width:120px; height:120px; border-radius:12px; margin:0 auto 20px; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.3); overflow:hidden; position:relative; z-index:2;}
     .club-logo img{width:100%; height:100%; object-fit:cover;}
     
-    /* Hero title with verification badge */
+    /* Hero title with verification badge - FIXED ALIGNMENT */
     .hero-title-row{
-      display:flex; align-items:center; justify-content:center; gap:12px;
-      margin-bottom:12px; position:relative; z-index:2; flex-wrap:wrap;
+      display:inline-flex; 
+      align-items:center; 
+      justify-content:center; 
+      gap:10px;
+      margin-bottom:12px; 
+      position:relative; 
+      z-index:2;
+      max-width: 100%;
     }
-    .hero-title{font-size:32px; font-weight:700; margin:0; line-height:1.2;}
+    .hero-title{
+      font-size:32px; 
+      font-weight:700; 
+      margin:0; 
+      line-height:1.2;
+      display:inline-block;
+    }
     .hero-verified-badge{
-      display:inline-flex; align-items:center; justify-content:center;
-      width:32px; height:32px; background:#FF006E; border-radius:50%;
-      flex-shrink:0; box-shadow:0 4px 12px rgba(29,161,242,0.4);
+      display:inline-flex; 
+      align-items:center; 
+      justify-content:center;
+      width:32px; 
+      height:32px; 
+      background:#FF006E; 
+      border-radius:50%;
+      flex-shrink:0; 
+      box-shadow:0 4px 12px rgba(255,0,110,0.4);
+      margin-top: 2px;
     }
     .hero-verified-badge svg{
       width:20px; height:20px; fill:#fff;
@@ -256,15 +275,18 @@
       }
       .hero-title-row{
         gap:8px;
+        flex-wrap: wrap;
       }
-      .hero-title{font-size:28px; margin-bottom: 12px;}
+      .hero-title{font-size:28px; margin-bottom: 0;}
       .hero-verified-badge{
-        width:28px; height:28px;
+        width:28px; 
+        height:28px;
+        margin-top: 1px;
       }
       .hero-verified-badge svg{
         width:18px; height:18px;
       }
-      .hero-category-tag{font-size:12px; padding:5px 12px; margin-bottom:10px;}
+      .hero-category-tag{font-size:12px; padding:5px 12px; margin-bottom:10px; margin-top: 12px;}
       .hero-subtitle{font-size:15px; margin-bottom: 32px;}
       
       /* Keep buttons in ONE LINE on mobile */
