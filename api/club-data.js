@@ -1,4 +1,4 @@
-// api/club-data.js — Individual club data retrieval (freshness + complete column mapping)
+// api/club-data.js — Individual club data retrieval (freshness + complete column mapping + verification)
 
 module.exports = async (req, res) => {
   try {
@@ -120,6 +120,10 @@ function safeInt(row, index) {
   const n = parseInt(v, 10);
   return Number.isFinite(n) ? n : 0;
 }
+function safeBool(row, index) {
+  const v = safeGet(row, index).toString().trim().toLowerCase();
+  return ['yes', 'true', '1'].includes(v);
+}
 function makeSlug(s) {
   return s
     .toLowerCase()
@@ -203,8 +207,11 @@ function parseClubRow(row) {
     review_link: safeGet(row, 86) || '',
     shop_link: safeGet(row, 87) || '',
 
-    // Club Snippet (CL: 89) ← NEW FIELD ADDED HERE
+    // Club Snippet (CL: 89)
     club_snippet: safeGet(row, 89) || '',
+
+    // Verified (CM: 90) — NEW FIELD
+    verified: safeBool(row, 90),
   };
 
   // Sessions: up to 4 rows (time, date, type)
