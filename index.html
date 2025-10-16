@@ -20,6 +20,7 @@
     --radius:3px;
     --shadow:0 1px 3px rgba(0,0,0,0.3);
     --shadow-hover:0 4px 12px rgba(0,0,0,0.5);
+    --verified-blue:#1DA1F2;
   }
 
   *{ margin:0; padding:0; box-sizing:border-box; }
@@ -167,9 +168,30 @@
   .club-score-9{background:rgba(34,139,34,0.9)}
   .club-score-10{background:rgba(0,100,0,0.9)}
 
+  /* ---------- Verification badge (top-right) ---------- */
+  .club-verified-badge{
+    position:absolute; top:12px; right:12px;
+    background:rgba(29,161,242,0.95); color:#fff; padding:6px 10px;
+    border-radius:3px; font-size:12px; font-weight:600; z-index:4;
+    box-shadow:0 2px 8px rgba(0,0,0,0.2); backdrop-filter:blur(10px);
+    display:flex; align-items:center; gap:4px;
+  }
+  .club-verified-badge svg{
+    width:14px; height:14px; fill:currentColor;
+  }
+
   /* ---------- Card content ---------- */
   .club-content{ padding:20px; display:flex; flex-direction:column; gap:10px; flex-grow:1; }
+  .club-title-row{ display:flex; align-items:center; gap:6px; margin-bottom:4px; }
   .club-title{ font-size:18px; font-weight:600; color:var(--text); line-height:1.3; margin:0; }
+  .club-title-verified{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:18px; height:18px; background:var(--verified-blue); border-radius:50%;
+    flex-shrink:0;
+  }
+  .club-title-verified svg{
+    width:12px; height:12px; fill:#fff;
+  }
   .club-activity{ font-size:16px; color:var(--brand); font-weight:500; margin:0; }
   .club-location{ font-size:14px; color:var(--text-secondary); display:flex; align-items:center; gap:4px; }
 
@@ -323,6 +345,7 @@
         </div>
       </div>
       <div class="club-check"><input type="checkbox" id="f-beginners"><label for="f-beginners">Beginner friendly</label></div>
+      <div class="club-check"><input type="checkbox" id="f-verified"><label for="f-verified">Verified clubs only</label></div>
       <div class="club-check"><input type="checkbox" id="f-featured"><label for="f-featured">Featured clubs only</label></div>
     </div>
 
@@ -392,6 +415,7 @@
     fMin: document.getElementById('f-pmin'),
     fMax: document.getElementById('f-pmax'),
     fBeginners: document.getElementById('f-beginners'),
+    fVerified: document.getElementById('f-verified'),
     fFeatured: document.getElementById('f-featured'),
     fAges: document.getElementById('f-ages'),
     fSkills: document.getElementById('f-skills'),
@@ -408,6 +432,9 @@
   let RAW = [];
   let VIEW = [];
   let SORT = 'default';
+
+  // Checkmark SVG for verified badge
+  const checkmarkSVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>';
 
   function classForScore(score){
     const n = Math.max(0, Math.min(10, Math.round(Number(score)||0)));
@@ -456,6 +483,7 @@
       }
       if (els.fActivity.value && c.activity_type !== els.fActivity.value) return false;
       if (els.fLocation.value && c.location !== els.fLocation.value) return false;
+      if (els.fVerified.checked && !c.verified) return false;
       if (els.fFeatured.checked && !c.featured) return false;
 
       const price = Number(c.monthly_fee_amount||0);
@@ -509,14 +537,21 @@
     if (c.is_wheelchair_accessible) badges.push('<span class="club-badge wheelchair">Accessible</span>');
     if (c.is_all_ages) badges.push('<span class="club-badge all-ages">All ages</span>');
 
+    // Verification badge in image overlay
+    const verifiedOverlay = c.verified ? `<div class="club-verified-badge">${checkmarkSVG}Verified</div>` : '';
+
     return `
       <article class="club-card ${c.featured?'featured':''}">
         <div class="club-img-container">
           <img class="club-img" alt="${c.club_name || 'Club photo'}" src="${img}">
           <div class="${overlayClass}">${isFinite(rating)?rating:0}</div>
+          ${verifiedOverlay}
         </div>
         <div class="club-content">
-          <h3 class="club-title">${c.club_name || 'Unknown Club'}</h3>
+          <div class="club-title-row">
+            <h3 class="club-title">${c.club_name || 'Unknown Club'}</h3>
+            ${c.verified ? `<span class="club-title-verified">${checkmarkSVG}</span>` : ''}
+          </div>
           <p class="club-activity">${c.activity_type || ''}</p>
           <p class="club-location">📍 ${c.location || ''}</p>
 
@@ -591,6 +626,7 @@
     els.fMin.value = 0;
     els.fMax.value = '';
     els.fBeginners.checked = false;
+    els.fVerified.checked = false;
     els.fFeatured.checked = false;
     els.fAges.value = '';
     els.fSkills.value = '';
