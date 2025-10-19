@@ -45,7 +45,9 @@
       max-width:1400px; margin:0 auto; padding:12px 20px;
       display:flex; align-items:center; justify-content:space-between;
     }
-    .nbrh-logo{ height:36px; object-fit:contain; }
+    .nbrh-logo-link{ display:block; line-height:0; }
+    .nbrh-logo{ height:36px; object-fit:contain; transition:opacity .2s; }
+    .nbrh-logo:hover{ opacity:.8; }
     .nbrh-nav{ display:flex; gap:16px; align-items:center; }
     .nbrh-nav a{ color:#fff; text-decoration:none; font-weight:500; }
     .nbrh-nav a:hover{ color:var(--brand); }
@@ -320,10 +322,11 @@
   <!-- NBRH Brand Header (directory version) -->
   <header class="nbrh-header">
     <div class="nbrh-header-inner">
-      <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
+      <a href="https://www.thenbrh.co.uk/" class="nbrh-logo-link">
+        <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
+      </a>
       <nav class="nbrh-nav">
         <a href="/">Browse Clubs</a>
-        <a href="https://www.thenbrh.co.uk/" target="_blank" rel="noopener">NBRH Home</a>
       </nav>
     </div>
   </header>
@@ -353,10 +356,10 @@
         <span class="hero-category-tag" id="clubActivity">Activity Type</span>
         <p class="hero-subtitle" id="clubSnippet"></p>
         <div class="hero-buttons">
-          <a href="#" class="hero-cta secondary" id="reviewButton" style="display:none;" target="_blank" rel="noopener">
+          <a href="#" class="hero-cta secondary" id="reviewButton" style="display:none;">
             <i class="fas fa-star" style="margin-right:8px;"></i>Review
           </a>
-          <a href="#" class="hero-cta secondary" id="shopButton" style="display:none;" target="_blank" rel="noopener">
+          <a href="#" class="hero-cta secondary" id="shopButton" style="display:none;">
             <i class="fas fa-shopping-bag" style="margin-right:8px;"></i>Shop
           </a>
         </div>
@@ -519,7 +522,7 @@
       </div>
 
       <!-- Sticky Join CTA -->
-      <a id="stickyCta" class="sticky-cta" href="#" target="_blank" rel="noopener" style="display:none;">Coming Soon</a>
+      <a id="stickyCta" class="sticky-cta" href="#" style="display:none;">Coming Soon</a>
     </div>
   </div>
 
@@ -565,8 +568,6 @@
   function addContact(container, iconHtml, label, subtext, href){
     const a = document.createElement('a');
     a.className = 'contact-item';
-    a.target = '_blank';
-    a.rel = 'noopener';
     a.href = href || 'javascript:void(0)';
     a.innerHTML = `
       <div class="contact-icon">${iconHtml}</div>
