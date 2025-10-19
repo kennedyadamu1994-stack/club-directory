@@ -43,7 +43,9 @@
     max-width:1400px; margin:0 auto; padding:12px 20px;
     display:flex; align-items:center; justify-content:space-between;
   }
-  .nbrh-logo{ height:36px; object-fit:contain; }
+  .nbrh-logo-link{ display:block; line-height:0; }
+  .nbrh-logo{ height:36px; object-fit:contain; transition:opacity .2s; }
+  .nbrh-logo:hover{ opacity:.8; }
   .nbrh-nav{ display:flex; gap:16px; align-items:center; }
   .nbrh-nav a{ color:#fff; text-decoration:none; font-weight:500; }
   .nbrh-nav a:hover{ color:var(--brand); }
@@ -291,10 +293,11 @@
 <!-- NBRH Brand Header -->
 <header class="nbrh-header">
   <div class="nbrh-header-inner">
-    <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
+    <a href="https://www.thenbrh.co.uk/" class="nbrh-logo-link">
+      <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
+    </a>
     <nav class="nbrh-nav">
       <a href="/">Browse Clubs</a>
-      <a href="https://www.thenbrh.co.uk/" target="_blank" rel="noopener">NBRH Home</a>
     </nav>
   </div>
 </header>
