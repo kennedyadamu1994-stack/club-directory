@@ -240,7 +240,15 @@
     .contact-item{background:#333; border-radius:3px; padding:16px; text-decoration:none; color:inherit; display:flex; align-items:center;}
     .contact-icon{width:44px; height:44px; border-radius:3px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; margin-right:12px; font-size:16px;}
     .contact-info h4{font-size:15px; font-weight:700; color:#ffffff; margin-bottom:3px;}
-    .contact-info p{font-size:13px; color:#999;}
+    .contact-info p{
+      font-size:13px; 
+      color:#999;
+      /* FIX: Truncate long URLs */
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width:100%;
+    }
 
     /* Sticky Join CTA */
     .sticky-cta{
@@ -613,7 +621,7 @@
         "address": { "@type":"PostalAddress", "streetAddress": d.address || '', "addressLocality": d.location || '' },
         "telephone": d.phone || '',
         "email": d.email || '',
-        "url": d.website || d.page_url || location.href,
+        "url": d.page_url || location.href,
         "priceRange": d.monthly_fee_amount ? formatMoney(d.monthly_fee_amount) + '/mo' : ''
       };
       document.getElementById('structuredData').textContent = JSON.stringify(sd);
@@ -850,7 +858,7 @@
         }
       }
 
-      // Contact - support both 'website' (new column CF) and 'address' (fallback)
+      // Contact - FIX: Use page_url for website, separate address box
       const cg = document.getElementById('contactGrid');
       const items = [];
       if (d.email) items.push(()=>addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email));
@@ -860,12 +868,13 @@
         const ig = sanitiseHandle(d.instagram);
         items.push(()=>addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig));
       }
-      // Website box - check for 'website' field first (column CF), then fall back to address if needed
-      if (d.website && isUrl(d.website)) {
-        items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.website, d.website));
-      } else if (d.address) {
-        // If website doesn't exist but address does, show address with map link
-        items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Website', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
+      // Website box - use page_url for website link
+      if (d.page_url && isUrl(d.page_url)) {
+        items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.page_url, d.page_url));
+      }
+      // Address box with map link
+      if (d.address) {
+        items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
       }
       
       if (items.length){ items.forEach(fn=>fn()); document.getElementById('contactCard').style.display = ''; }
