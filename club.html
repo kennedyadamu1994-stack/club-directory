@@ -237,17 +237,29 @@
 
     /* Contact card */
     .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;}
-    .contact-item{background:#333; border-radius:3px; padding:16px; text-decoration:none; color:inherit; display:flex; align-items:center;}
-    .contact-icon{width:44px; height:44px; border-radius:3px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; margin-right:12px; font-size:16px;}
+    .contact-item{
+      background:#333; border-radius:3px; padding:16px; text-decoration:none; 
+      color:inherit; display:flex; align-items:center;
+      min-width: 0; /* Allow flex children to shrink below content size */
+    }
+    .contact-icon{
+      width:44px; height:44px; border-radius:3px; background:var(--brand); 
+      color:#fff; display:flex; align-items:center; justify-content:center; 
+      margin-right:12px; font-size:16px; flex-shrink: 0;
+    }
+    .contact-info{
+      min-width: 0; /* Critical for text truncation to work */
+      flex: 1;
+    }
     .contact-info h4{font-size:15px; font-weight:700; color:#ffffff; margin-bottom:3px;}
     .contact-info p{
       font-size:13px; 
       color:#999;
-      /* FIX: Truncate long URLs */
+      /* Text truncation */
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
-      max-width:100%;
+      display:block;
     }
 
     /* Sticky Join CTA */
@@ -612,7 +624,7 @@
       if (d.image_url) document.getElementById('ogImage').setAttribute('content', d.image_url);
       document.getElementById('ogUrl').setAttribute('content', location.href);
 
-      // Structured data - support both website and address fields
+      // Structured data - use website field for URL
       const sd = {
         "@context":"https://schema.org",
         "@type":"SportsClub",
@@ -621,7 +633,7 @@
         "address": { "@type":"PostalAddress", "streetAddress": d.address || '', "addressLocality": d.location || '' },
         "telephone": d.phone || '',
         "email": d.email || '',
-        "url": d.page_url || location.href,
+        "url": d.website || d.page_url || location.href,
         "priceRange": d.monthly_fee_amount ? formatMoney(d.monthly_fee_amount) + '/mo' : ''
       };
       document.getElementById('structuredData').textContent = JSON.stringify(sd);
@@ -858,7 +870,7 @@
         }
       }
 
-      // Contact - FIX: Use page_url for website, separate address box
+      // Contact - Use website column (CE) for website, address column (CN) for address
       const cg = document.getElementById('contactGrid');
       const items = [];
       if (d.email) items.push(()=>addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email));
@@ -868,11 +880,11 @@
         const ig = sanitiseHandle(d.instagram);
         items.push(()=>addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig));
       }
-      // Website box - use page_url for website link
-      if (d.page_url && isUrl(d.page_url)) {
-        items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.page_url, d.page_url));
+      // Website box - use website field (Column CE)
+      if (d.website && isUrl(d.website)) {
+        items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.website, d.website));
       }
-      // Address box with map link
+      // Address box - use address field (Column CN) with map link
       if (d.address) {
         items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
       }
