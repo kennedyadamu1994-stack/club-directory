@@ -187,12 +187,12 @@ function parseClubRow(row) {
     tags_vibe: safeGet(row, 76),
     tags_accessibility: safeGet(row, 77),
 
-    // Contact (CA-CE: 78–82)
+    // Contact (CA-CD: 78-81, CE: 82, CN: 91)
     email: safeGet(row, 78),
     phone: safeGet(row, 79),
     whatsapp: safeGet(row, 80),
     instagram: safeGet(row, 81),
-    address: safeGet(row, 82),
+    website: safeGet(row, 82),  // CE: Website column
 
     // Design (CF: 83)
     hero_background_gradient: safeGet(row, 83),
@@ -210,8 +210,11 @@ function parseClubRow(row) {
     // Club Snippet (CL: 89)
     club_snippet: safeGet(row, 89) || '',
 
-    // Verified (CM: 90) — NEW FIELD
+    // Verified (CM: 90)
     verified: safeBool(row, 90),
+
+    // Address (CN: 91) - NEW COLUMN
+    address: safeGet(row, 91),
   };
 
   // Sessions: up to 4 rows (time, date, type)
@@ -274,7 +277,7 @@ function generateStructuredData(c) {
     },
     telephone: c.phone || '',
     email: c.email || '',
-    url: c.page_url || '',
+    url: c.website || c.page_url || '',
     sameAs: (c.instagram ? [`https://instagram.com/${String(c.instagram).replace(/^@/, '')}`] : []),
     priceRange: c.monthly_fee_amount ? `£${c.monthly_fee_amount}/mo` : '',
   };
