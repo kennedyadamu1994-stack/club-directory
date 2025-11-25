@@ -153,12 +153,12 @@ function parseClubRow(row) {
     tags_vibe: safeGet(row, 76),
     tags_accessibility: safeGet(row, 77),
 
-    // Contact (CA-CE: 78-82)
+    // Contact (CA-CD: 78-81, CE: 82, CN: 91)
     email: safeGet(row, 78),
     phone: safeGet(row, 79),
     whatsapp: safeGet(row, 80),
     instagram: safeGet(row, 81),
-    address: safeGet(row, 82),
+    website: safeGet(row, 82),  // CE: Website column
 
     // Design + Image (CF-CG: 83-84)
     hero_background_gradient: safeGet(row, 83),
@@ -167,7 +167,10 @@ function parseClubRow(row) {
     // Audience (CH: 85)
     audience: safeGet(row, 85) || '',
 
-    // Verified (CM: 90) — NEW FIELD
+    // Verified (CM: 90)
     verified: safeBool(row, 90),
+
+    // Address (CN: 91) - NEW COLUMN
+    address: safeGet(row, 91),
   };
 }
