@@ -382,6 +382,7 @@
     <div class="club-field">
       <select id="s-key">
         <option value="default">Default (Featured → Rating → Members)</option>
+        <option value="ranking">Ranking position (best → worst)</option>
         <option value="rating">NBRH rating (high → low)</option>
         <option value="members">Member count (high → low)</option>
         <option value="priceLow">Price (low → high)</option>
@@ -512,6 +513,18 @@
     // Create a COPY to avoid mutating during render
     const sorted = [...VIEW];
     
+    console.log('=== SORT DEBUG ===');
+    console.log('Sort key:', key);
+    console.log('Items to sort:', sorted.length);
+    
+    // Sample first 5 items before sort
+    if (key.includes('price')) {
+      console.log('Sample prices BEFORE sort:');
+      sorted.slice(0, 5).forEach(c => {
+        console.log(`  ${c.club_name}: £${c.monthly_fee_amount} (type: ${typeof c.monthly_fee_amount})`);
+      });
+    }
+    
     sorted.sort((a,b)=>{
       // Helper to safely get numbers
       const getNum = (val) => {
@@ -530,13 +543,15 @@
           // Treat free (£0) as lowest price
           const aPrice = getNum(a.monthly_fee_amount);
           const bPrice = getNum(b.monthly_fee_amount);
-          return aPrice - bPrice;
+          const result = aPrice - bPrice;
+          return result;
           
         case 'priceHigh': 
           // Treat free (£0) as lowest price, so it goes last in high-to-low
           const aPriceHigh = getNum(a.monthly_fee_amount);
           const bPriceHigh = getNum(b.monthly_fee_amount);
-          return bPriceHigh - aPriceHigh;
+          const resultHigh = bPriceHigh - aPriceHigh;
+          return resultHigh;
           
         case 'name': 
           const aName = String(a.club_name || '');
@@ -559,6 +574,14 @@
           return getNum(b.member_count) - getNum(a.member_count);
       }
     });
+
+    // Sample first 10 items after sort
+    if (key.includes('price')) {
+      console.log('Sample prices AFTER sort:');
+      sorted.slice(0, 10).forEach(c => {
+        console.log(`  ${c.club_name}: £${c.monthly_fee_amount}`);
+      });
+    }
 
     renderCards(sorted);
   }
