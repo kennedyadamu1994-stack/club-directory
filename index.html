@@ -511,19 +511,33 @@
     const key = SORT;
     VIEW.sort((a,b)=>{
       switch(key){
-        case 'rating': return (b.numeric_rating||0) - (a.numeric_rating||0);
-        case 'members': return (b.member_count||0) - (a.member_count||0);
-        case 'priceLow': return (a.monthly_fee_amount||Infinity) - (b.monthly_fee_amount||Infinity);
-        case 'priceHigh': return (b.monthly_fee_amount||0) - (a.monthly_fee_amount||0);
-        case 'name': return a.club_name.localeCompare(b.club_name);
-        case 'location': return (a.location||'').localeCompare(b.location||'');
+        case 'rating': 
+          return (Number(b.numeric_rating)||0) - (Number(a.numeric_rating)||0);
+        case 'members': 
+          return (Number(b.member_count)||0) - (Number(a.member_count)||0);
+        case 'priceLow': 
+          const aPrice = Number(a.monthly_fee_amount)||0;
+          const bPrice = Number(b.monthly_fee_amount)||0;
+          // Handle free clubs (0 price) - put them first
+          if (aPrice === 0 && bPrice === 0) return 0;
+          if (aPrice === 0) return -1;
+          if (bPrice === 0) return 1;
+          return aPrice - bPrice;
+        case 'priceHigh': 
+          return (Number(b.monthly_fee_amount)||0) - (Number(a.monthly_fee_amount)||0);
+        case 'name': 
+          return (a.club_name||'').localeCompare(b.club_name||'');
+        case 'location': 
+          return (a.location||'').localeCompare(b.location||'');
         default:
           // Featured first, then rating, then members
-          const f = (b.featured?1:0) - (a.featured?1:0);
-          if (f) return f;
-          const r = (b.numeric_rating||0) - (a.numeric_rating||0);
-          if (r) return r;
-          return (b.member_count||0) - (a.member_count||0);
+          const featuredDiff = (b.featured?1:0) - (a.featured?1:0);
+          if (featuredDiff !== 0) return featuredDiff;
+          
+          const ratingDiff = (Number(b.numeric_rating)||0) - (Number(a.numeric_rating)||0);
+          if (ratingDiff !== 0) return ratingDiff;
+          
+          return (Number(b.member_count)||0) - (Number(a.member_count)||0);
       }
     });
   }
@@ -547,7 +561,7 @@
       <article class="club-card ${c.featured?'featured':''}">
         <div class="club-img-container">
           <img class="club-img" alt="${c.club_name || 'Club photo'}" src="${img}">
-          <div class="${overlayClass}">${isFinite(rating)?rating:0}</div>
+          <div class="${overlayClass}">${isFinite(rating)?rating.toFixed(1):0}</div>
           ${verifiedOverlay}
         </div>
         <div class="club-content">
@@ -600,6 +614,21 @@
       RAW = Array.isArray(data) ? data : [];
       renderFiltersOptions(RAW);
       els.search.value = '';
+      
+      // Reset all filters
+      els.fActivity.value = '';
+      els.fLocation.value = '';
+      els.fMin.value = '0';
+      els.fMax.value = '';
+      els.fBeginners.checked = false;
+      els.fVerified.checked = false;
+      els.fFeatured.checked = false;
+      els.fAges.value = '';
+      els.fSkills.value = '';
+      els.fMembers.value = '';
+      els.fWheel.checked = false;
+      els.fAllAges.checked = false;
+      
       applyFilters();
 
       els.loading.style.display = 'none';
@@ -626,7 +655,7 @@
   els.fReset.addEventListener('click', ()=>{
     els.fActivity.value = '';
     els.fLocation.value = '';
-    els.fMin.value = 0;
+    els.fMin.value = '0';
     els.fMax.value = '';
     els.fBeginners.checked = false;
     els.fVerified.checked = false;
@@ -636,8 +665,13 @@
     els.fMembers.value = '';
     els.fWheel.checked = false;
     els.fAllAges.checked = false;
+    applyFilters();
   });
-  els.fApply.addEventListener('click', ()=>{ close(els.filterModal); applyFilters(); });
+  
+  els.fApply.addEventListener('click', ()=>{ 
+    close(els.filterModal); 
+    applyFilters(); 
+  });
 
   els.sClose.addEventListener('click', ()=>close(els.sortModal));
   els.sApply.addEventListener('click', ()=>{
