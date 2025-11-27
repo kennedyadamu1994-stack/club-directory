@@ -527,16 +527,16 @@
           return getNum(b.member_count) - getNum(a.member_count);
           
         case 'priceLow': 
+          // Treat free (£0) as lowest price
           const aPrice = getNum(a.monthly_fee_amount);
           const bPrice = getNum(b.monthly_fee_amount);
-          // Free clubs first
-          if (aPrice === 0 && bPrice === 0) return 0;
-          if (aPrice === 0) return -1;
-          if (bPrice === 0) return 1;
           return aPrice - bPrice;
           
         case 'priceHigh': 
-          return getNum(b.monthly_fee_amount) - getNum(a.monthly_fee_amount);
+          // Treat free (£0) as lowest price, so it goes last in high-to-low
+          const aPriceHigh = getNum(a.monthly_fee_amount);
+          const bPriceHigh = getNum(b.monthly_fee_amount);
+          return bPriceHigh - aPriceHigh;
           
         case 'name': 
           const aName = String(a.club_name || '');
