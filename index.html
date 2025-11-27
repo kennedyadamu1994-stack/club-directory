@@ -321,7 +321,7 @@
 </div>
 <div id="error-state" class="club-error" style="display:none;">
   <p>Failed to load clubs. Check your connection or try again.</p>
-  <button class="club-btn primary" onclick="loadClubData(true)">Try Again</button>
+  <button class="club-btn primary" onclick="window.location.reload()">Try Again</button>
 </div>
 
 <div id="main-content" style="display:none;">
@@ -503,43 +503,64 @@
       return true;
     });
 
-    applySort();
-    renderCards(VIEW);
+    applySortAndRender();
   }
 
-  function applySort(){
+  function applySortAndRender(){
     const key = SORT;
-    VIEW.sort((a,b)=>{
+    
+    // Create a COPY to avoid mutating during render
+    const sorted = [...VIEW];
+    
+    sorted.sort((a,b)=>{
+      // Helper to safely get numbers
+      const getNum = (val) => {
+        const n = Number(val);
+        return isFinite(n) ? n : 0;
+      };
+      
       switch(key){
         case 'rating': 
-          return (Number(b.numeric_rating)||0) - (Number(a.numeric_rating)||0);
+          return getNum(b.numeric_rating) - getNum(a.numeric_rating);
+          
         case 'members': 
-          return (Number(b.member_count)||0) - (Number(a.member_count)||0);
+          return getNum(b.member_count) - getNum(a.member_count);
+          
         case 'priceLow': 
-          const aPrice = Number(a.monthly_fee_amount)||0;
-          const bPrice = Number(b.monthly_fee_amount)||0;
-          // Handle free clubs (0 price) - put them first
+          const aPrice = getNum(a.monthly_fee_amount);
+          const bPrice = getNum(b.monthly_fee_amount);
+          // Free clubs first
           if (aPrice === 0 && bPrice === 0) return 0;
           if (aPrice === 0) return -1;
           if (bPrice === 0) return 1;
           return aPrice - bPrice;
+          
         case 'priceHigh': 
-          return (Number(b.monthly_fee_amount)||0) - (Number(a.monthly_fee_amount)||0);
+          return getNum(b.monthly_fee_amount) - getNum(a.monthly_fee_amount);
+          
         case 'name': 
-          return (a.club_name||'').localeCompare(b.club_name||'');
+          const aName = String(a.club_name || '');
+          const bName = String(b.club_name || '');
+          return aName.localeCompare(bName);
+          
         case 'location': 
-          return (a.location||'').localeCompare(b.location||'');
+          const aLoc = String(a.location || '');
+          const bLoc = String(b.location || '');
+          return aLoc.localeCompare(bLoc);
+          
         default:
-          // Featured first, then rating, then members
+          // Default: Featured → Rating → Members
           const featuredDiff = (b.featured?1:0) - (a.featured?1:0);
           if (featuredDiff !== 0) return featuredDiff;
           
-          const ratingDiff = (Number(b.numeric_rating)||0) - (Number(a.numeric_rating)||0);
+          const ratingDiff = getNum(b.numeric_rating) - getNum(a.numeric_rating);
           if (ratingDiff !== 0) return ratingDiff;
           
-          return (Number(b.member_count)||0) - (Number(a.member_count)||0);
+          return getNum(b.member_count) - getNum(a.member_count);
       }
     });
+
+    renderCards(sorted);
   }
 
   function cardHtml(c){
@@ -629,6 +650,10 @@
       els.fWheel.checked = false;
       els.fAllAges.checked = false;
       
+      // Reset sort to default
+      SORT = 'default';
+      els.sKey.value = 'default';
+      
       applyFilters();
 
       els.loading.style.display = 'none';
@@ -677,8 +702,7 @@
   els.sApply.addEventListener('click', ()=>{
     SORT = els.sKey.value || 'default';
     close(els.sortModal);
-    applySort();
-    renderCards(VIEW);
+    applySortAndRender();
   });
 
   // Close modals on backdrop click
