@@ -451,6 +451,32 @@
     return '£' + (Math.round(v*100)/100).toFixed(v%1?2:0);
   }
 
+  // Extract numeric price for sorting from either monthly_fee_amount or monthly_fee_text
+  function getPriceForSort(club) {
+    // First try monthly_fee_amount
+    const amount = Number(club.monthly_fee_amount);
+    if (isFinite(amount) && amount > 0) {
+      return amount;
+    }
+    
+    // If no amount, try to extract from monthly_fee_text
+    const text = String(club.monthly_fee_text || '').toLowerCase();
+    
+    // Handle "free" explicitly
+    if (text.includes('free') || text.includes('varies')) {
+      return 0;
+    }
+    
+    // Extract first number from text (e.g., "£10 Per Session" -> 10, "£35 + Fees" -> 35)
+    const match = text.match(/£?(\d+(?:\.\d+)?)/);
+    if (match) {
+      return Number(match[1]);
+    }
+    
+    // Default to 0 if we can't determine
+    return 0;
+  }
+
   function closeAllModals(){
     els.filterModal.classList.remove('active');
     els.sortModal.classList.remove('active');
@@ -521,7 +547,7 @@
     if (key.includes('price')) {
       console.log('Sample prices BEFORE sort:');
       sorted.slice(0, 5).forEach(c => {
-        console.log(`  ${c.club_name}: £${c.monthly_fee_amount} (type: ${typeof c.monthly_fee_amount})`);
+        console.log(`  ${c.club_name}: amount=${c.monthly_fee_amount}, text="${c.monthly_fee_text}", extracted=${getPriceForSort(c)}`);
       });
     }
     
@@ -540,16 +566,16 @@
           return getNum(b.member_count) - getNum(a.member_count);
           
         case 'priceLow': 
-          // Treat free (£0) as lowest price
-          const aPrice = getNum(a.monthly_fee_amount);
-          const bPrice = getNum(b.monthly_fee_amount);
+          // Use smart price extraction
+          const aPrice = getPriceForSort(a);
+          const bPrice = getPriceForSort(b);
           const result = aPrice - bPrice;
           return result;
           
         case 'priceHigh': 
-          // Treat free (£0) as lowest price, so it goes last in high-to-low
-          const aPriceHigh = getNum(a.monthly_fee_amount);
-          const bPriceHigh = getNum(b.monthly_fee_amount);
+          // Use smart price extraction
+          const aPriceHigh = getPriceForSort(a);
+          const bPriceHigh = getPriceForSort(b);
           const resultHigh = bPriceHigh - aPriceHigh;
           return resultHigh;
           
@@ -579,7 +605,7 @@
     if (key.includes('price')) {
       console.log('Sample prices AFTER sort:');
       sorted.slice(0, 10).forEach(c => {
-        console.log(`  ${c.club_name}: £${c.monthly_fee_amount}`);
+        console.log(`  ${c.club_name}: £${getPriceForSort(c)} (from "${c.monthly_fee_text}")`);
       });
     }
 
