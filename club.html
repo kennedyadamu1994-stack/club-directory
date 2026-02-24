@@ -194,7 +194,9 @@
 
     /* Sessions */
     .sessions-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
-    .session-item{background:#333; border-radius:3px; padding:16px;}
+    /* *** CHANGED: session-item is now also styled as a link when it's an <a> tag *** */
+    .session-item{background:#333; border-radius:3px; padding:16px; display:block; color:inherit; text-decoration:none;}
+    a.session-item:hover{background:#3a3a3a; outline:2px solid var(--brand);}
     .session-day{font-size:16px; font-weight:700; color:var(--brand); margin-bottom:8px;}
     .session-time{font-size:15px; color:#ffffff; margin-bottom:4px;}
     .session-type{font-size:13px; color:#999; font-style:italic;}
@@ -783,13 +785,14 @@
         document.getElementById('memberGrowth').textContent = d.member_growth;
       }
 
-      // Sessions
+      // *** CHANGED: Sessions - render as <a> when a url is present, <div> otherwise ***
       if (Array.isArray(d.sessions) && d.sessions.length){
         const sg = document.getElementById('sessionsGrid');
         d.sessions.forEach(s=>{
           if (!(s.date || s.time || s.type)) return;
-          const el = document.createElement('div');
+          const el = document.createElement(s.url ? 'a' : 'div');
           el.className = 'session-item';
+          if (s.url){ el.href = s.url; el.target = '_blank'; el.rel = 'noopener noreferrer'; }
           el.innerHTML = `
             <div class="session-day">${s.date || 'Date TBC'}</div>
             <div class="session-time">${s.time || 'Time TBC'}</div>
