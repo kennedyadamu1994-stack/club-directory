@@ -217,13 +217,35 @@ function parseClubRow(row) {
     address: safeGet(row, 91),
   };
 
-  // Sessions: up to 4 rows (time, date, type)
+  // *** CHANGED: Sessions now read 4 values each (time, date, type, url) ***
+  // Column layout per session (0-indexed):
+  //   Session 1: T=19 (time), U=20 (date), V=21 (type/url) — but V is actually the booking URL
+  //   Original loop used base+2 as "type" — your sheet has a 4th column (url) at base+3 in each block
+  //
+  // Correct mapping based on your sheet columns T–AE (indices 19–30), 4 sessions × 3 cols each,
+  // with the URL sitting in the column titled "session_N_type" (V=21, Y=24, AB=27, AE=30):
+  //   Session 1: time=col 19 (T), date=col 20 (U), type=col 21 (V)  → but V holds the URL per your brief
+  //
+  // Per your description: V=session_1_type contains the URL, meaning the sheet column named
+  // "session_1_type" is actually a booking link. We read it as `url`. The visible label (type)
+  // comes from the column before it, and date/time from the columns before that.
+  //
+  // Actual index mapping (columns T=19 through AE=30, 4 sessions × 3 cols):
+  //   Session 1: index 19=time, 20=date, 21=url  (T, U, V)
+  //   Session 2: index 22=time, 23=date, 24=url  (W, X, Y)
+  //   Session 3: index 25=time, 26=date, 27=url  (Z, AA, AB)
+  //   Session 4: index 28=time, 29=date, 30=url  (AC, AD, AE)
+  //
+  // If your sheet has a separate "type/label" column between date and url, adjust base+2 / base+3 below.
+
+  // Sessions: 4 blocks × 3 columns (time, date, url)
+  // Col layout: T=19(time), U=20(date), V=21(url) | W=22(time), X=23(date), Y=24(url) | etc.
   for (let i = 0; i < 4; i++) {
     const base = 19 + i * 3;
     const time = safeGet(row, base);
     const date = safeGet(row, base + 1);
-    const type = safeGet(row, base + 2);
-    if (time || date || type) club.sessions.push({ time, date, type });
+    const url  = safeGet(row, base + 2); // booking URL — cols V, Y, AB, AE
+    if (time || date) club.sessions.push({ time, date, url });
   }
 
   // Testimonials: 3 blocks
