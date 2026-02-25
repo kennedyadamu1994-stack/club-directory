@@ -792,7 +792,7 @@
           if (!(s.date || s.time || s.type)) return;
           const el = document.createElement(s.url ? 'a' : 'div');
           el.className = 'session-item';
-          if (s.url){ el.href = s.url; el.target = '_blank'; el.rel = 'noopener noreferrer'; }
+          if (s.url){ el.href = s.url; }
           el.innerHTML = `
             <div class="session-day">${s.date || 'Date TBC'}</div>
             <div class="session-time">${s.time || 'Time TBC'}</div>
