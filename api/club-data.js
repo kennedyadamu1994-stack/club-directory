@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    const club = parseClubRow(found);
+    const club = parseClubRow(found, header);
 
     // Derived / compatibility
     club.tags_array = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
@@ -131,7 +131,38 @@ function makeSlug(s) {
     .replace(/(^-|-$)/g, '');
 }
 
-function parseClubRow(row) {
+// ---------- Column index finder ----------
+// Finds a column index by its header name (case-insensitive, trimmed).
+// Falls back to `fallbackIndex` if the header row is unavailable or the name isn't found.
+function findColIndex(header, name, fallbackIndex) {
+  if (!header || !Array.isArray(header)) return fallbackIndex;
+  const lower = name.toLowerCase().trim();
+  const idx = header.findIndex(h => (h || '').toLowerCase().trim() === lower);
+  return idx !== -1 ? idx : fallbackIndex;
+}
+
+function parseClubRow(row, header) {
+  // ---------------------------------------------------------------------------
+  // TEAM & TOTAL TEAMS COLUMN MAPPING
+  // ---------------------------------------------------------------------------
+  // These columns are looked up dynamically by their header name so they work
+  // regardless of their exact position in the sheet.
+  //
+  // Expected header names (must match exactly, case-insensitive):
+  //   'Team 1', 'Team 2', 'Team 3', 'Team 4', 'Team 5', 'Total Teams'
+  //
+  // The fallback indices below (92–97) are used when the header row isn't
+  // available. Update them if your sheet places these columns elsewhere.
+  // ---------------------------------------------------------------------------
+  const teamCols = [
+    findColIndex(header, 'Team 1', 92),
+    findColIndex(header, 'Team 2', 93),
+    findColIndex(header, 'Team 3', 94),
+    findColIndex(header, 'Team 4', 95),
+    findColIndex(header, 'Team 5', 96),
+  ];
+  const totalTeamsCol = findColIndex(header, 'Total Teams', 97);
+
   const club = {
     // Basic (A-C)
     club_id: safeGet(row, 0),
@@ -159,7 +190,7 @@ function parseClubRow(row) {
     average_attendance: safeInt(row, 17),
     member_growth: safeGet(row, 18),
 
-    // Sessions (T-AC: 19–30) — 4 sessions * (time, date, type)
+    // Sessions (T-AC: 19–30) — 4 sessions * (time, date, url)
     sessions: [],
 
     // Testimonials (AF-AN: 31–39) — 3 * (name, rating, text)
@@ -187,12 +218,12 @@ function parseClubRow(row) {
     tags_vibe: safeGet(row, 76),
     tags_accessibility: safeGet(row, 77),
 
-    // Contact (CA-CD: 78-81, CE: 82, CN: 91)
+    // Contact (CA-CD: 78-81, CE: 82)
     email: safeGet(row, 78),
     phone: safeGet(row, 79),
     whatsapp: safeGet(row, 80),
     instagram: safeGet(row, 81),
-    website: safeGet(row, 82),  // CE: Website column
+    website: safeGet(row, 82),
 
     // Design (CF: 83)
     hero_background_gradient: safeGet(row, 83),
@@ -213,38 +244,22 @@ function parseClubRow(row) {
     // Verified (CM: 90)
     verified: safeBool(row, 90),
 
-    // Address (CN: 91) - NEW COLUMN
+    // Address (CN: 91)
     address: safeGet(row, 91),
+
+    // Teams — dynamically resolved from header names above
+    total_teams: safeInt(row, totalTeamsCol),
+    teams: teamCols
+      .map(col => safeGet(row, col))
+      .filter(Boolean),
   };
 
-  // *** CHANGED: Sessions now read 4 values each (time, date, type, url) ***
-  // Column layout per session (0-indexed):
-  //   Session 1: T=19 (time), U=20 (date), V=21 (type/url) — but V is actually the booking URL
-  //   Original loop used base+2 as "type" — your sheet has a 4th column (url) at base+3 in each block
-  //
-  // Correct mapping based on your sheet columns T–AE (indices 19–30), 4 sessions × 3 cols each,
-  // with the URL sitting in the column titled "session_N_type" (V=21, Y=24, AB=27, AE=30):
-  //   Session 1: time=col 19 (T), date=col 20 (U), type=col 21 (V)  → but V holds the URL per your brief
-  //
-  // Per your description: V=session_1_type contains the URL, meaning the sheet column named
-  // "session_1_type" is actually a booking link. We read it as `url`. The visible label (type)
-  // comes from the column before it, and date/time from the columns before that.
-  //
-  // Actual index mapping (columns T=19 through AE=30, 4 sessions × 3 cols):
-  //   Session 1: index 19=time, 20=date, 21=url  (T, U, V)
-  //   Session 2: index 22=time, 23=date, 24=url  (W, X, Y)
-  //   Session 3: index 25=time, 26=date, 27=url  (Z, AA, AB)
-  //   Session 4: index 28=time, 29=date, 30=url  (AC, AD, AE)
-  //
-  // If your sheet has a separate "type/label" column between date and url, adjust base+2 / base+3 below.
-
   // Sessions: 4 blocks × 3 columns (time, date, url)
-  // Col layout: T=19(time), U=20(date), V=21(url) | W=22(time), X=23(date), Y=24(url) | etc.
   for (let i = 0; i < 4; i++) {
     const base = 19 + i * 3;
     const time = safeGet(row, base);
     const date = safeGet(row, base + 1);
-    const url  = safeGet(row, base + 2); // booking URL — cols V, Y, AB, AE
+    const url  = safeGet(row, base + 2);
     if (time || date) club.sessions.push({ time, date, url });
   }
 
