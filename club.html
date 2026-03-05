@@ -35,7 +35,7 @@
       min-height:100vh;
     }
 
-    /* ---------- NBRH Brand Header (same as directory) ---------- */
+    /* ---------- NBRH Brand Header ---------- */
     .nbrh-header{
       background:#1c1c1e; color:#fff;
       position:sticky; top:0; z-index:1000;
@@ -89,7 +89,6 @@
       transform: none;
       box-shadow: none;
     }
-    /* Gradient blend effect at bottom - now fading to dark background */
     .hero-card::after{
       content: '';
       position: absolute;
@@ -103,41 +102,40 @@
     }
     .club-logo{width:120px; height:120px; border-radius:12px; margin:0 auto 20px; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.3); overflow:hidden; position:relative; z-index:2;}
     .club-logo img{width:100%; height:100%; object-fit:cover;}
-    
-    /* Hero title with verification badge - FIXED ALIGNMENT */
+
     .hero-title-row{
-      display:inline-flex; 
-      align-items:center; 
-      justify-content:center; 
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
       gap:10px;
-      margin-bottom:12px; 
-      position:relative; 
+      margin-bottom:12px;
+      position:relative;
       z-index:2;
       max-width: 100%;
     }
     .hero-title{
-      font-size:32px; 
-      font-weight:700; 
-      margin:0; 
+      font-size:32px;
+      font-weight:700;
+      margin:0;
       line-height:1.2;
       display:inline-block;
     }
     .hero-verified-badge{
-      display:inline-flex; 
-      align-items:center; 
+      display:inline-flex;
+      align-items:center;
       justify-content:center;
-      width:32px; 
-      height:32px; 
-      background:#FF006E; 
+      width:32px;
+      height:32px;
+      background:#FF006E;
       border-radius:50%;
-      flex-shrink:0; 
+      flex-shrink:0;
       box-shadow:0 4px 12px rgba(255,0,110,0.4);
       margin-top: 2px;
     }
     .hero-verified-badge svg{
       width:20px; height:20px; fill:#fff;
     }
-    
+
     .hero-category-tag{
       display:inline-block;
       background:rgba(255,255,255,.2);
@@ -194,7 +192,6 @@
 
     /* Sessions */
     .sessions-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
-    /* *** CHANGED: session-item is now also styled as a link when it's an <a> tag *** */
     .session-item{background:#333; border-radius:3px; padding:16px; display:block; color:inherit; text-decoration:none;}
     a.session-item:hover{background:#3a3a3a; outline:2px solid var(--brand);}
     .session-day{font-size:16px; font-weight:700; color:var(--brand); margin-bottom:8px;}
@@ -228,6 +225,35 @@
     .faq-answer{font-size:16px; line-height:1.6; color:#ccc; font-weight:400;}
     .faq-answer b, .faq-answer strong { font-weight:400 !important; }
 
+    /* ---------- Teams ---------- */
+    .teams-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
+      gap:12px;
+    }
+    .team-item{
+      background:#333;
+      border-radius:3px;
+      padding:16px 20px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .team-icon{
+      width:36px; height:36px;
+      border-radius:50%;
+      background:var(--brand);
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+      font-size:16px;
+    }
+    .team-name{
+      font-size:15px;
+      font-weight:600;
+      color:#ffffff;
+      line-height:1.3;
+    }
+
     /* About & Coach */
     .about-card .about-content{display:grid; grid-template-columns:2fr 1fr; gap:32px; align-items:start;}
     .about-text{line-height:1.7; color:#ffffff; font-size:16px;}
@@ -240,24 +266,23 @@
     /* Contact card */
     .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;}
     .contact-item{
-      background:#333; border-radius:3px; padding:16px; text-decoration:none; 
+      background:#333; border-radius:3px; padding:16px; text-decoration:none;
       color:inherit; display:flex; align-items:center;
-      min-width: 0; /* Allow flex children to shrink below content size */
+      min-width: 0;
     }
     .contact-icon{
-      width:44px; height:44px; border-radius:3px; background:var(--brand); 
-      color:#fff; display:flex; align-items:center; justify-content:center; 
+      width:44px; height:44px; border-radius:3px; background:var(--brand);
+      color:#fff; display:flex; align-items:center; justify-content:center;
       margin-right:12px; font-size:16px; flex-shrink: 0;
     }
     .contact-info{
-      min-width: 0; /* Critical for text truncation to work */
+      min-width: 0;
       flex: 1;
     }
     .contact-info h4{font-size:15px; font-weight:700; color:#ffffff; margin-bottom:3px;}
     .contact-info p{
-      font-size:13px; 
+      font-size:13px;
       color:#999;
-      /* Text truncation */
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
@@ -281,8 +306,6 @@
       .content-grid > .card:not(.hero-card) {
         margin: 0 15px;
       }
-      
-      /* Mobile hero - taller and Apple Music style */
       .hero-card{
         min-height: 70vh;
         padding: 40px 20px 100px;
@@ -303,7 +326,7 @@
       }
       .hero-title{font-size:28px; margin-bottom: 0;}
       .hero-verified-badge{
-        width:28px; 
+        width:28px;
         height:28px;
         margin-top: 1px;
       }
@@ -312,8 +335,6 @@
       }
       .hero-category-tag{font-size:12px; padding:5px 12px; margin-bottom:10px; margin-top: 12px;}
       .hero-subtitle{font-size:15px; margin-bottom: 32px;}
-      
-      /* Keep buttons in ONE LINE on mobile */
       .hero-buttons{
         flex-direction: row;
         justify-content: center;
@@ -325,7 +346,6 @@
         font-size: 14px;
         white-space: nowrap;
       }
-      
       .section-header,.collapsible-title{font-size:18px; margin-bottom:14px;}
       .info-grid{grid-template-columns:1fr 1fr; gap:6px;}
       .stats-grid{grid-template-columns:1fr 1fr; gap:8px;}
@@ -333,6 +353,7 @@
       .testimonials-grid{grid-template-columns:1fr; gap:12px;}
       .benefits-grid{grid-template-columns:1fr; gap:12px;}
       .faq-grid{grid-template-columns:1fr; gap:12px;}
+      .teams-grid{grid-template-columns:1fr; gap:10px;}
       .about-card .about-content{grid-template-columns:1fr; gap:24px;}
       .contact-grid{grid-template-columns:1fr;}
       .sticky-cta{left:20px; right:20px; transform:none; width:calc(100% - 40px); justify-content:center;}
@@ -341,7 +362,7 @@
   </style>
 </head>
 <body>
-  <!-- NBRH Brand Header (directory version) -->
+  <!-- NBRH Brand Header -->
   <header class="nbrh-header">
     <div class="nbrh-header-inner">
       <a href="https://www.thenbrh.co.uk/" class="nbrh-logo-link">
@@ -449,6 +470,11 @@
               <span class="stat-number" id="sessionsPerWeek">0</span>
               <div class="stat-label">Sessions/Week</div>
             </div>
+            <!-- Total Teams stat — shown when total_teams > 0 -->
+            <div class="stat-card" id="totalTeamsBlock" style="display:none;">
+              <span class="stat-number" id="totalTeamsStat">0</span>
+              <div class="stat-label">Total Teams</div>
+            </div>
             <div class="stat-card" id="growthBlock" style="display:none;">
               <span class="stat-number" id="memberGrowth">+0%</span>
               <div class="stat-label">Member Growth</div>
@@ -462,6 +488,19 @@
         <div class="card-content">
           <h2 class="section-header">Weekly Sessions</h2>
           <div class="sessions-grid" id="sessionsGrid"></div>
+        </div>
+      </div>
+
+      <!-- Teams -->
+      <div class="card collapsible-card" id="teamsCard" style="display:none;">
+        <div class="collapsible-header" data-target="#teamsContent">
+          <h3 class="collapsible-title">Teams</h3>
+          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="collapsible-content" id="teamsContent">
+          <div class="collapsible-inner">
+            <div class="teams-grid" id="teamsGrid"></div>
+          </div>
         </div>
       </div>
 
@@ -504,7 +543,7 @@
         </div>
       </div>
 
-      <!-- About & Coach (now collapsible) -->
+      <!-- About & Coach -->
       <div class="card collapsible-card" id="aboutCard" style="display:none;">
         <div class="collapsible-header" data-target="#aboutContent">
           <h3 class="collapsible-title">About the Club</h3>
@@ -530,7 +569,7 @@
         </div>
       </div>
 
-      <!-- Contact (now collapsible) -->
+      <!-- Contact -->
       <div class="card collapsible-card" id="contactCard" style="display:none;">
         <div class="collapsible-header" data-target="#contactContent">
           <h3 class="collapsible-title">Contact</h3>
@@ -600,6 +639,9 @@
     container.appendChild(a);
   }
 
+  // Team icon pool — cycles through shirt emojis for variety
+  const TEAM_ICONS = ['👕','🏃','⚽','🏀','🏈','🎽','🥇','🏆','⚡','🔥'];
+
   async function loadClub(){
     const code = getClubCode();
     if (!code){
@@ -626,7 +668,7 @@
       if (d.image_url) document.getElementById('ogImage').setAttribute('content', d.image_url);
       document.getElementById('ogUrl').setAttribute('content', location.href);
 
-      // Structured data - use website field for URL
+      // Structured data
       const sd = {
         "@context":"https://schema.org",
         "@type":"SportsClub",
@@ -666,13 +708,13 @@
 
       // Names / activity
       document.getElementById('clubName').textContent = d.club_name || 'Club';
-      
+
       // Verification badge
       if (d.verified){
         document.getElementById('verifiedBadge').style.display = 'inline-flex';
       }
-      
-      // Activity type as tag
+
+      // Activity type tag
       const activityEl = document.getElementById('clubActivity');
       if (d.activity_type){
         activityEl.textContent = d.activity_type;
@@ -680,8 +722,8 @@
       } else {
         activityEl.style.display = 'none';
       }
-      
-      // Club snippet (CL column) - appears under the category tag
+
+      // Club snippet
       const snippetEl = document.getElementById('clubSnippet');
       if (d.club_snippet){
         snippetEl.textContent = d.club_snippet;
@@ -690,7 +732,7 @@
         snippetEl.style.display = 'none';
       }
 
-      // CTAs - Sticky Join Button Only
+      // Sticky CTA
       const sticky = document.getElementById('stickyCta');
       if (d.booking_url){
         sticky.href = d.booking_url;
@@ -720,10 +762,8 @@
       // Info grid
       document.getElementById('clubLocation').textContent = d.location || '—';
 
-      // Audience
       if (d.audience){
-        const ab = document.getElementById('audienceBlock');
-        ab.style.display = '';
+        document.getElementById('audienceBlock').style.display = '';
         document.getElementById('clubAudience').textContent = d.audience;
       }
 
@@ -734,7 +774,6 @@
         document.getElementById('clubFee').textContent = feeText;
       }
 
-      // Star rating
       if (d.star_rating){
         const n = Number(d.star_rating) || 0;
         document.getElementById('starBlock').style.display = '';
@@ -742,14 +781,12 @@
         document.getElementById('starRatingText').textContent = `${n}/5`;
       }
 
-      // Numeric rating
       if (d.numeric_rating !== undefined && d.numeric_rating !== null && d.numeric_rating !== ''){
         const nn = Number(d.numeric_rating) || 0;
         document.getElementById('numericBlock').style.display = '';
         document.getElementById('numericRating').textContent = formatOneDecimal(nn);
       }
 
-      // Members
       if (Number(d.member_count) > 0){
         document.getElementById('membersBlock').style.display = '';
         document.getElementById('clubMembers').textContent = d.member_count;
@@ -767,7 +804,7 @@
         d.tags_accessibility.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t, 'accessibility'));
       }
 
-      // Performance
+      // Performance stats
       if (Number(d.ranking_position) > 0){
         document.getElementById('rankPosBlock').style.display = '';
         document.getElementById('rankingPosition').textContent = `#${d.ranking_position}`;
@@ -780,12 +817,17 @@
         document.getElementById('spwBlock').style.display = '';
         document.getElementById('sessionsPerWeek').textContent = d.sessions_per_week;
       }
+      // Total Teams stat
+      if (Number(d.total_teams) > 0){
+        document.getElementById('totalTeamsBlock').style.display = '';
+        document.getElementById('totalTeamsStat').textContent = d.total_teams;
+      }
       if (d.member_growth){
         document.getElementById('growthBlock').style.display = '';
         document.getElementById('memberGrowth').textContent = d.member_growth;
       }
 
-      // *** CHANGED: Sessions - render as <a> when a url is present, <div> otherwise ***
+      // Sessions
       if (Array.isArray(d.sessions) && d.sessions.length){
         const sg = document.getElementById('sessionsGrid');
         d.sessions.forEach(s=>{
@@ -801,6 +843,22 @@
           sg.appendChild(el);
         });
         document.getElementById('sessionsCard').style.display = '';
+      }
+
+      // Teams
+      if (Array.isArray(d.teams) && d.teams.length){
+        const tg = document.getElementById('teamsGrid');
+        d.teams.forEach((name, i) => {
+          const el = document.createElement('div');
+          el.className = 'team-item';
+          const icon = TEAM_ICONS[i % TEAM_ICONS.length];
+          el.innerHTML = `
+            <div class="team-icon">${icon}</div>
+            <div class="team-name">${name}</div>
+          `;
+          tg.appendChild(el);
+        });
+        document.getElementById('teamsCard').style.display = '';
       }
 
       // Testimonials
@@ -855,11 +913,10 @@
         document.getElementById('faqCard').style.display = '';
       }
 
-      // About & Coach (show when any content present)
+      // About & Coach
       const aboutText = d.club_bio || '';
       if (aboutText || d.coach_name || d.coach_role){
-        const aboutCard = document.getElementById('aboutCard');
-        aboutCard.style.display = '';
+        document.getElementById('aboutCard').style.display = '';
         document.getElementById('aboutText').textContent = aboutText;
 
         if (d.coach_name || d.coach_role){
@@ -873,7 +930,7 @@
         }
       }
 
-      // Contact - Use website column (CE) for website, address column (CN) for address
+      // Contact
       const cg = document.getElementById('contactGrid');
       const items = [];
       if (d.email) items.push(()=>addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email));
@@ -883,15 +940,12 @@
         const ig = sanitiseHandle(d.instagram);
         items.push(()=>addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig));
       }
-      // Website box - use website field (Column CE)
       if (d.website && isUrl(d.website)) {
         items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.website, d.website));
       }
-      // Address box - use address field (Column CN) with map link
       if (d.address) {
         items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
       }
-      
       if (items.length){ items.forEach(fn=>fn()); document.getElementById('contactCard').style.display = ''; }
 
       // Collapsibles
