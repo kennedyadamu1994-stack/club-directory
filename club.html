@@ -235,17 +235,6 @@
       background:#333;
       border-radius:3px;
       padding:16px 20px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-    .team-icon{
-      width:36px; height:36px;
-      border-radius:50%;
-      background:var(--brand);
-      display:flex; align-items:center; justify-content:center;
-      flex-shrink:0;
-      font-size:16px;
     }
     .team-name{
       font-size:15px;
@@ -639,9 +628,6 @@
     container.appendChild(a);
   }
 
-  // Team icon pool — cycles through shirt emojis for variety
-  const TEAM_ICONS = ['👕','🏃','⚽','🏀','🏈','🎽','🥇','🏆','⚡','🔥'];
-
   async function loadClub(){
     const code = getClubCode();
     if (!code){
@@ -851,11 +837,7 @@
         d.teams.forEach((name, i) => {
           const el = document.createElement('div');
           el.className = 'team-item';
-          const icon = TEAM_ICONS[i % TEAM_ICONS.length];
-          el.innerHTML = `
-            <div class="team-icon">${icon}</div>
-            <div class="team-name">${name}</div>
-          `;
+          el.innerHTML = `<div class="team-name">${name}</div>`;
           tg.appendChild(el);
         });
         document.getElementById('teamsCard').style.display = '';
