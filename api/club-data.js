@@ -279,14 +279,14 @@ function parseClubRow(row, header) {
     if (time || date) club.sessions.push({ time, date, url });
   }
 
-  // Sessions 5–7: dynamically resolved column positions
-  // Note: your new columns use 'type' instead of 'url' — stored in the same
-  // slot so the front-end session card's third line renders the session type.
+  // Sessions 5–7: dynamically resolved column positions.
+  // The _type column contains the booking URL (same as _url in sessions 1–4),
+  // so we map it to `url` so the front-end behaves identically.
   for (const cols of extraSessionCols) {
     const time = safeGet(row, cols.time);
     const date = safeGet(row, cols.date);
-    const type = safeGet(row, cols.type);
-    if (time || date) club.sessions.push({ time, date, url: '', type });
+    const url  = safeGet(row, cols.type);
+    if (time || date) club.sessions.push({ time, date, url });
   }
 
   // Testimonials: 3 blocks
