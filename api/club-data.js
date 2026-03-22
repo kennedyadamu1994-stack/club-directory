@@ -27,7 +27,8 @@ module.exports = async (req, res) => {
     const sheets = google.sheets({ version: 'v4', auth });
     const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 
-    const range = 'Dynamic Club Page Hub!A:CZ';
+    // UPDATED: Extended range from A:CZ to A:DH to capture sessions 5-7
+    const range = 'Dynamic Club Page Hub!A:DH';
     const resp = await sheets.spreadsheets.values.get({ spreadsheetId, range });
     const rows = resp.data.values || [];
     if (!rows.length) return res.status(404).json({ error: 'No club data found' });
@@ -145,15 +146,6 @@ function parseClubRow(row, header) {
   // ---------------------------------------------------------------------------
   // TEAM & TOTAL TEAMS COLUMN MAPPING
   // ---------------------------------------------------------------------------
-  // These columns are looked up dynamically by their header name so they work
-  // regardless of their exact position in the sheet.
-  //
-  // Expected header names (must match exactly, case-insensitive):
-  //   'Team 1', 'Team 2', 'Team 3', 'Team 4', 'Team 5', 'Total Teams'
-  //
-  // The fallback indices below (92–97) are used when the header row isn't
-  // available. Update them if your sheet places these columns elsewhere.
-  // ---------------------------------------------------------------------------
   const teamCols = [
     findColIndex(header, 'Team 1', 92),
     findColIndex(header, 'Team 2', 93),
@@ -162,6 +154,29 @@ function parseClubRow(row, header) {
     findColIndex(header, 'Team 5', 96),
   ];
   const totalTeamsCol = findColIndex(header, 'Total Teams', 97);
+
+  // ---------------------------------------------------------------------------
+  // SESSION COLUMN MAPPING — resolved dynamically by header name
+  // ---------------------------------------------------------------------------
+  // Sessions 1–4 remain at their original hardcoded positions (indices 19–30).
+  // Sessions 5–7 are looked up by header name so they work wherever they land.
+  //
+  // Expected header names (case-insensitive):
+  //   session_5_time, session_5_date, session_5_type
+  //   session_6_time, session_6_date, session_6_type
+  //   session_7_time, session_7_date, session_7_type
+  //
+  // Fallback indices below match the layout visible in the screenshot
+  // (CZ=103, DA=104, DB=105, DC=106, DD=107, DE=108, DF=109, DG=110, DH=111).
+  // ---------------------------------------------------------------------------
+  const extraSessionCols = [
+    // Session 5
+    { time: findColIndex(header, 'session_5_time', 103), date: findColIndex(header, 'session_5_date', 104), type: findColIndex(header, 'session_5_type', 105) },
+    // Session 6
+    { time: findColIndex(header, 'session_6_time', 106), date: findColIndex(header, 'session_6_date', 107), type: findColIndex(header, 'session_6_type', 108) },
+    // Session 7
+    { time: findColIndex(header, 'session_7_time', 109), date: findColIndex(header, 'session_7_date', 110), type: findColIndex(header, 'session_7_type', 111) },
+  ];
 
   const club = {
     // Basic (A-C)
@@ -190,7 +205,7 @@ function parseClubRow(row, header) {
     average_attendance: safeInt(row, 17),
     member_growth: safeGet(row, 18),
 
-    // Sessions (T-AC: 19–30) — 4 sessions * (time, date, url)
+    // Sessions populated below
     sessions: [],
 
     // Testimonials (AF-AN: 31–39) — 3 * (name, rating, text)
@@ -254,13 +269,24 @@ function parseClubRow(row, header) {
       .filter(Boolean),
   };
 
-  // Sessions: 4 blocks × 3 columns (time, date, url)
+  // Sessions 1–4: original hardcoded positions (T-AC: indices 19–30)
+  // Each block is 3 columns: time, date, url
   for (let i = 0; i < 4; i++) {
     const base = 19 + i * 3;
     const time = safeGet(row, base);
     const date = safeGet(row, base + 1);
     const url  = safeGet(row, base + 2);
     if (time || date) club.sessions.push({ time, date, url });
+  }
+
+  // Sessions 5–7: dynamically resolved column positions
+  // Note: your new columns use 'type' instead of 'url' — stored in the same
+  // slot so the front-end session card's third line renders the session type.
+  for (const cols of extraSessionCols) {
+    const time = safeGet(row, cols.time);
+    const date = safeGet(row, cols.date);
+    const type = safeGet(row, cols.type);
+    if (time || date) club.sessions.push({ time, date, url: '', type });
   }
 
   // Testimonials: 3 blocks
