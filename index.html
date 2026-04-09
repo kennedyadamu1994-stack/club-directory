@@ -1,514 +1,1068 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Discover Local Clubs | NBRH</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Discover Local Clubs | The NBRH</title>
 
-<!-- Performance hints -->
-<link rel="preconnect" href="https://sheets.googleapis.com">
-<link rel="dns-prefetch" href="https://sheets.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+  <link rel="dns-prefetch" href="https://sheets.googleapis.com">
 
-<style>
-  :root{
-    --brand:#FF006E;
-    --bg:#1B1B1B;
-    --card-bg:#2a2a2a;
-    --text:#ffffff;
-    --text-secondary:#999;
-    --border:#444;
-    --radius:3px;
-    --shadow:0 1px 3px rgba(0,0,0,0.3);
-    --shadow-hover:0 4px 12px rgba(0,0,0,0.5);
-    --verified-blue:#1DA1F2;
-  }
+  <style>
+    /* ══════════════════════════════════════════
+       DESIGN SYSTEM — CLUB HOUSE TOKENS
+    ══════════════════════════════════════════ */
+    :root {
+      --accent:        #FF1B6E;
+      --accent-dim:    rgba(255,27,110,0.10);
+      --accent-mid:    rgba(255,27,110,0.28);
+      --accent-hover:  #e01560;
+      --text:          #f0f0f0;
+      --text-muted:    rgba(255,255,255,0.62);
+      --text-faint:    rgba(255,255,255,0.32);
+      --bg:            #1B1B1B;
+      --bg-subtle:     #1f1f1f;
+      --bg-card:       #212121;
+      --bg-elevated:   #2a2a2a;
+      --bg-hover:      #303030;
+      --border:        rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.14);
+      --green:         #22c55e;
+      --green-dim:     rgba(34,197,94,0.12);
+      --amber:         #f59e0b;
+      --amber-dim:     rgba(245,158,11,0.12);
+      --font-serif:    'Young Serif', Georgia, serif;
+      --font-sans:     'DM Sans', -apple-system, sans-serif;
+      --r:             3px;
+      --r-lg:          8px;
+      --shadow-md:     0 4px 20px rgba(0,0,0,0.6);
+      --shadow-lg:     0 8px 32px rgba(0,0,0,0.7);
+    }
 
-  *{ margin:0; padding:0; box-sizing:border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body{
-    font-family:'ITC Avant Garde Gothic Pro', -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.6;
-  }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
 
-  /* ---------- NBRH Brand Header ---------- */
-  .nbrh-header{
-    background:#1c1c1e;
-    color:#fff;
-    position:sticky; top:0; z-index:1000;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
-  }
-  .nbrh-header-inner{
-    max-width:1400px; margin:0 auto; padding:12px 20px;
-    display:flex; align-items:center; justify-content:space-between;
-  }
-  .nbrh-logo-link{ display:block; line-height:0; }
-  .nbrh-logo{ height:36px; object-fit:contain; transition:opacity .2s; }
-  .nbrh-logo:hover{ opacity:.8; }
-  .nbrh-nav{ display:flex; gap:16px; align-items:center; }
-  .nbrh-nav a{ color:#fff; text-decoration:none; font-weight:500; }
-  .nbrh-nav a:hover{ color:var(--brand); }
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-  /* ---------- Page Header ---------- */
-  .club-header{
-    text-align:center;
-    padding:50px 20px;
-    margin:0 auto 30px;
-    background:var(--card-bg);
-    border-bottom:1px solid var(--border);
-  }
-  .club-header h1{
-    font-size:36px; font-weight:600; margin-bottom:12px; letter-spacing:-0.5px;
-    color:var(--text);
-  }
-  .club-header p{
-    font-size:18px; opacity:0.8; max-width:700px; margin:0 auto;
-    color:var(--text);
-  }
+    /* ══════════════════════════════════════════
+       NAV
+    ══════════════════════════════════════════ */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(27,27,27,0.97);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      z-index: 9999;
+    }
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand-logo {
+      height: 32px;
+      object-fit: contain;
+    }
+    .nav-brand-name {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.15;
+    }
+    .nav-brand-name small {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.55rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 0;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      padding: 0.4rem 0.75rem;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links .nav-cta a {
+      background: var(--accent);
+      color: #fff !important;
+      border-radius: var(--r);
+      font-weight: 600;
+      padding: 0.45rem 1rem;
+    }
+    .nav-links .nav-cta a:hover { opacity: 0.88; }
 
-  /* ---------- Loading / error ---------- */
-  .club-loading,.club-error{
-    max-width:1200px;
-    margin:2rem auto;
-    padding:0 1.5rem;
-    text-align:center;
-  }
-  .club-loading{ color:var(--text-secondary); }
-  .club-spinner{
-    display:inline-block; width:40px; height:40px;
-    border:3px solid #333; border-top-color:var(--brand);
-    border-radius:50%; animation:spin 1s linear infinite; margin-bottom:1rem;
-  }
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .club-error{
-    background:var(--card-bg);
-    border:1px solid #ff3b30;
-    border-radius:var(--radius);
-    color:#ff3b30;
-    padding:20px;
-    box-shadow:var(--shadow);
-  }
+    /* ══════════════════════════════════════════
+       PAGE HEADER
+    ══════════════════════════════════════════ */
+    .page-header {
+      border-bottom: 1px solid var(--border);
+      padding: 3.5rem 2rem 3rem;
+      background: var(--bg-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-header::before {
+      content: 'Clubs';
+      position: absolute;
+      right: -0.04em;
+      bottom: -0.15em;
+      font-family: var(--font-serif);
+      font-size: clamp(6rem, 18vw, 14rem);
+      color: rgba(255,27,110,0.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .page-header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .page-header h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: normal;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 0.65rem;
+    }
+    .page-header h1 em { color: var(--accent); font-style: normal; }
+    .page-header p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 50ch;
+      line-height: 1.65;
+    }
 
-  /* ---------- Search Section ---------- */
-  .search-section{
-    max-width:1400px; margin:0 auto 20px; padding:0 20px;
-  }
-  .search-container{ position:relative; max-width:700px; margin:0 auto; }
-  .search-input{
-    width:100%; padding:16px 20px 16px 50px;
-    border:1px solid var(--border); border-radius:var(--radius);
-    font-size:16px; background:var(--card-bg); box-shadow:var(--shadow);
-    transition:all 0.3s ease; font-family:inherit;
-    color:var(--text);
-  }
-  .search-input::placeholder{ color:var(--text-secondary); }
-  .search-input:focus{ outline:none; border-color:var(--brand); box-shadow:0 4px 12px rgba(255,0,110,0.15); }
-  .search-icon{ position:absolute; left:18px; top:50%; transform:translateY(-50%); color:var(--text-secondary); font-size:16px; }
+    /* ══════════════════════════════════════════
+       LOADING / ERROR
+    ══════════════════════════════════════════ */
+    .state-wrap {
+      max-width: 1400px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 0.85rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 0.82rem; color: var(--text-faint); font-weight: 500; }
 
-  /* ---------- Toolbar ---------- */
-  .club-toolbar{
-    max-width:1400px; margin:0 auto 30px; padding:0 20px;
-    display:flex; gap:12px; flex-wrap:wrap; align-items:center;
-  }
-  .club-btn{
-    padding:12px 20px; border:1px solid var(--border); border-radius:var(--radius);
-    background:var(--card-bg); color:var(--text); font-weight:500; cursor:pointer;
-    font-size:14px; transition:all 0.2s ease; font-family:inherit; box-shadow:var(--shadow);
-  }
-  .club-btn:hover{ background:#3a3a3a; box-shadow:var(--shadow-hover); }
-  .club-btn.primary{ background:var(--brand); border-color:var(--brand); color:#fff; }
-  .club-btn.primary:hover{ background:#e60062; border-color:#e60062; }
-  .club-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+    .error-box {
+      background: var(--bg-card);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      color: #ef4444;
+      font-size: 0.875rem;
+    }
+    .error-box p { margin-bottom: 1rem; }
 
-  #result-count{ margin-left:auto; font-size:14px; color:var(--text-secondary); font-weight:500; }
+    /* ══════════════════════════════════════════
+       MAIN CONTENT SHELL
+    ══════════════════════════════════════════ */
+    .content-shell {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
 
-  /* ---------- Cards grid ---------- */
-  .club-grid{
-    max-width:1400px; margin:0 auto 60px; padding:0 20px;
-    display:grid; gap:24px; grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-    align-items:start;
-  }
+    /* ══════════════════════════════════════════
+       SEARCH
+    ══════════════════════════════════════════ */
+    .search-wrap {
+      position: relative;
+      max-width: 680px;
+      margin-bottom: 1.5rem;
+    }
+    .search-icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-faint);
+      font-size: 0.95rem;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 0.7rem 2.5rem 0.7rem 2.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+    }
+    .search-input::placeholder { color: var(--text-faint); }
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
 
-  /* ---------- Card styling ---------- */
-  .club-card{
-    display:flex; flex-direction:column; background:var(--card-bg);
-    border-radius:var(--radius); box-shadow:var(--shadow);
-    overflow:hidden; transition:all 0.3s ease; height:fit-content;
-  }
-  .club-card:hover{ transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+    /* ══════════════════════════════════════════
+       TOOLBAR
+    ══════════════════════════════════════════ */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-bright);
+      border-radius: var(--r);
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.18s;
+      text-decoration: none;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent); }
+    .btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .result-count {
+      margin-left: auto;
+      font-size: 0.75rem;
+      color: var(--text-faint);
+      font-weight: 500;
+    }
 
-  /* ---------- Image container ---------- */
-  .club-img-container{ position:relative; width:100%; height:200px; overflow:hidden; }
-  .club-card.featured .club-img-container{ border-bottom:3px solid #FFD700; }
-  .club-card.featured .club-img-container::after{
-    content:"FEATURED"; position:absolute; top:12px; left:12px;
-    background:#FFD700; color:#1c1c1e; padding:6px 12px; border-radius:3px;
-    font-size:12px; font-weight:600; z-index:4; box-shadow:0 2px 8px rgba(0,0,0,0.2);
-  }
-  .club-img{ width:100%; height:100%; object-fit:cover; transition:transform 0.3s ease; }
-  .club-card:hover .club-img{ transform:scale(1.05); }
+    /* ══════════════════════════════════════════
+       CARDS GRID
+    ══════════════════════════════════════════ */
+    .cards-grid {
+      display: grid;
+      gap: 1.1rem;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      align-items: start;
+    }
 
-  /* ---------- Overlay: rating only ---------- */
-  .club-rating-overlay{
-    position:absolute; top:12px; left:12px; font-weight:600; padding:6px 10px;
-    border-radius:3px; color:#fff; font-size:14px; min-width:32px; text-align:center;
-    box-shadow:0 2px 8px rgba(0,0,0,0.2); z-index:3; backdrop-filter:blur(10px);
-  }
-  .club-card.featured .club-rating-overlay{ top:60px; }
+    /* ══════════════════════════════════════════
+       CARD
+    ══════════════════════════════════════════ */
+    .club-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .club-card:hover {
+      border-color: var(--border-bright);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .club-card.featured {
+      border-top: 3px solid var(--amber);
+    }
+    .club-card.featured:hover { border-color: rgba(245,158,11,0.4); }
 
-  /* Rating colours (based on 0–10) */
-  .club-score-0{background:rgba(139,0,0,0.9)}
-  .club-score-1{background:rgba(165,42,42,0.9)}
-  .club-score-2{background:rgba(205,92,92,0.9)}
-  .club-score-3{background:rgba(220,20,60,0.9)}
-  .club-score-4{background:rgba(255,69,0,0.9)}
-  .club-score-5{background:rgba(255,165,0,0.9)}
-  .club-score-6{background:rgba(218,165,32,0.9)}
-  .club-score-7{background:rgba(34,139,34,0.9)}
-  .club-score-8{background:rgba(50,205,50,0.9)}
-  .club-score-9{background:rgba(34,139,34,0.9)}
-  .club-score-10{background:rgba(0,100,0,0.9)}
+    /* Image */
+    .card-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      overflow: hidden;
+      background: var(--bg-elevated);
+    }
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      display: block;
+    }
+    .club-card:hover .card-img { transform: scale(1.04); }
 
-  /* ---------- Verification badge (top-right) ---------- */
-  .club-verified-badge{
-    position:absolute; top:12px; right:12px;
-    background:#FF006E; color:#fff; padding:6px 10px;
-    border-radius:3px; font-size:12px; font-weight:600; z-index:4;
-    box-shadow:0 2px 8px rgba(0,0,0,0.2); backdrop-filter:blur(10px);
-    display:flex; align-items:center; gap:4px;
-  }
-  .club-verified-badge svg{
-    width:14px; height:14px; fill:currentColor;
-  }
+    /* Image overlay */
+    .card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, transparent 100%);
+      padding: 0.6rem 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      z-index: 2;
+    }
+    .overlay-pill {
+      background: rgba(27,27,27,0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      padding: 3px 9px;
+      border-radius: var(--r);
+      font-size: 0.75rem;
+      font-family: var(--font-serif);
+      color: #fff;
+      line-height: 1.3;
+    }
+    .overlay-pill.accent { background: rgba(255,27,110,0.88); }
+    .overlay-pill.amber  { background: rgba(245,158,11,0.88); }
 
-  /* ---------- Card content ---------- */
-  .club-content{ padding:20px; display:flex; flex-direction:column; gap:10px; flex-grow:1; }
-  .club-title-row{ display:flex; align-items:center; gap:6px; margin-bottom:4px; }
-  .club-title{ font-size:18px; font-weight:600; color:var(--text); line-height:1.3; margin:0; }
-  .club-title-verified{
-    display:inline-flex; align-items:center; justify-content:center;
-    width:18px; height:18px; background:#FF006E; border-radius:50%;
-    flex-shrink:0;
-  }
-  .club-title-verified svg{
-    width:12px; height:12px; fill:#fff;
-  }
-  .club-activity{ font-size:16px; color:var(--brand); font-weight:500; margin:0; }
-  .club-location{ font-size:14px; color:var(--text-secondary); display:flex; align-items:center; gap:4px; }
+    /* Top badges */
+    .card-badge {
+      position: absolute;
+      top: 10px;
+      z-index: 3;
+      padding: 3px 9px;
+      border-radius: var(--r);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+    .card-badge.left  { left: 10px; }
+    .card-badge.right { right: 10px; left: auto; }
+    .badge-accent { background: var(--accent); color: #fff; }
+    .badge-white  { background: rgba(255,255,255,0.95); color: #1B1B1B; }
+    .badge-amber  { background: var(--amber); color: #1B1B1B; }
 
-  /* ---------- Price and info row ---------- */
-  .club-price-rating-row{
-    display:flex; justify-content:space-between; align-items:center; gap:16px; margin-top:6px;
-  }
-  .club-price{ font-size:18px; font-weight:600; color:var(--brand); }
-  .club-price.free{ color:#30a330; }
+    /* Card body */
+    .card-body {
+      padding: 0.9rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      flex: 1;
+    }
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      color: var(--text);
+      line-height: 1.25;
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .verified-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .verified-dot svg { width: 10px; height: 10px; fill: #fff; }
+    .card-activity {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+    }
+    .card-location {
+      font-size: 0.75rem;
+      color: var(--text-faint);
+    }
+    .card-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.1rem;
+    }
+    .meta-chip {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .meta-chip.green  { background: var(--green-dim);  border-color: rgba(34,197,94,0.2);  color: var(--green); }
+    .meta-chip.amber  { background: var(--amber-dim);  border-color: rgba(245,158,11,0.2); color: var(--amber); }
+    .meta-chip.accent { background: var(--accent-dim); border-color: var(--accent-mid);    color: var(--accent); }
 
-  /* Audience chip */
-  .club-audience{
-    font-size:12px; font-weight:500; color:#1c1c1e;
-    background:#f2f2f7; border-radius:3px; padding:4px 8px;
-  }
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin: 0.5rem 0 0.25rem;
+    }
+    .stat-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 0.5rem 0.6rem;
+      text-align: center;
+    }
+    .stat-val {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1;
+      font-weight: normal;
+      display: block;
+    }
+    .stat-lbl {
+      font-size: 0.6rem;
+      color: var(--text-faint);
+      margin-top: 2px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: block;
+    }
 
-  /* ---------- Stats row ---------- */
-  .club-stats-row{
-    display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:12px 0 4px;
-  }
-  .club-stat{
-    text-align:center; padding:12px 8px; background:#333; border-radius:3px;
-  }
-  .club-stat-number{ font-size:16px; font-weight:600; color:var(--brand); display:block; margin-bottom:2px; }
-  .club-stat-label{ font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.5px; font-weight:500; }
+    /* Card footer */
+    .card-footer {
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 0.65rem 1rem;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      border-radius: var(--r);
+      color: #fff;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.18s;
+      line-height: 1;
+    }
+    .cta-btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
 
-  /* ---------- Badges ---------- */
-  .club-badges-container{ display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:8px; margin-bottom:auto; }
-  .club-badge{ display:inline-block; background:var(--brand); color:#fff; border-radius:3px; padding:4px 8px; font-size:12px; font-weight:500; }
-  .club-badge.beginners{ background:#30a330 }
-  .club-badge.wheelchair{ background:#007aff }
-  .club-badge.all-ages{ background:#FF6B35 }
+    /* ══════════════════════════════════════════
+       EMPTY STATE
+    ══════════════════════════════════════════ */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+    .empty-state h3 {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+      font-weight: normal;
+    }
+    .empty-state p { font-size: 0.875rem; }
 
-  /* ---------- Actions ---------- */
-  .club-card-actions{ display:flex; margin-top:auto; padding:0 20px 20px; }
-  .club-btn.details{
-    flex:1; text-align:center; text-decoration:none;
-    padding:14px 16px; font-weight:600; font-size:14px;
-    background:var(--brand); border:1px solid var(--brand); color:#fff; border-radius:var(--radius);
-    transition:all 0.2s ease;
-  }
-  .club-btn.details:hover{ background:#e60062; border-color:#e60062; }
+    /* ══════════════════════════════════════════
+       MODALS
+    ══════════════════════════════════════════ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-top: 3px solid var(--accent);
+      border-radius: var(--r-lg);
+      width: 100%;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+    .modal-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1;
+    }
+    .modal-title {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--text);
+      font-weight: normal;
+      padding-right: 2rem;
+    }
+    .modal-close {
+      position: absolute;
+      top: 0.9rem;
+      right: 1rem;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      width: 28px;
+      height: 28px;
+      color: var(--text-faint);
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+    .modal-body { padding: 1.1rem 1.4rem; }
 
-  /* ---------- Modal ---------- */
-  .club-modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); z-index:99999; backdrop-filter:blur(4px); padding:20px; }
-  .club-modal.active{ display:flex; }
-  .club-dialog{
-    background:var(--card-bg); border-radius:var(--radius); width:100%; max-width:420px; padding:24px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 50px rgba(0,0,0,0.5);
-  }
-  .club-dialog h2{ margin:0 0 20px; font-size:20px; font-weight:600; color:var(--text); }
-  .club-field{ margin-bottom:16px; display:flex; flex-direction:column; }
-  .club-label{ font-weight:500; margin-bottom:6px; color:var(--text); font-size:14px; }
-  .club-dialog select, .club-dialog input[type="number"]{
-    padding:12px 16px; border:1px solid var(--border); border-radius:var(--radius); font-size:16px; background:#333; color:var(--text); font-family:inherit;
-  }
-  .club-dialog select:focus, .club-dialog input:focus{ outline:none; border-color:var(--brand); }
-  .club-check{ display:flex; align-items:center; gap:8px; font-size:14px; margin-bottom:8px; color:var(--text); }
-  .club-actions{ display:flex; gap:12px; margin-top:24px; }
-  .club-actions .club-btn{ flex:1; }
+    /* Form fields */
+    .filter-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 0.9rem; }
+    .filter-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+    }
+    .filter-select,
+    .filter-input {
+      padding: 0.6rem 0.8rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      transition: border-color 0.18s;
+      appearance: none;
+      -webkit-appearance: none;
+      outline: none;
+      width: 100%;
+    }
+    .filter-select:focus,
+    .filter-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .filter-select option { background: #2a2a2a; }
+    .filter-check {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+    }
+    .filter-check input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; }
+    .price-row { display: flex; gap: 0.5rem; }
+    .price-row .filter-input { flex: 1; }
 
-  /* ---------- Advanced toggle ---------- */
-  .club-advanced-toggle{
-    width:100%; padding:12px 16px; margin:16px 0; background:#333; border:1px solid var(--border); border-radius:var(--radius);
-    cursor:pointer; font-size:14px; font-weight:500; color:var(--text); display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s ease;
-  }
-  .club-advanced-toggle:hover{ background:#3a3a3a; }
-  .club-advanced-toggle:after{ content:'▼'; font-size:12px; transition:transform 0.3s ease; }
-  .club-advanced-toggle.active:after{ transform:rotate(180deg); }
+    /* Advanced section */
+    .adv-toggle {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      transition: all 0.18s;
+      margin-bottom: 0;
+      text-align: left;
+    }
+    .adv-toggle:hover { border-color: var(--accent); color: var(--accent); }
+    .adv-toggle-icon { transition: transform 0.3s; font-size: 0.65rem; }
+    .adv-toggle.open .adv-toggle-icon { transform: rotate(180deg); }
+    .adv-section {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.38s ease, opacity 0.28s ease;
+    }
+    .adv-section.open { max-height: 600px; opacity: 1; }
+    .adv-section-inner {
+      padding-top: 1rem;
+      margin-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
 
-  .club-advanced-section{ display:none; padding-top:16px; border-top:1px solid var(--border); margin-top:16px; }
-  .club-advanced-section.active{ display:block; }
+    /* Modal footer */
+    .modal-footer {
+      padding: 0.9rem 1.4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+    }
+    .modal-footer .btn { flex: 1; justify-content: center; }
 
-  /* ---------- Mobile ---------- */
-  @media (max-width: 480px){
-    .club-grid{ grid-template-columns:1fr; padding:0 16px; gap:20px; }
-    .club-header{ padding:40px 20px; margin-bottom:24px; }
-    .club-header h1{ font-size:28px; }
-    .club-header p{ font-size:16px; }
-    .search-section{ padding:0 16px; margin-bottom:16px; }
-    .search-input{ padding:14px 18px 14px 45px; font-size:16px; }
-    .club-toolbar{ padding:0 16px; margin-bottom:20px; flex-direction:column; gap:8px; }
-    .club-toolbar .club-btn{ width:100%; justify-content:center; }
-    .club-img-container{ height:180px; }
-    .club-content{ padding:16px; }
-    .club-title{ font-size:16px; }
-    .club-card-actions{ padding:0 16px 16px; }
-    .club-btn.details{ font-size:14px; padding:12px 14px; }
-    .club-dialog{ margin:16px; padding:20px; }
-  }
-  @media (min-width: 481px) and (max-width: 768px){
-    .club-grid{ grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
-  }
-</style>
+    /* ══════════════════════════════════════════
+       TOAST
+    ══════════════════════════════════════════ */
+    #nbrh-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-bright);
+      border-radius: var(--r-lg);
+      padding: 0.8rem 1.2rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      font-family: var(--font-sans);
+      box-shadow: var(--shadow-lg);
+      z-index: 999999;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.25s ease;
+      max-width: 300px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+    }
+    #nbrh-toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    #nbrh-toast.success { border-left: 3px solid var(--green); }
+    #nbrh-toast.error   { border-left: 3px solid #ef4444; }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .nav-inner { padding: 0.85rem 1.25rem; }
+      .page-header { padding: 2.5rem 1.25rem 2rem; }
+      .content-shell { padding: 1.5rem 1.25rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .result-count { margin-left: 0; flex-basis: 100%; text-align: center; }
+      .nav-brand-name small { display: none; }
+    }
+  </style>
 </head>
 
 <body>
-<!-- NBRH Brand Header -->
-<header class="nbrh-header">
-  <div class="nbrh-header-inner">
-    <a href="https://www.thenbrh.co.uk/" class="nbrh-logo-link">
-      <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
-    </a>
-    <nav class="nbrh-nav">
-      <a href="/">Browse Clubs</a>
-    </nav>
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="https://www.thenbrh.co.uk/" class="nav-brand">
+        <img
+          class="nav-brand-logo"
+          src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng"
+          alt="The NBRH"
+          onerror="this.style.display='none'"
+        >
+        <div class="nav-brand-name">
+          The NBRH
+          <small>Club Directory</small>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Browse Clubs</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="page-header-inner">
+      <span class="eyebrow">Discover</span>
+      <h1>Find your <em>local club.</em></h1>
+      <p>Browse community sport and fitness clubs across London. Filter by activity, location or price to find your fit.</p>
+    </div>
   </div>
-</header>
 
-<!-- Page Header -->
-<div class="club-header">
-  <h1>Discover Local Clubs</h1>
-  <p>Find the perfect community for your interests and activity level</p>
-</div>
-
-<!-- Search Section -->
-<div class="search-section">
-  <div class="search-container">
-    <div class="search-icon">🔍</div>
-    <input type="text" class="search-input" id="searchInput" placeholder="Search clubs by name, activity, or location…">
+  <!-- LOADING -->
+  <div id="loading-state" class="state-wrap">
+    <div class="spinner"></div>
+    <p class="loading-text">Loading clubs…</p>
   </div>
-</div>
 
-<div id="loading-state" class="club-loading">
-  <div class="club-spinner"></div><p>Loading clubs…</p>
-</div>
-<div id="error-state" class="club-error" style="display:none;">
-  <p>Failed to load clubs. Check your connection or try again.</p>
-  <button class="club-btn primary" onclick="window.location.reload()">Try Again</button>
-</div>
-
-<div id="main-content" style="display:none;">
-  <div class="club-toolbar">
-    <button class="club-btn primary" id="open-filter">Filter Clubs</button>
-    <button class="club-btn" id="open-sort">Sort</button>
-    <button class="club-btn" id="reload">Refresh Data</button>
-    <p id="result-count"></p>
+  <!-- ERROR -->
+  <div id="error-state" class="state-wrap" style="display:none;">
+    <div class="error-box">
+      <p>Failed to load clubs. Check your connection or try again.</p>
+      <button class="btn primary" onclick="window.location.reload()">Try Again</button>
+    </div>
   </div>
-  <div id="cards" class="club-grid" aria-live="polite"></div>
-</div>
 
-<!-- ---------- Filter Modal ---------- -->
-<div id="filter-modal" class="club-modal" aria-modal="true" role="dialog">
-  <div class="club-dialog">
-    <h2>Filter Clubs</h2>
-    <div class="club-main-filters">
-      <div class="club-field"><label class="club-label" for="f-activity">Activity Type</label><select id="f-activity"><option value="">Any activity</option></select></div>
-      <div class="club-field"><label class="club-label" for="f-location">Location</label><select id="f-location"><option value="">Any location</option></select></div>
-      <div class="club-field"><label class="club-label">Monthly fee £</label>
-        <div style="display:flex;gap:8px">
-          <input type="number" id="f-pmin" placeholder="Min" min="0" value="0" style="width:100%">
-          <input type="number" id="f-pmax" placeholder="Max" min="0" style="width:100%">
+  <!-- MAIN -->
+  <div id="main-content" style="display:none;">
+    <div class="content-shell">
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input
+          type="text"
+          class="search-input"
+          id="searchInput"
+          placeholder="Search clubs by name, activity, or location…"
+          autocomplete="off"
+        >
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <button class="btn primary" id="open-filter">Filter Clubs</button>
+        <button class="btn" id="open-sort">Sort</button>
+        <button class="btn" id="reload">Refresh Data</button>
+        <span class="result-count" id="result-count"></span>
+      </div>
+
+      <!-- Grid -->
+      <div id="cards" class="cards-grid" aria-live="polite"></div>
+
+    </div>
+  </div>
+
+  <!-- FILTER MODAL -->
+  <div id="filter-modal" class="modal-overlay" aria-modal="true" role="dialog">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Filter Clubs</h2>
+        <button class="modal-close" id="filter-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="filter-field">
+          <label class="filter-label" for="f-activity">Activity Type</label>
+          <select class="filter-select" id="f-activity"><option value="">Any activity</option></select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="f-location">Location</label>
+          <select class="filter-select" id="f-location"><option value="">Any location</option></select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label">Monthly fee (£)</label>
+          <div class="price-row">
+            <input type="number" class="filter-input" id="f-pmin" placeholder="Min" min="0" value="0">
+            <input type="number" class="filter-input" id="f-pmax" placeholder="Max" min="0">
+          </div>
+        </div>
+        <label class="filter-check"><input type="checkbox" id="f-beginners"> Beginner friendly</label>
+        <label class="filter-check"><input type="checkbox" id="f-verified"> Verified clubs only</label>
+        <label class="filter-check"><input type="checkbox" id="f-featured"> Featured clubs only</label>
+
+        <button class="adv-toggle" id="toggle-advanced">
+          <span>Advanced filters</span>
+          <span class="adv-toggle-icon">▼</span>
+        </button>
+        <div class="adv-section" id="adv-section">
+          <div class="adv-section-inner">
+            <div class="filter-field">
+              <label class="filter-label" for="f-ages">Age Groups</label>
+              <select class="filter-select" id="f-ages"><option value="">Any age group</option></select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="f-skills">Skill Levels</label>
+              <select class="filter-select" id="f-skills"><option value="">Any skill level</option></select>
+            </div>
+            <div class="filter-field">
+              <label class="filter-label" for="f-members">Minimum members</label>
+              <select class="filter-select" id="f-members">
+                <option value="">Any size</option>
+                <option value="50">50+ members</option>
+                <option value="100">100+ members</option>
+                <option value="200">200+ members</option>
+              </select>
+            </div>
+            <label class="filter-check"><input type="checkbox" id="f-wheelchair"> Wheelchair accessible</label>
+            <label class="filter-check"><input type="checkbox" id="f-all-ages"> All ages welcome</label>
+          </div>
         </div>
       </div>
-      <div class="club-check"><input type="checkbox" id="f-beginners"><label for="f-beginners">Beginner friendly</label></div>
-      <div class="club-check"><input type="checkbox" id="f-verified"><label for="f-verified">Verified clubs only</label></div>
-      <div class="club-check"><input type="checkbox" id="f-featured"><label for="f-featured">Featured clubs only</label></div>
-    </div>
-
-    <button class="club-advanced-toggle" id="toggle-advanced">Advanced filters</button>
-
-    <div class="club-advanced-section" id="advanced-section">
-      <div class="club-field"><label class="club-label" for="f-ages">Age Groups</label>
-        <select id="f-ages"><option value="">Any age group</option></select>
+      <div class="modal-footer">
+        <button class="btn" id="f-reset">Reset all</button>
+        <button class="btn primary" id="f-apply">Apply</button>
       </div>
-      <div class="club-field"><label class="club-label" for="f-skills">Skill Levels</label>
-        <select id="f-skills"><option value="">Any skill level</option></select>
-      </div>
-      <div class="club-field"><label class="club-label" for="f-members">Minimum members</label>
-        <select id="f-members"><option value="">Any size</option><option value="50">50+ members</option><option value="100">100+ members</option><option value="200">200+ members</option></select>
-      </div>
-      <div class="club-check"><input type="checkbox" id="f-wheelchair"><label for="f-wheelchair">Wheelchair accessible</label></div>
-      <div class="club-check"><input type="checkbox" id="f-all-ages"><label for="f-all-ages">All ages welcome</label></div>
-    </div>
-
-    <div class="club-actions">
-      <button class="club-btn" id="f-reset">Reset all</button>
-      <button class="club-btn primary" id="f-apply">Apply filters</button>
     </div>
   </div>
-</div>
 
-<!-- ---------- Sort Modal ---------- -->
-<div id="sort-modal" class="club-modal" aria-modal="true" role="dialog">
-  <div class="club-dialog">
-    <h2>Sort clubs by</h2>
-    <div class="club-field">
-      <select id="s-key">
-        <option value="default">Default (Featured → Rating → Members)</option>
-        <option value="ranking">Ranking position (best → worst)</option>
-        <option value="rating">NBRH rating (high → low)</option>
-        <option value="members">Member count (high → low)</option>
-        <option value="priceLow">Price (low → high)</option>
-        <option value="priceHigh">Price (high → low)</option>
-        <option value="name">Name (A → Z)</option>
-        <option value="location">Location (A → Z)</option>
-      </select>
-    </div>
-    <div class="club-actions">
-      <button class="club-btn" id="s-close">Cancel</button>
-      <button class="club-btn primary" id="s-apply">Apply</button>
+  <!-- SORT MODAL -->
+  <div id="sort-modal" class="modal-overlay" aria-modal="true" role="dialog">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">Sort clubs by</h2>
+        <button class="modal-close" id="sort-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="filter-field">
+          <label class="filter-label" for="s-key">Sort order</label>
+          <select class="filter-select" id="s-key">
+            <option value="default">Default (Featured → Rating → Members)</option>
+            <option value="ranking">Ranking position (best → worst)</option>
+            <option value="rating">NBRH rating (high → low)</option>
+            <option value="members">Member count (high → low)</option>
+            <option value="priceLow">Price (low → high)</option>
+            <option value="priceHigh">Price (high → low)</option>
+            <option value="name">Name (A → Z)</option>
+            <option value="location">Location (A → Z)</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="s-close">Cancel</button>
+        <button class="btn primary" id="s-apply">Apply</button>
+      </div>
     </div>
   </div>
-</div>
+
+  <!-- TOAST -->
+  <div id="nbrh-toast"></div>
 
 <script>
 (function(){
+  /* ════════════════════════════════════════
+     ELEMENTS
+  ════════════════════════════════════════ */
+  const $ = id => document.getElementById(id);
+
   const els = {
-    loading: document.getElementById('loading-state'),
-    error: document.getElementById('error-state'),
-    main: document.getElementById('main-content'),
-    cards: document.getElementById('cards'),
-    result: document.getElementById('result-count'),
-    search: document.getElementById('searchInput'),
-    filterOpen: document.getElementById('open-filter'),
-    sortOpen: document.getElementById('open-sort'),
-    reload: document.getElementById('reload'),
-    filterModal: document.getElementById('filter-modal'),
-    sortModal: document.getElementById('sort-modal'),
-    advToggle: document.getElementById('toggle-advanced'),
-    advSection: document.getElementById('advanced-section'),
-    fActivity: document.getElementById('f-activity'),
-    fLocation: document.getElementById('f-location'),
-    fMin: document.getElementById('f-pmin'),
-    fMax: document.getElementById('f-pmax'),
-    fBeginners: document.getElementById('f-beginners'),
-    fVerified: document.getElementById('f-verified'),
-    fFeatured: document.getElementById('f-featured'),
-    fAges: document.getElementById('f-ages'),
-    fSkills: document.getElementById('f-skills'),
-    fMembers: document.getElementById('f-members'),
-    fWheel: document.getElementById('f-wheelchair'),
-    fAllAges: document.getElementById('f-all-ages'),
-    fReset: document.getElementById('f-reset'),
-    fApply: document.getElementById('f-apply'),
-    sKey: document.getElementById('s-key'),
-    sClose: document.getElementById('s-close'),
-    sApply: document.getElementById('s-apply'),
+    loading:     $('loading-state'),
+    error:       $('error-state'),
+    main:        $('main-content'),
+    cards:       $('cards'),
+    result:      $('result-count'),
+    search:      $('searchInput'),
+    filterOpen:  $('open-filter'),
+    sortOpen:    $('open-sort'),
+    reloadBtn:   $('reload'),
+    filterModal: $('filter-modal'),
+    sortModal:   $('sort-modal'),
+    filterClose: $('filter-close'),
+    sortClose:   $('sort-close'),
+    advToggle:   $('toggle-advanced'),
+    advSection:  $('adv-section'),
+    fActivity:   $('f-activity'),
+    fLocation:   $('f-location'),
+    fMin:        $('f-pmin'),
+    fMax:        $('f-pmax'),
+    fBeginners:  $('f-beginners'),
+    fVerified:   $('f-verified'),
+    fFeatured:   $('f-featured'),
+    fAges:       $('f-ages'),
+    fSkills:     $('f-skills'),
+    fMembers:    $('f-members'),
+    fWheel:      $('f-wheelchair'),
+    fAllAges:    $('f-all-ages'),
+    fReset:      $('f-reset'),
+    fApply:      $('f-apply'),
+    sKey:        $('s-key'),
+    sClose:      $('s-close'),
+    sApply:      $('s-apply'),
+    toast:       $('nbrh-toast'),
   };
 
-  let RAW = [];
+  /* ════════════════════════════════════════
+     STATE
+  ════════════════════════════════════════ */
+  let RAW  = [];
   let VIEW = [];
   let SORT = 'default';
 
-  // Checkmark SVG for verified badge
-  const checkmarkSVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>';
-
-  function classForScore(score){
-    const n = Math.max(0, Math.min(10, Math.round(Number(score)||0)));
-    return 'club-score-' + n;
+  /* ════════════════════════════════════════
+     TOAST
+  ════════════════════════════════════════ */
+  function showToast(msg, type = 'success') {
+    els.toast.textContent = msg;
+    els.toast.className = type + ' show';
+    setTimeout(() => els.toast.classList.remove('show'), 3000);
   }
 
-  function money(n){
+  /* ════════════════════════════════════════
+     HELPERS
+  ════════════════════════════════════════ */
+  const checkSVG = '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>';
+
+  function money(n) {
     const v = Number(n);
-    if (!isFinite(v) || v<=0) return '';
-    return '£' + (Math.round(v*100)/100).toFixed(v%1?2:0);
+    return (isFinite(v) && v > 0) ? '£' + (Math.round(v * 100) / 100).toFixed(v % 1 ? 2 : 0) : '';
   }
 
-  // Extract numeric price for sorting from either monthly_fee_amount or monthly_fee_text
-  function getPriceForSort(club) {
-    // First try monthly_fee_amount
-    const amount = Number(club.monthly_fee_amount);
-    if (isFinite(amount) && amount > 0) {
-      return amount;
-    }
-    
-    // If no amount, try to extract from monthly_fee_text
-    const text = String(club.monthly_fee_text || '').toLowerCase();
-    
-    // Handle "free" explicitly
-    if (text.includes('free') || text.includes('varies')) {
-      return 0;
-    }
-    
-    // Extract first number from text (e.g., "£10 Per Session" -> 10, "£35 + Fees" -> 35)
+  function ratingColour(score) {
+    const n = Math.max(0, Math.min(10, Math.round(Number(score) || 0)));
+    const colours = [
+      'rgba(139,0,0,0.88)',   // 0
+      'rgba(165,42,42,0.88)', // 1
+      'rgba(205,92,92,0.88)', // 2
+      'rgba(220,20,60,0.88)', // 3
+      'rgba(255,69,0,0.88)',  // 4
+      'rgba(255,165,0,0.88)', // 5
+      'rgba(218,165,32,0.88)',// 6
+      'rgba(34,139,34,0.88)', // 7
+      'rgba(50,205,50,0.88)', // 8
+      'rgba(34,139,34,0.88)', // 9
+      'rgba(0,100,0,0.88)',   // 10
+    ];
+    return colours[n];
+  }
+
+  function getPriceForSort(c) {
+    const amount = Number(c.monthly_fee_amount);
+    if (isFinite(amount) && amount > 0) return amount;
+    const text = String(c.monthly_fee_text || '').toLowerCase();
+    if (text.includes('free') || text.includes('varies')) return 0;
     const match = text.match(/£?(\d+(?:\.\d+)?)/);
-    if (match) {
-      return Number(match[1]);
-    }
-    
-    // Default to 0 if we can't determine
-    return 0;
+    return match ? Number(match[1]) : 0;
   }
 
-  function closeAllModals(){
-    els.filterModal.classList.remove('active');
-    els.sortModal.classList.remove('active');
+  function uniqueSorted(arr) {
+    return [...new Set(arr.filter(Boolean))].sort((a, b) => a.localeCompare(b));
   }
 
-  function open(el){ el.classList.add('active'); }
-  function close(el){ el.classList.remove('active'); }
-
-  function uniqueSorted(arr){
-    return Array.from(new Set(arr.filter(Boolean))).sort((a,b)=>a.localeCompare(b));
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str || '');
+    return d.innerHTML;
   }
 
-  function renderFiltersOptions(list){
-    const acts = uniqueSorted(list.map(x=>x.activity_type));
-    const locs = uniqueSorted(list.map(x=>x.location));
-    const ages = uniqueSorted(list.map(x=>x.age_groups || x.tags_who));
-    const skills = uniqueSorted(list.map(x=>x.skill_levels));
+  /* ════════════════════════════════════════
+     MODALS
+  ════════════════════════════════════════ */
+  function openModal(el)  { el.classList.add('active');    document.body.style.overflow = 'hidden'; }
+  function closeModal(el) { el.classList.remove('active'); document.body.style.overflow = ''; }
+  function closeAll()     { closeModal(els.filterModal); closeModal(els.sortModal); }
 
-    els.fActivity.innerHTML = '<option value="">Any activity</option>' + acts.map(a=>`<option>${a}</option>`).join('');
-    els.fLocation.innerHTML = '<option value="">Any location</option>' + locs.map(a=>`<option>${a}</option>`).join('');
-    els.fAges.innerHTML = '<option value="">Any age group</option>' + ages.map(a=>`<option>${a}</option>`).join('');
-    els.fSkills.innerHTML = '<option value="">Any skill level</option>' + skills.map(a=>`<option>${a}</option>`).join('');
+  els.filterClose.addEventListener('click', closeAll);
+  els.sortClose.addEventListener('click',   closeAll);
+  els.sClose.addEventListener('click',      closeAll);
+
+  [els.filterModal, els.sortModal].forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) closeAll(); });
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+
+  els.filterOpen.addEventListener('click', () => openModal(els.filterModal));
+  els.sortOpen.addEventListener('click',   () => openModal(els.sortModal));
+
+  /* Advanced toggle */
+  els.advToggle.addEventListener('click', () => {
+    els.advToggle.classList.toggle('open');
+    els.advSection.classList.toggle('open');
+  });
+
+  /* ════════════════════════════════════════
+     POPULATE FILTER OPTIONS
+  ════════════════════════════════════════ */
+  function populateFilters(list) {
+    const acts   = uniqueSorted(list.map(x => x.activity_type));
+    const locs   = uniqueSorted(list.map(x => x.location));
+    const ages   = uniqueSorted(list.map(x => x.age_groups || x.tags_who));
+    const skills = uniqueSorted(list.map(x => x.skill_levels));
+
+    const fill = (sel, opts) => {
+      const keep = sel.options[0].outerHTML;
+      sel.innerHTML = keep + opts.map(o => `<option value="${esc(o)}">${esc(o)}</option>`).join('');
+    };
+    fill(els.fActivity, acts);
+    fill(els.fLocation, locs);
+    fill(els.fAges,     ages);
+    fill(els.fSkills,   skills);
   }
 
-  function applyFilters(){
-    const q = els.search.value.trim().toLowerCase();
-    const minP = Number(els.fMin.value||0);
-    const maxP = Number(els.fMax.value||0) || Infinity;
+  /* ════════════════════════════════════════
+     FILTER + SORT
+  ════════════════════════════════════════ */
+  function applyFilters() {
+    const q    = els.search.value.trim().toLowerCase();
+    const minP = Number(els.fMin.value || 0);
+    const maxP = Number(els.fMax.value || 0) || Infinity;
 
-    VIEW = RAW.filter(c=>{
-      if (q){
-        const blob = [c.club_name,c.activity_type,c.location,c.audience].join(' ').toLowerCase();
+    VIEW = RAW.filter(c => {
+      if (q) {
+        const blob = [c.club_name, c.activity_type, c.location, c.audience].join(' ').toLowerCase();
         if (!blob.includes(q)) return false;
       }
       if (els.fActivity.value && c.activity_type !== els.fActivity.value) return false;
@@ -516,14 +1070,14 @@
       if (els.fVerified.checked && !c.verified) return false;
       if (els.fFeatured.checked && !c.featured) return false;
 
-      const price = Number(c.monthly_fee_amount||0);
+      const price = Number(c.monthly_fee_amount || 0);
       if (price && price < minP) return false;
       if (isFinite(maxP) && price > maxP) return false;
 
-      if (els.fBeginners.checked && !(String(c.tags_who||'').toLowerCase().includes('beginner'))) return false;
-      if (els.fAges.value && !(String(c.age_groups||'').includes(els.fAges.value))) return false;
+      if (els.fBeginners.checked && !String(c.tags_who || '').toLowerCase().includes('beginner')) return false;
+      if (els.fAges.value && !String(c.age_groups || '').includes(els.fAges.value)) return false;
       if (els.fSkills.value && c.skill_levels && c.skill_levels !== 'All levels' && c.skill_levels !== els.fSkills.value) return false;
-      if (els.fMembers.value && Number(c.member_count||0) < Number(els.fMembers.value)) return false;
+      if (els.fMembers.value && Number(c.member_count || 0) < Number(els.fMembers.value)) return false;
       if (els.fWheel.checked && !c.is_wheelchair_accessible) return false;
       if (els.fAllAges.checked && !c.is_all_ages) return false;
 
@@ -533,239 +1087,205 @@
     applySortAndRender();
   }
 
-  function applySortAndRender(){
-    const key = SORT;
-    
-    // Create a COPY to avoid mutating during render
+  function applySortAndRender() {
     const sorted = [...VIEW];
-    
-    console.log('=== SORT DEBUG ===');
-    console.log('Sort key:', key);
-    console.log('Items to sort:', sorted.length);
-    
-    // Sample first 5 items before sort
-    if (key.includes('price')) {
-      console.log('Sample prices BEFORE sort:');
-      sorted.slice(0, 5).forEach(c => {
-        console.log(`  ${c.club_name}: amount=${c.monthly_fee_amount}, text="${c.monthly_fee_text}", extracted=${getPriceForSort(c)}`);
-      });
-    }
-    
-    sorted.sort((a,b)=>{
-      // Helper to safely get numbers
-      const getNum = (val) => {
-        const n = Number(val);
-        return isFinite(n) ? n : 0;
-      };
-      
-      switch(key){
-        case 'rating': 
+    const getNum = v => { const n = Number(v); return isFinite(n) ? n : 0; };
+
+    sorted.sort((a, b) => {
+      switch (SORT) {
+        case 'rating':
           return getNum(b.numeric_rating) - getNum(a.numeric_rating);
-          
-        case 'members': 
+        case 'members':
           return getNum(b.member_count) - getNum(a.member_count);
-          
-        case 'priceLow': 
-          // Use smart price extraction
-          const aPrice = getPriceForSort(a);
-          const bPrice = getPriceForSort(b);
-          const result = aPrice - bPrice;
-          return result;
-          
-        case 'priceHigh': 
-          // Use smart price extraction
-          const aPriceHigh = getPriceForSort(a);
-          const bPriceHigh = getPriceForSort(b);
-          const resultHigh = bPriceHigh - aPriceHigh;
-          return resultHigh;
-          
-        case 'name': 
-          const aName = String(a.club_name || '');
-          const bName = String(b.club_name || '');
-          return aName.localeCompare(bName);
-          
-        case 'location': 
-          const aLoc = String(a.location || '');
-          const bLoc = String(b.location || '');
-          return aLoc.localeCompare(bLoc);
-          
-        default:
-          // Default: Featured → Rating → Members
-          const featuredDiff = (b.featured?1:0) - (a.featured?1:0);
-          if (featuredDiff !== 0) return featuredDiff;
-          
-          const ratingDiff = getNum(b.numeric_rating) - getNum(a.numeric_rating);
-          if (ratingDiff !== 0) return ratingDiff;
-          
+        case 'priceLow':
+          return getPriceForSort(a) - getPriceForSort(b);
+        case 'priceHigh':
+          return getPriceForSort(b) - getPriceForSort(a);
+        case 'name':
+          return String(a.club_name || '').localeCompare(String(b.club_name || ''));
+        case 'location':
+          return String(a.location || '').localeCompare(String(b.location || ''));
+        default: {
+          const fd = (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
+          if (fd) return fd;
+          const rd = getNum(b.numeric_rating) - getNum(a.numeric_rating);
+          if (rd) return rd;
           return getNum(b.member_count) - getNum(a.member_count);
+        }
       }
     });
-
-    // Sample first 10 items after sort
-    if (key.includes('price')) {
-      console.log('Sample prices AFTER sort:');
-      sorted.slice(0, 10).forEach(c => {
-        console.log(`  ${c.club_name}: £${getPriceForSort(c)} (from "${c.monthly_fee_text}")`);
-      });
-    }
 
     renderCards(sorted);
   }
 
-  function cardHtml(c){
-    const price = c.monthly_fee_amount ? `${money(c.monthly_fee_amount)}/mo` : (c.monthly_fee_text||'');
-    const rating = Number(c.numeric_rating||0);
-    const overlayClass = 'club-rating-overlay ' + classForScore(rating);
-    const img = c.image_url || 'https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80';
-    const code = c.club_code || '';
+  /* ════════════════════════════════════════
+     RENDER
+  ════════════════════════════════════════ */
+  function cardHtml(c) {
+    const img      = c.image_url || 'https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80';
+    const rating   = Number(c.numeric_rating || 0);
+    const price    = c.monthly_fee_amount ? `${money(c.monthly_fee_amount)}/mo` : (c.monthly_fee_text || '');
+    const isFree   = !price || /free/i.test(price);
+    const code     = c.club_code || '';
 
-    const badges = [];
-    if (String(c.tags_who||'').toLowerCase().includes('beginner')) badges.push('<span class="club-badge beginners">Beginner friendly</span>');
-    if (c.is_wheelchair_accessible) badges.push('<span class="club-badge wheelchair">Accessible</span>');
-    if (c.is_all_ages) badges.push('<span class="club-badge all-ages">All ages</span>');
-
-    // Verification badge in image overlay
-    const verifiedOverlay = c.verified ? `<div class="club-verified-badge">${checkmarkSVG}Verified</div>` : '';
+    /* Chips */
+    const chips = [];
+    if (String(c.tags_who || '').toLowerCase().includes('beginner'))
+      chips.push(`<span class="meta-chip green">Beginner friendly</span>`);
+    if (c.is_wheelchair_accessible)
+      chips.push(`<span class="meta-chip accent">Accessible</span>`);
+    if (c.is_all_ages)
+      chips.push(`<span class="meta-chip amber">All ages</span>`);
+    if (c.audience)
+      chips.push(`<span class="meta-chip">${esc(c.audience)}</span>`);
 
     return `
-      <article class="club-card ${c.featured?'featured':''}">
-        <div class="club-img-container">
-          <img class="club-img" alt="${c.club_name || 'Club photo'}" src="${img}">
-          <div class="${overlayClass}">${isFinite(rating)?rating.toFixed(1):0}</div>
-          ${verifiedOverlay}
-        </div>
-        <div class="club-content">
-          <div class="club-title-row">
-            <h3 class="club-title">${c.club_name || 'Unknown Club'}</h3>
-            ${c.verified ? `<span class="club-title-verified">${checkmarkSVG}</span>` : ''}
-          </div>
-          <p class="club-activity">${c.activity_type || ''}</p>
-          <p class="club-location">📍 ${c.location || ''}</p>
-
-          <div class="club-price-rating-row">
-            <div class="club-price ${(!price || /free/i.test(price)) ? 'free' : ''}">${price || 'Free / varies'}</div>
-            ${c.audience ? `<span class="club-audience">${c.audience}</span>` : ``}
-          </div>
-
-          <div class="club-stats-row">
-            <div class="club-stat"><span class="club-stat-number">${c.sessions_per_week||0}</span><span class="club-stat-label">Sessions/Wk</span></div>
-            <div class="club-stat"><span class="club-stat-number">${c.member_count||0}</span><span class="club-stat-label">Members</span></div>
-            <div class="club-stat"><span class="club-stat-number">${c.ranking_position?('#'+c.ranking_position):'-'}</span><span class="club-stat-label">Rank</span></div>
-          </div>
-
-          <div class="club-badges-container">
-            ${badges.join('')}
+      <article class="club-card${c.featured ? ' featured' : ''}">
+        <div class="card-img-wrap">
+          ${c.featured ? `<span class="card-badge left badge-amber">★ Featured</span>` : ''}
+          ${c.verified ? `<span class="card-badge right badge-accent">Verified</span>` : ''}
+          <img class="card-img" loading="lazy" src="${esc(img)}" alt="${esc(c.club_name || 'Club')}"
+            onerror="this.src='https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80'">
+          <div class="card-overlay">
+            <div class="overlay-pill${isFree ? ' green' : ' accent'}">${esc(price || 'Free / varies')}</div>
+            ${isFinite(rating) && rating > 0
+              ? `<div class="overlay-pill" style="background:${ratingColour(rating)}">${rating.toFixed(1)}★</div>`
+              : ''}
           </div>
         </div>
 
-        <div class="club-card-actions">
-          <a class="club-btn details" href="/club/${code}" aria-label="View details for ${c.club_name}">View details</a>
+        <div class="card-body">
+          <h3 class="card-title">
+            ${esc(c.club_name || 'Unknown Club')}
+            ${c.verified ? `<span class="verified-dot">${checkSVG}</span>` : ''}
+          </h3>
+          ${c.activity_type ? `<div class="card-activity">${esc(c.activity_type)}</div>` : ''}
+          ${c.location ? `<div class="card-location">📍 ${esc(c.location)}</div>` : ''}
+
+          <div class="stats-row">
+            <div class="stat-box">
+              <span class="stat-val">${c.sessions_per_week || 0}</span>
+              <span class="stat-lbl">Sessions/Wk</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-val">${c.member_count || 0}</span>
+              <span class="stat-lbl">Members</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-val">${c.ranking_position ? '#' + c.ranking_position : '—'}</span>
+              <span class="stat-lbl">Rank</span>
+            </div>
+          </div>
+
+          ${chips.length ? `<div class="card-meta">${chips.join('')}</div>` : ''}
+        </div>
+
+        <div class="card-footer">
+          <a class="cta-btn" href="/club/${esc(code)}" aria-label="View details for ${esc(c.club_name)}">
+            View details →
+          </a>
         </div>
       </article>
     `;
   }
 
-  function renderCards(list){
-    els.cards.innerHTML = list.map(cardHtml).join('');
-    els.result.textContent = `${list.length} result${list.length===1?'':'s'}`;
+  function renderCards(list) {
+    if (!list.length) {
+      els.cards.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1;">
+          <h3>No clubs found</h3>
+          <p>Try adjusting your search or filters.</p>
+        </div>`;
+    } else {
+      els.cards.innerHTML = list.map(cardHtml).join('');
+    }
+    els.result.textContent = `${list.length} result${list.length === 1 ? '' : 's'}`;
   }
 
-  async function loadClubData(force=false){
-    try{
-      els.loading.style.display = '';
-      els.error.style.display = 'none';
-      els.main.style.display = 'none';
+  /* ════════════════════════════════════════
+     DATA LOAD
+  ════════════════════════════════════════ */
+  function resetFilters() {
+    els.fActivity.value  = '';
+    els.fLocation.value  = '';
+    els.fMin.value       = '0';
+    els.fMax.value       = '';
+    els.fBeginners.checked = false;
+    els.fVerified.checked  = false;
+    els.fFeatured.checked  = false;
+    els.fAges.value    = '';
+    els.fSkills.value  = '';
+    els.fMembers.value = '';
+    els.fWheel.checked    = false;
+    els.fAllAges.checked  = false;
+  }
 
-      const url = `/api/clubs?t=${Date.now()}`;
-      const res = await fetch(url, { cache:'no-store' });
-      if (!res.ok) throw new Error('Failed to load');
+  async function loadData() {
+    try {
+      els.loading.style.display = '';
+      els.error.style.display   = 'none';
+      els.main.style.display    = 'none';
+
+      const res  = await fetch(`/api/clubs?t=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
       const data = await res.json();
 
       RAW = Array.isArray(data) ? data : [];
-      renderFiltersOptions(RAW);
+      populateFilters(RAW);
+      resetFilters();
       els.search.value = '';
-      
-      // Reset all filters
-      els.fActivity.value = '';
-      els.fLocation.value = '';
-      els.fMin.value = '0';
-      els.fMax.value = '';
-      els.fBeginners.checked = false;
-      els.fVerified.checked = false;
-      els.fFeatured.checked = false;
-      els.fAges.value = '';
-      els.fSkills.value = '';
-      els.fMembers.value = '';
-      els.fWheel.checked = false;
-      els.fAllAges.checked = false;
-      
-      // Reset sort to default
       SORT = 'default';
       els.sKey.value = 'default';
-      
+
       applyFilters();
 
       els.loading.style.display = 'none';
-      els.main.style.display = '';
-    }catch(err){
+      els.main.style.display    = '';
+    } catch (err) {
       console.error(err);
       els.loading.style.display = 'none';
-      els.error.style.display = '';
+      els.error.style.display   = '';
     }
   }
 
-  // Events
-  els.search.addEventListener('input', ()=>applyFilters());
-
-  els.filterOpen.addEventListener('click', ()=>open(els.filterModal));
-  els.sortOpen.addEventListener('click', ()=>open(els.sortModal));
-  els.reload.addEventListener('click', ()=>loadClubData(true));
-
-  els.advToggle.addEventListener('click', ()=>{
-    els.advToggle.classList.toggle('active');
-    els.advSection.classList.toggle('active');
+  /* ════════════════════════════════════════
+     EVENTS
+  ════════════════════════════════════════ */
+  let searchTimer;
+  els.search.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(applyFilters, 260);
   });
 
-  els.fReset.addEventListener('click', ()=>{
-    els.fActivity.value = '';
-    els.fLocation.value = '';
-    els.fMin.value = '0';
-    els.fMax.value = '';
-    els.fBeginners.checked = false;
-    els.fVerified.checked = false;
-    els.fFeatured.checked = false;
-    els.fAges.value = '';
-    els.fSkills.value = '';
-    els.fMembers.value = '';
-    els.fWheel.checked = false;
-    els.fAllAges.checked = false;
+  els.reloadBtn.addEventListener('click', () => {
+    loadData();
+    showToast('Data refreshed');
+  });
+
+  els.fApply.addEventListener('click', () => {
+    closeAll();
     applyFilters();
   });
-  
-  els.fApply.addEventListener('click', ()=>{ 
-    close(els.filterModal); 
-    applyFilters(); 
+
+  els.fReset.addEventListener('click', () => {
+    resetFilters();
+    closeAll();
+    applyFilters();
   });
 
-  els.sClose.addEventListener('click', ()=>close(els.sortModal));
-  els.sApply.addEventListener('click', ()=>{
+  els.sApply.addEventListener('click', () => {
     SORT = els.sKey.value || 'default';
-    close(els.sortModal);
+    closeAll();
     applySortAndRender();
   });
 
-  // Close modals on backdrop click
-  [els.filterModal, els.sortModal].forEach(m=>{
-    m.addEventListener('click', (e)=>{ if (e.target === m) close(m); });
-  });
+  /* ════════════════════════════════════════
+     INIT
+  ════════════════════════════════════════ */
+  loadData();
 
-  document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape') closeAllModals();
-  });
-
-  // Init
-  loadClubData();
 })();
 </script>
+
 </body>
 </html>
