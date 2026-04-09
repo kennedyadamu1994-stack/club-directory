@@ -1,490 +1,923 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title id="pageTitle">Loading Club…</title>
   <meta name="description" id="pageDescription" content="Club information" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
 
   <!-- Open Graph -->
-  <meta property="og:title" id="ogTitle" content="" />
+  <meta property="og:title"       id="ogTitle"       content="" />
   <meta property="og:description" id="ogDescription" content="" />
-  <meta property="og:image" id="ogImage" content="" />
-  <meta property="og:url" id="ogUrl" content="" />
-  <meta property="og:type" content="website" />
+  <meta property="og:image"       id="ogImage"       content="" />
+  <meta property="og:url"         id="ogUrl"         content="" />
+  <meta property="og:type"        content="website" />
 
   <!-- Structured Data -->
   <script type="application/ld+json" id="structuredData">
-  { "@context":"https://schema.org", "@type":"SportsClub", "name":"", "description":"", "address":{}, "telephone":"", "email":"", "url":"", "priceRange":"" }
+  { "@context":"https://schema.org","@type":"SportsClub","name":"","description":"","address":{},"telephone":"","email":"","url":"","priceRange":"" }
   </script>
 
   <style>
-    :root{
-      --brand:#FF006E;
-      --brand-dark:#E6005E;
-      --bg-dark:#1B1B1B;
-      --verified-blue:#1DA1F2;
+    /* ══════════════════════════════════════════
+       DESIGN SYSTEM — CLUB HOUSE TOKENS
+    ══════════════════════════════════════════ */
+    :root {
+      --accent:        #FF1B6E;
+      --accent-dim:    rgba(255,27,110,0.10);
+      --accent-mid:    rgba(255,27,110,0.28);
+      --accent-hover:  #e01560;
+      --text:          #f0f0f0;
+      --text-muted:    rgba(255,255,255,0.62);
+      --text-faint:    rgba(255,255,255,0.32);
+      --bg:            #1B1B1B;
+      --bg-subtle:     #1f1f1f;
+      --bg-card:       #212121;
+      --bg-elevated:   #2a2a2a;
+      --bg-hover:      #303030;
+      --border:        rgba(255,255,255,0.08);
+      --border-bright: rgba(255,255,255,0.14);
+      --green:         #22c55e;
+      --green-dim:     rgba(34,197,94,0.12);
+      --amber:         #f59e0b;
+      --amber-dim:     rgba(245,158,11,0.12);
+      --font-serif:    'Young Serif', Georgia, serif;
+      --font-sans:     'DM Sans', -apple-system, sans-serif;
+      --r:             3px;
+      --r-lg:          8px;
+      --shadow-md:     0 4px 20px rgba(0,0,0,0.6);
+      --shadow-lg:     0 8px 32px rgba(0,0,0,0.7);
     }
 
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body{
-      font-family:'ITC Avant Garde Gothic Pro','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif;
-      line-height:1.6; color:#ffffff;
-      background:#1B1B1B;
-      min-height:100vh;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
-    /* ---------- NBRH Brand Header ---------- */
-    .nbrh-header{
-      background:#1c1c1e; color:#fff;
-      position:sticky; top:0; z-index:1000;
-      box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    ::-webkit-scrollbar { width: 2px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    /* ══════════════════════════════════════════
+       NAV
+    ══════════════════════════════════════════ */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      background: rgba(27,27,27,0.97);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      z-index: 9999;
     }
-    .nbrh-header-inner{
-      max-width:1400px; margin:0 auto; padding:12px 20px;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-    .nbrh-logo-link{ display:block; line-height:0; }
-    .nbrh-logo{ height:36px; object-fit:contain; transition:opacity .2s; }
-    .nbrh-logo:hover{ opacity:.8; }
-    .nbrh-nav{ display:flex; gap:16px; align-items:center; }
-    .nbrh-nav a{ color:#fff; text-decoration:none; font-weight:500; }
-    .nbrh-nav a:hover{ color:var(--brand); }
-
-    /* Page container */
-    .page-container{max-width:1200px; margin:0 auto; padding:0 0 100px; position:relative;}
-
-    /* Loading / Error */
-    .loading{text-align:center; padding:40px 20px; color:#8e8e93;}
-    .loading-spinner{border:3px solid #333; border-top:3px solid var(--brand); border-radius:50%; width:36px; height:36px; animation:spin 1s linear infinite; margin:0 auto 14px;}
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .error{background:#ffeaea; color:#ff3b30; padding:16px; border-radius:3px; margin:16px 0; text-align:center;}
-
-    /* Layout and card spacing */
-    .content-grid{display:grid; gap:18px; margin-bottom:28px;}
-    .content-grid > .card:not(.hero-card) {
-      margin: 0 20px;
-    }
-    .card{background:#2a2a2a; border-radius:3px; box-shadow:0 3px 14px rgba(0,0,0,0.3); overflow:hidden; transition:transform .25s, box-shadow .25s;}
-    .card:hover{transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,0.5);}
-    .card-content{padding:20px;}
-
-    /* Hero - FULL WIDTH with blend effect */
-    .hero-card{
-      background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)), url('https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80');
-      background-size:cover; background-position:center;
-      color:#fff; text-align:center; padding:60px 20px 120px;
-      width: 100%;
-      border-radius: 0;
-      box-shadow: none;
-      min-height: 400px;
+    .nav-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.85rem 2rem;
       display: flex;
-      flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .nav-brand-logo { height: 32px; object-fit: contain; }
+    .nav-brand-name {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.15;
+    }
+    .nav-brand-name small {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.55rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-faint);
+    }
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 0;
+      align-items: center;
+    }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      padding: 0.4rem 0.75rem;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ══════════════════════════════════════════
+       PAGE CONTAINER
+    ══════════════════════════════════════════ */
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-bottom: 7rem;
+    }
+
+    /* ══════════════════════════════════════════
+       LOADING / ERROR
+    ══════════════════════════════════════════ */
+    .loading-state {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text-faint);
+    }
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 0.85rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 0.82rem; font-weight: 500; }
+
+    .error-state {
+      margin: 2rem;
+      background: var(--bg-card);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: var(--r-lg);
+      padding: 2rem;
+      text-align: center;
+      color: #ef4444;
+    }
+    .error-state h2 {
+      font-family: var(--font-serif);
+      font-size: 1.4rem;
+      font-weight: normal;
+      margin-bottom: 0.5rem;
+    }
+    .error-state p { font-size: 0.875rem; margin-bottom: 1rem; color: var(--text-muted); }
+    .error-state a { color: var(--accent); text-decoration: none; }
+    .error-state a:hover { text-decoration: underline; }
+
+    /* ══════════════════════════════════════════
+       CONTENT GRID
+    ══════════════════════════════════════════ */
+    .content-grid { display: grid; gap: 1px; }
+
+    /* ══════════════════════════════════════════
+       CARD BASE
+    ══════════════════════════════════════════ */
+    .card {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+    }
+    .card-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* ══════════════════════════════════════════
+       HERO
+    ══════════════════════════════════════════ */
+    .hero-card {
       position: relative;
+      min-height: 88vh;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      border-bottom: none;
     }
-    .hero-card:hover{
-      transform: none;
-      box-shadow: none;
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+        url('https://images.unsplash.com/photo-1552667466-07770ae110d0?auto=format&fit=crop&w=1200&q=80')
+        center center / cover no-repeat;
     }
-    .hero-card::after{
-      content: '';
+    .hero-fade {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      height: 150px;
-      background: linear-gradient(to bottom, rgba(27,27,27,0) 0%, rgba(27,27,27,0.3) 30%, rgba(27,27,27,0.7) 60%, #1B1B1B 100%);
+      height: 260px;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(27,27,27,0.5) 40%,
+        rgba(27,27,27,0.88) 70%,
+        #1B1B1B 100%
+      );
       pointer-events: none;
       z-index: 1;
     }
-    .club-logo{width:120px; height:120px; border-radius:12px; margin:0 auto 20px; background:rgba(255,255,255,.95); display:flex; align-items:center; justify-content:center; font-size:48px; color:#333; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.3); overflow:hidden; position:relative; z-index:2;}
-    .club-logo img{width:100%; height:100%; object-fit:cover;}
-
-    .hero-title-row{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      margin-bottom:12px;
-      position:relative;
-      z-index:2;
-      max-width: 100%;
-    }
-    .hero-title{
-      font-size:32px;
-      font-weight:700;
-      margin:0;
-      line-height:1.2;
-      display:inline-block;
-    }
-    .hero-verified-badge{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:32px;
-      height:32px;
-      background:#FF006E;
-      border-radius:50%;
-      flex-shrink:0;
-      box-shadow:0 4px 12px rgba(255,0,110,0.4);
-      margin-top: 2px;
-    }
-    .hero-verified-badge svg{
-      width:20px; height:20px; fill:#fff;
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 6rem 2rem 3rem;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    .hero-category-tag{
-      display:inline-block;
-      background:rgba(255,255,255,.2);
-      color:#fff;
-      padding:6px 14px;
-      border-radius:3px;
-      font-size:13px;
-      font-weight:700;
-      margin-bottom:12px;
-      backdrop-filter:blur(10px);
-      border:1px solid rgba(255,255,255,.3);
-      position:relative;
-      z-index:2;
+    /* Club logo */
+    .club-logo {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--r-lg);
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.18);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #fff;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
     }
-    .hero-subtitle{font-size:16px; opacity:.95; margin-bottom:28px; max-width:600px; position:relative; z-index:2;}
-    .hero-buttons{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; position:relative; z-index:2;}
-    .hero-cta{
-      background:var(--brand); color:#fff; border:none; padding:14px 28px; font-size:16px; font-weight:700; border-radius:3px; cursor:pointer; text-decoration:none; display:inline-block; transition:all .25s; box-shadow:0 4px 12px rgba(255,0,110,.3);
+    .club-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Badge strip */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-mid);
+      border-radius: 100px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.9rem;
     }
-    .hero-cta:hover{background:var(--brand-dark); transform:translateY(-1px); box-shadow:0 6px 16px rgba(255,0,110,.4);}
-    .hero-cta.secondary{
-      background:rgba(255,255,255,.2); color:#fff; box-shadow:0 4px 12px rgba(255,255,255,.1);
-      backdrop-filter:blur(10px);
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 1.6s infinite;
     }
-    .hero-cta.secondary:hover{
-      background:rgba(255,255,255,.3); transform:translateY(-1px); box-shadow:0 6px 16px rgba(255,255,255,.2);
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.3;transform:scale(0.65)} }
+
+    /* Title */
+    .hero-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: normal;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .verified-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      background: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(255,27,110,0.45);
+    }
+    .verified-dot svg { width: 16px; height: 16px; fill: #fff; }
+
+    .hero-activity {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    .hero-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 52ch;
+      line-height: 1.65;
+      margin-bottom: 1.5rem;
     }
 
-    /* Info grid */
-    .info-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:8px;}
-    .info-item{background:#333; border-radius:3px; padding:14px; text-align:center;}
-    .info-icon{font-size:20px; margin-bottom:8px; display:block; color:var(--brand);}
-    .info-label{font-size:12px; color:#999; margin-bottom:4px; font-weight:600;}
-    .info-value{font-size:16px; color:#ffffff; font-weight:700;}
-    .rating-display{display:flex; align-items:center; justify-content:center; gap:4px; flex-direction:column;}
-    .stars{color:#FFD700; font-size:16px; letter-spacing:2px;}
-    .rating-number{font-size:13px; color:#999; margin-top:2px;}
+    /* Hero buttons */
+    .hero-actions { display: flex; gap: 0.65rem; flex-wrap: wrap; }
+    .hero-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.4rem;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: var(--r);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .hero-btn-primary { background: var(--accent); color: #fff; }
+    .hero-btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+    .hero-btn-outline {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .hero-btn-outline:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+
+    /* ══════════════════════════════════════════
+       INFO GRID
+    ══════════════════════════════════════════ */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(160px, 100%), 1fr));
+      gap: 0.75rem;
+    }
+    .info-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1rem 0.9rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .info-item:hover { border-color: var(--border-bright); }
+    .info-icon { font-size: 1.1rem; color: var(--accent); margin-bottom: 0.5rem; display: block; }
+    .info-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+    .info-value { font-family: var(--font-serif); font-size: 1rem; color: var(--text); font-weight: normal; }
+    .stars { color: var(--amber); font-size: 0.9rem; letter-spacing: 1px; display: block; }
+    .rating-sub { font-size: 0.7rem; color: var(--text-faint); margin-top: 2px; display: block; }
 
     /* Tags */
-    .tags-row{display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
-    .tag{background:#ffe4f0; color:var(--brand-dark); padding:6px 10px; border-radius:3px; font-size:12px; font-weight:700;}
-    .tag.vibe{background:#ffe9f3; color:var(--brand);}
-    .tag.accessibility{background:#ffe9f3; color:#b3004a;}
-
-    /* Section headers */
-    .section-header{font-size:20px; font-weight:800; color:#ffffff; margin-bottom:18px; position:relative; padding-bottom:8px;}
-    .section-header::after{content:''; position:absolute; bottom:0; left:0; width:60px; height:4px; background:linear-gradient(90deg,var(--brand),#764ba2); border-radius:3px;}
-
-    /* Stats */
-    .stats-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(140px,1fr)); gap:12px;}
-    .stat-card{background:#333; border-radius:3px; padding:16px; text-align:center;}
-    .stat-number{font-size:22px; font-weight:800; color:var(--brand); display:block; margin-bottom:6px;}
-    .stat-label{font-size:13px; color:#999;}
-
-    /* Sessions */
-    .sessions-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
-    .session-item{background:#333; border-radius:3px; padding:16px; display:block; color:inherit; text-decoration:none;}
-    a.session-item:hover{background:#3a3a3a; outline:2px solid var(--brand);}
-    .session-day{font-size:16px; font-weight:700; color:var(--brand); margin-bottom:8px;}
-    .session-time{font-size:15px; color:#ffffff; margin-bottom:4px;}
-    .session-type{font-size:13px; color:#999; font-style:italic;}
-
-    /* Collapsibles */
-    .collapsible-card{}
-    .collapsible-header{
-      padding:16px 20px; background:#333; border-bottom:1px solid #444;
-      cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    .tags-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: var(--text-muted);
     }
-    .collapsible-title{font-size:18px; font-weight:800; color:#ffffff;}
-    .collapsible-icon{font-size:16px; color:var(--brand); transition:transform .25s;}
-    .collapsible-header:hover{ background:#3a3a3a; }
-    .collapsible-content{max-height:0; overflow:hidden; transition:max-height .4s ease;}
-    .collapsible-content.expanded{max-height:2000px;}
-    .collapsible-header.expanded .collapsible-icon{transform:rotate(180deg);}
-    .collapsible-inner{padding:16px 20px;}
+    .tag.vibe         { background: var(--accent-dim); border-color: var(--accent-mid); color: var(--accent); }
+    .tag.accessibility{ background: var(--green-dim);  border-color: rgba(34,197,94,0.2); color: var(--green); }
 
-    .testimonials-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px;}
-    .testimonial-item{background:#333; border-radius:3px; padding:16px;}
-    .testimonial-rating{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
-    .benefits-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px;}
-    .benefit-item{display:flex; align-items:flex-start; padding:14px; background:#333; border-radius:3px;}
-    .benefit-icon{font-size:22px; margin-right:14px; margin-top:3px; color:var(--brand);}
-
-    .faq-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:14px;}
-    .faq-item{background:#333; border-radius:3px; padding:16px;}
-    .faq-question{font-size:18px; font-weight:800; color:#ffffff; margin-bottom:8px;}
-    .faq-answer{font-size:16px; line-height:1.6; color:#ccc; font-weight:400;}
-    .faq-answer b, .faq-answer strong { font-weight:400 !important; }
-
-    /* ---------- Teams ---------- */
-    .teams-grid{
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));
-      gap:12px;
+    /* ══════════════════════════════════════════
+       SECTION HEADER
+    ══════════════════════════════════════════ */
+    .eyebrow {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.35rem;
     }
-    .team-item{
-      background:#333;
-      border-radius:3px;
-      padding:16px 20px;
-    }
-    .team-name{
-      font-size:15px;
-      font-weight:600;
-      color:#ffffff;
-      line-height:1.3;
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.3rem, 3vw, 1.75rem);
+      font-weight: normal;
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      color: var(--text);
+      margin-bottom: 1.25rem;
     }
 
-    /* About & Coach */
-    .about-card .about-content{display:grid; grid-template-columns:2fr 1fr; gap:32px; align-items:start;}
-    .about-text{line-height:1.7; color:#ffffff; font-size:16px;}
-    .about-sidebar{display:flex; flex-direction:column; gap:16px;}
-    .coach-info{background:#333; border-radius:3px; padding:16px; display:flex; align-items:center; margin-top:16px;}
-    .coach-avatar{width:52px; height:52px; border-radius:50%; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px; margin-right:14px;}
-    .coach-details h4{font-size:16px; font-weight:800; color:#ffffff; margin-bottom:4px;}
-    .coach-details p{font-size:13px; color:#999;}
+    /* ══════════════════════════════════════════
+       STATS GRID
+    ══════════════════════════════════════════ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(140px, 100%), 1fr));
+      gap: 0.75rem;
+    }
+    .stat-box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.1rem 0.9rem;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .stat-box:hover { border-color: var(--border-bright); }
+    .stat-val {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      color: var(--accent);
+      line-height: 1;
+      font-weight: normal;
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .stat-lbl {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-faint);
+    }
 
-    /* Contact card */
-    .contact-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px;}
-    .contact-item{
-      background:#333; border-radius:3px; padding:16px; text-decoration:none;
-      color:inherit; display:flex; align-items:center;
+    /* ══════════════════════════════════════════
+       SESSIONS
+    ══════════════════════════════════════════ */
+    .sessions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+      gap: 0.65rem;
+    }
+    .session-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1rem 1.1rem;
+      display: block;
+      color: inherit;
+      text-decoration: none;
+      transition: border-color 0.18s, transform 0.18s;
+    }
+    a.session-item:hover { border-color: var(--accent-mid); transform: translateY(-2px); }
+    .session-day { font-family: var(--font-serif); font-size: 1rem; color: var(--accent); margin-bottom: 0.35rem; font-weight: normal; }
+    .session-time { font-size: 0.875rem; color: var(--text); margin-bottom: 0.2rem; font-weight: 500; }
+    .session-type { font-size: 0.75rem; color: var(--text-faint); font-style: italic; }
+
+    /* ══════════════════════════════════════════
+       TEAMS
+    ══════════════════════════════════════════ */
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr));
+      gap: 0.65rem;
+    }
+    .team-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 0.85rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: border-color 0.18s;
+    }
+    .team-item:hover { border-color: var(--border-bright); color: var(--text); }
+
+    /* ══════════════════════════════════════════
+       COLLAPSIBLES
+    ══════════════════════════════════════════ */
+    .collapsible-header {
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid var(--border);
+      list-style: none;
+    }
+    .collapsible-header:hover { background: var(--bg-elevated); }
+    .collapsible-title-row { display: flex; flex-direction: column; gap: 0.15rem; }
+    .collapsible-title { font-family: var(--font-serif); font-size: 1.05rem; color: var(--text); font-weight: normal; }
+    .collapsible-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border-bright);
+      border-radius: var(--r);
+      color: var(--text-faint);
+      font-size: 0.65rem;
+      flex-shrink: 0;
+      transition: transform 0.3s, border-color 0.2s, color 0.2s;
+    }
+    .collapsible-header:hover .collapsible-icon { border-color: var(--accent); color: var(--accent); }
+    .collapsible-header.expanded .collapsible-icon { transform: rotate(180deg); color: var(--accent); border-color: var(--accent); }
+    .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .collapsible-content.expanded { max-height: 4000px; }
+    .collapsible-inner { padding: 1.75rem 2rem; }
+
+    /* ══════════════════════════════════════════
+       TESTIMONIALS
+    ══════════════════════════════════════════ */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+      gap: 0.75rem;
+    }
+    .testimonial-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.1rem 1.2rem;
+      transition: border-color 0.18s;
+    }
+    .testimonial-item:hover { border-color: var(--border-bright); }
+    .testimonial-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.65rem;
+    }
+    .testimonial-author { font-size: 0.75rem; font-weight: 600; color: var(--text-faint); }
+    .testimonial-text {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      font-style: italic;
+    }
+    .testimonial-text::before { content: '"'; }
+    .testimonial-text::after  { content: '"'; }
+
+    /* ══════════════════════════════════════════
+       BENEFITS
+    ══════════════════════════════════════════ */
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+      gap: 0.75rem;
+    }
+    .benefit-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.9rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.1rem 1.2rem;
+      transition: border-color 0.18s;
+    }
+    .benefit-item:hover { border-color: var(--border-bright); }
+    .benefit-icon { font-size: 1.3rem; margin-top: 0.1rem; flex-shrink: 0; }
+    .benefit-content h4 { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+    .benefit-content p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.55; }
+
+    /* ══════════════════════════════════════════
+       FAQs
+    ══════════════════════════════════════════ */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+      gap: 0.75rem;
+    }
+    .faq-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--r-lg);
+      padding: 1.1rem 1.2rem;
+      transition: border-color 0.18s;
+    }
+    .faq-question { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; }
+    .faq-answer { font-size: 0.82rem; color: var(--text-muted); line-height: 1.65; }
+    .faq-answer b, .faq-answer strong { font-weight: 500; color: var(--text); }
+
+    /* ══════════════════════════════════════════
+       ABOUT & COACH
+    ══════════════════════════════════════════ */
+    .about-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    .about-text {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+    .coach-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .coach-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .coach-name { font-size: 0.875rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; }
+    .coach-role { font-size: 0.75rem; color: var(--text-faint); }
+
+    /* ══════════════════════════════════════════
+       CONTACT
+    ══════════════════════════════════════════ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+      gap: 0.65rem;
+    }
+    .contact-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 1rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      color: inherit;
+      text-decoration: none;
+      transition: border-color 0.18s, transform 0.18s;
       min-width: 0;
     }
-    .contact-icon{
-      width:44px; height:44px; border-radius:3px; background:var(--brand);
-      color:#fff; display:flex; align-items:center; justify-content:center;
-      margin-right:12px; font-size:16px; flex-shrink: 0;
+    .contact-item:hover { border-color: var(--accent-mid); transform: translateY(-1px); }
+    .contact-icon-wrap {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--r);
+      background: var(--accent-dim);
+      border: 1px solid var(--accent-mid);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
     }
-    .contact-info{
-      min-width: 0;
-      flex: 1;
-    }
-    .contact-info h4{font-size:15px; font-weight:700; color:#ffffff; margin-bottom:3px;}
-    .contact-info p{
-      font-size:13px;
-      color:#999;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      display:block;
+    .contact-info { min-width: 0; flex: 1; }
+    .contact-label { font-size: 0.78rem; font-weight: 600; color: var(--text); margin-bottom: 0.15rem; display: block; }
+    .contact-value {
+      font-size: 0.72rem;
+      color: var(--text-faint);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
     }
 
-    /* Sticky Join CTA */
-    .sticky-cta{
-      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-      background:var(--brand); color:#fff; border:none; padding:16px 28px;
-      font-size:16px; font-weight:800; border-radius:3px; cursor:pointer;
-      box-shadow:0 8px 24px rgba(255,0,110,.35); z-index:1000; display:none;
-      text-decoration:none; white-space:nowrap; transition:all .25s;
-      display:flex; align-items:center; justify-content:center; text-align:center;
+    /* ══════════════════════════════════════════
+       STICKY CTA
+    ══════════════════════════════════════════ */
+    .sticky-cta {
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 2rem;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      border-radius: var(--r);
+      cursor: pointer;
+      box-shadow: 0 8px 28px rgba(255,27,110,0.4);
+      z-index: 1000;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: all 0.22s;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
     }
-    .sticky-cta:hover{background:var(--brand-dark); transform:translateX(-50%) translateY(-2px); box-shadow:0 10px 28px rgba(255,0,110,.45);}
+    .sticky-cta:hover {
+      background: var(--accent-hover);
+      transform: translateX(-50%) translateY(-2px);
+      box-shadow: 0 10px 32px rgba(255,27,110,0.5);
+    }
 
-    @media (max-width:768px){
-      .page-container{padding:0 0 120px;}
-      .content-grid{gap:14px; margin-bottom:24px;}
-      .content-grid > .card:not(.hero-card) {
-        margin: 0 15px;
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .nav-inner { padding: 0.85rem 1.25rem; }
+      .nav-brand-name small { display: none; }
+      .hero-card { min-height: 75vh; }
+      .hero-content { padding: 4rem 1.25rem 2.5rem; }
+      .hero-title { font-size: 2.2rem; }
+      .club-logo { width: 80px; height: 80px; font-size: 2rem; }
+      .card-inner,
+      .collapsible-inner { padding: 1.5rem 1.25rem; }
+      .collapsible-header { padding: 1rem 1.25rem; }
+      .about-layout { grid-template-columns: 1fr; gap: 1.25rem; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .info-grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .sticky-cta {
+        left: 1rem; right: 1rem;
+        transform: none;
+        width: calc(100% - 2rem);
       }
-      .hero-card{
-        min-height: 70vh;
-        padding: 40px 20px 100px;
-      }
-      .hero-card::after{
-        height: 120px;
-      }
-      .club-logo{
-        width: 200px;
-        height: 200px;
-        border-radius: 16px;
-        font-size: 64px;
-        margin-bottom: 24px;
-      }
-      .hero-title-row{
-        gap:8px;
-        flex-wrap: wrap;
-      }
-      .hero-title{font-size:28px; margin-bottom: 0;}
-      .hero-verified-badge{
-        width:28px;
-        height:28px;
-        margin-top: 1px;
-      }
-      .hero-verified-badge svg{
-        width:18px; height:18px;
-      }
-      .hero-category-tag{font-size:12px; padding:5px 12px; margin-bottom:10px; margin-top: 12px;}
-      .hero-subtitle{font-size:15px; margin-bottom: 32px;}
-      .hero-buttons{
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-      }
-      .hero-cta{
-        padding: 12px 20px;
-        font-size: 14px;
-        white-space: nowrap;
-      }
-      .section-header,.collapsible-title{font-size:18px; margin-bottom:14px;}
-      .info-grid{grid-template-columns:1fr 1fr; gap:6px;}
-      .stats-grid{grid-template-columns:1fr 1fr; gap:8px;}
-      .sessions-grid{grid-template-columns:1fr;}
-      .testimonials-grid{grid-template-columns:1fr; gap:12px;}
-      .benefits-grid{grid-template-columns:1fr; gap:12px;}
-      .faq-grid{grid-template-columns:1fr; gap:12px;}
-      .teams-grid{grid-template-columns:1fr; gap:10px;}
-      .about-card .about-content{grid-template-columns:1fr; gap:24px;}
-      .contact-grid{grid-template-columns:1fr;}
-      .sticky-cta{left:20px; right:20px; transform:none; width:calc(100% - 40px); justify-content:center;}
-      .coach-info{margin-top:20px;}
+      .sticky-cta:hover { transform: none; }
     }
   </style>
 </head>
+
 <body>
-  <!-- NBRH Brand Header -->
-  <header class="nbrh-header">
-    <div class="nbrh-header-inner">
-      <a href="https://www.thenbrh.co.uk/" class="nbrh-logo-link">
-        <img class="nbrh-logo" alt="NBRH" src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng">
+
+  <!-- NAV -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="https://www.thenbrh.co.uk/" class="nav-brand">
+        <img
+          class="nav-brand-logo"
+          src="https://images.squarespace-cdn.com/content/6718416feaa24175e29324d4/9d6e6464-e1e5-4dde-9ae0-03df420cbd77/NBRH+Logo.png?content-type=image%2Fpng"
+          alt="The NBRH"
+          onerror="this.style.display='none'"
+        >
+        <div class="nav-brand-name">
+          The NBRH
+          <small>Club Directory</small>
+        </div>
       </a>
-      <nav class="nbrh-nav">
-        <a href="/">Browse Clubs</a>
-      </nav>
+      <ul class="nav-links">
+        <li><a href="/">← Browse Clubs</a></li>
+      </ul>
     </div>
-  </header>
+  </nav>
 
   <div class="page-container">
-    <div id="loading" class="loading">
-      <div class="loading-spinner"></div>
-      <p>Loading club information…</p>
+
+    <!-- LOADING -->
+    <div id="loading" class="loading-state">
+      <div class="spinner"></div>
+      <p class="loading-text">Loading club information…</p>
     </div>
 
-    <div id="error" class="error" style="display:none;">
+    <!-- ERROR -->
+    <div id="error" class="error-state" style="display:none;">
       <h2>Club Not Found</h2>
       <p>The club you're looking for doesn't exist or is no longer available.</p>
-      <a href="/" style="color:#ff3b30; text-decoration:underline;">Browse all clubs</a>
+      <a href="/">Browse all clubs</a>
     </div>
 
+    <!-- CONTENT -->
     <div id="content" class="content-grid" style="display:none;">
-      <!-- Hero -->
-      <div class="card hero-card" id="heroCard">
-        <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
-        <div class="hero-title-row">
-          <h1 class="hero-title" id="clubName">Club Name</h1>
-          <span class="hero-verified-badge" id="verifiedBadge" style="display:none;">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
-          </span>
-        </div>
-        <span class="hero-category-tag" id="clubActivity">Activity Type</span>
-        <p class="hero-subtitle" id="clubSnippet"></p>
-        <div class="hero-buttons">
-          <a href="#" class="hero-cta secondary" id="reviewButton" style="display:none;">
-            <i class="fas fa-star" style="margin-right:8px;"></i>Review
-          </a>
-          <a href="#" class="hero-cta secondary" id="shopButton" style="display:none;">
-            <i class="fas fa-shopping-bag" style="margin-right:8px;"></i>Donate
-          </a>
+
+      <!-- HERO -->
+      <div class="hero-card" id="heroCard">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-fade"></div>
+        <div class="hero-content">
+          <div class="club-logo" id="clubLogo"><i class="fas fa-dumbbell"></i></div>
+          <div class="hero-badge" id="heroBadge" style="display:none;">
+            <div class="hero-badge-dot"></div>
+            <span id="heroBadgeText">Verified Club</span>
+          </div>
+          <div class="hero-title-row">
+            <h1 class="hero-title" id="clubName">Club Name</h1>
+            <span class="verified-dot" id="verifiedBadge" style="display:none;">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+            </span>
+          </div>
+          <span class="hero-activity" id="clubActivity" style="display:none;"></span>
+          <p class="hero-subtitle" id="clubSnippet" style="display:none;"></p>
+          <div class="hero-actions">
+            <a href="#" class="hero-btn hero-btn-primary" id="bookButton" style="display:none;">Book a Session →</a>
+            <a href="#" class="hero-btn hero-btn-outline" id="reviewButton" style="display:none;"><i class="fas fa-star" style="margin-right:6px;"></i>Leave a Review</a>
+            <a href="#" class="hero-btn hero-btn-outline" id="shopButton" style="display:none;"><i class="fas fa-shopping-bag" style="margin-right:6px;"></i>Donate</a>
+          </div>
         </div>
       </div>
 
-      <!-- Club Info -->
+      <!-- CLUB INFO -->
       <div class="card">
-        <div class="card-content">
-          <div class="info-grid">
+        <div class="card-inner">
+          <div class="info-grid" id="infoGrid">
             <div class="info-item">
               <span class="info-icon"><i class="fas fa-map-marker-alt"></i></span>
-              <div class="info-label">Location</div>
-              <div class="info-value" id="clubLocation">–</div>
+              <span class="info-label">Location</span>
+              <div class="info-value" id="clubLocation">—</div>
             </div>
             <div class="info-item" id="audienceBlock" style="display:none;">
               <span class="info-icon"><i class="fas fa-user-group"></i></span>
-              <div class="info-label">Audience</div>
-              <div class="info-value" id="clubAudience">–</div>
+              <span class="info-label">Audience</span>
+              <div class="info-value" id="clubAudience">—</div>
             </div>
             <div class="info-item" id="feeBlock" style="display:none;">
               <span class="info-icon"><i class="fas fa-pound-sign"></i></span>
-              <div class="info-label">Monthly Fee</div>
-              <div class="info-value" id="clubFee">–</div>
+              <span class="info-label">Monthly Fee</span>
+              <div class="info-value" id="clubFee">—</div>
             </div>
             <div class="info-item" id="starBlock" style="display:none;">
               <span class="info-icon"><i class="fas fa-star"></i></span>
-              <div class="info-label">Star Rating</div>
+              <span class="info-label">Star Rating</span>
               <div class="info-value">
-                <div class="rating-display">
-                  <span class="stars" id="clubStars">–</span>
-                  <span class="rating-number" id="starRatingText">–</span>
-                </div>
+                <span class="stars" id="clubStars">—</span>
+                <span class="rating-sub" id="starRatingText">—</span>
               </div>
             </div>
             <div class="info-item" id="numericBlock" style="display:none;">
               <span class="info-icon"><i class="fas fa-chart-line"></i></span>
-              <div class="info-label">User Rating</div>
-              <div class="info-value" id="numericRating">–</div>
+              <span class="info-label">User Rating</span>
+              <div class="info-value" id="numericRating">—</div>
             </div>
             <div class="info-item" id="membersBlock" style="display:none;">
               <span class="info-icon"><i class="fas fa-users"></i></span>
-              <div class="info-label">Members</div>
-              <div class="info-value" id="clubMembers">–</div>
+              <span class="info-label">Members</span>
+              <div class="info-value" id="clubMembers">—</div>
             </div>
           </div>
-
           <div class="tags-row" id="clubTags"></div>
         </div>
       </div>
 
-      <!-- Club Performance -->
+      <!-- PERFORMANCE -->
       <div class="card" id="membership">
-        <div class="card-content">
-          <h2 class="section-header">Club Performance</h2>
+        <div class="card-inner">
+          <span class="eyebrow">Club Metrics</span>
+          <h2 class="section-title">Club Performance</h2>
           <div class="stats-grid">
-            <div class="stat-card" id="rankPosBlock" style="display:none;">
-              <span class="stat-number" id="rankingPosition">#0</span>
-              <div class="stat-label">Ranking Position</div>
+            <div class="stat-box" id="rankPosBlock" style="display:none;">
+              <span class="stat-val" id="rankingPosition">#0</span>
+              <span class="stat-lbl">Ranking Position</span>
             </div>
-            <div class="stat-card" id="rankCatBlock" style="display:none;">
-              <span class="stat-number" id="rankingCategory">–</span>
-              <div class="stat-label">Category</div>
+            <div class="stat-box" id="rankCatBlock" style="display:none;">
+              <span class="stat-val" id="rankingCategory">—</span>
+              <span class="stat-lbl">Category</span>
             </div>
-            <div class="stat-card" id="spwBlock" style="display:none;">
-              <span class="stat-number" id="sessionsPerWeek">0</span>
-              <div class="stat-label">Sessions/Week</div>
+            <div class="stat-box" id="spwBlock" style="display:none;">
+              <span class="stat-val" id="sessionsPerWeek">0</span>
+              <span class="stat-lbl">Sessions / Week</span>
             </div>
-            <!-- Total Teams stat — shown when total_teams > 0 -->
-            <div class="stat-card" id="totalTeamsBlock" style="display:none;">
-              <span class="stat-number" id="totalTeamsStat">0</span>
-              <div class="stat-label">Total Teams</div>
+            <div class="stat-box" id="totalTeamsBlock" style="display:none;">
+              <span class="stat-val" id="totalTeamsStat">0</span>
+              <span class="stat-lbl">Total Teams</span>
             </div>
-            <div class="stat-card" id="growthBlock" style="display:none;">
-              <span class="stat-number" id="memberGrowth">+0%</span>
-              <div class="stat-label">Member Growth</div>
+            <div class="stat-box" id="growthBlock" style="display:none;">
+              <span class="stat-val" id="memberGrowth">+0%</span>
+              <span class="stat-lbl">Member Growth</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Sessions -->
+      <!-- SESSIONS -->
       <div class="card" id="sessionsCard" style="display:none;">
-        <div class="card-content">
-          <h2 class="section-header">Weekly Sessions</h2>
+        <div class="card-inner">
+          <span class="eyebrow">Schedule</span>
+          <h2 class="section-title">Weekly Sessions</h2>
           <div class="sessions-grid" id="sessionsGrid"></div>
         </div>
       </div>
 
-      <!-- Teams -->
-      <div class="card collapsible-card" id="teamsCard" style="display:none;">
+      <!-- TEAMS -->
+      <div class="card" id="teamsCard" style="display:none;">
         <div class="collapsible-header" data-target="#teamsContent">
-          <h3 class="collapsible-title">Teams</h3>
-          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+          <div class="collapsible-title-row">
+            <span class="eyebrow" style="margin-bottom:0;">Squads</span>
+            <span class="collapsible-title">Teams</span>
+          </div>
+          <span class="collapsible-icon"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
         <div class="collapsible-content" id="teamsContent">
           <div class="collapsible-inner">
@@ -493,11 +926,14 @@
         </div>
       </div>
 
-      <!-- Testimonials -->
-      <div class="card collapsible-card" id="testimonialsCard" style="display:none;">
+      <!-- TESTIMONIALS -->
+      <div class="card" id="testimonialsCard" style="display:none;">
         <div class="collapsible-header" data-target="#testimonialsContent">
-          <h3 class="collapsible-title">Member Testimonials</h3>
-          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+          <div class="collapsible-title-row">
+            <span class="eyebrow" style="margin-bottom:0;">Community Voice</span>
+            <span class="collapsible-title">Member Testimonials</span>
+          </div>
+          <span class="collapsible-icon"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
         <div class="collapsible-content" id="testimonialsContent">
           <div class="collapsible-inner">
@@ -506,11 +942,14 @@
         </div>
       </div>
 
-      <!-- Benefits -->
-      <div class="card collapsible-card" id="benefitsCard" style="display:none;">
+      <!-- BENEFITS -->
+      <div class="card" id="benefitsCard" style="display:none;">
         <div class="collapsible-header" data-target="#benefitsContent">
-          <h3 class="collapsible-title">Why Join</h3>
-          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+          <div class="collapsible-title-row">
+            <span class="eyebrow" style="margin-bottom:0;">Membership</span>
+            <span class="collapsible-title">Why Join</span>
+          </div>
+          <span class="collapsible-icon"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
         <div class="collapsible-content" id="benefitsContent">
           <div class="collapsible-inner">
@@ -520,10 +959,13 @@
       </div>
 
       <!-- FAQs -->
-      <div class="card collapsible-card" id="faqCard" style="display:none;">
+      <div class="card" id="faqCard" style="display:none;">
         <div class="collapsible-header" data-target="#faqContent">
-          <h3 class="collapsible-title">FAQs</h3>
-          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+          <div class="collapsible-title-row">
+            <span class="eyebrow" style="margin-bottom:0;">Got Questions?</span>
+            <span class="collapsible-title">FAQs</span>
+          </div>
+          <span class="collapsible-icon"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
         <div class="collapsible-content" id="faqContent">
           <div class="collapsible-inner">
@@ -532,24 +974,25 @@
         </div>
       </div>
 
-      <!-- About & Coach -->
-      <div class="card collapsible-card" id="aboutCard" style="display:none;">
+      <!-- ABOUT -->
+      <div class="card" id="aboutCard" style="display:none;">
         <div class="collapsible-header" data-target="#aboutContent">
-          <h3 class="collapsible-title">About the Club</h3>
-          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+          <div class="collapsible-title-row">
+            <span class="eyebrow" style="margin-bottom:0;">Background</span>
+            <span class="collapsible-title">About the Club</span>
+          </div>
+          <span class="collapsible-icon"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
         <div class="collapsible-content" id="aboutContent">
           <div class="collapsible-inner">
-            <div class="about-content">
-              <div>
-                <p class="about-text" id="aboutText"></p>
-              </div>
-              <div class="about-sidebar">
-                <div class="coach-info" id="coachInfo" style="display:none;">
+            <div class="about-layout">
+              <p class="about-text" id="aboutText"></p>
+              <div id="coachInfo" style="display:none;">
+                <div class="coach-card">
                   <div class="coach-avatar" id="coachAvatar">C</div>
-                  <div class="coach-details">
-                    <h4 id="coachName">–</h4>
-                    <p id="coachRole">–</p>
+                  <div>
+                    <div class="coach-name" id="coachName">—</div>
+                    <div class="coach-role" id="coachRole">—</div>
                   </div>
                 </div>
               </div>
@@ -558,11 +1001,14 @@
         </div>
       </div>
 
-      <!-- Contact -->
-      <div class="card collapsible-card" id="contactCard" style="display:none;">
+      <!-- CONTACT -->
+      <div class="card" id="contactCard" style="display:none;">
         <div class="collapsible-header" data-target="#contactContent">
-          <h3 class="collapsible-title">Contact</h3>
-          <i class="collapsible-icon fa-solid fa-chevron-down"></i>
+          <div class="collapsible-title-row">
+            <span class="eyebrow" style="margin-bottom:0;">Get in Touch</span>
+            <span class="collapsible-title">Contact</span>
+          </div>
+          <span class="collapsible-icon"><i class="fa-solid fa-chevron-down"></i></span>
         </div>
         <div class="collapsible-content" id="contactContent">
           <div class="collapsible-inner">
@@ -571,96 +1017,123 @@
         </div>
       </div>
 
-      <!-- Sticky Join CTA -->
-      <a id="stickyCta" class="sticky-cta" href="#" style="display:none;">Book Your Next Session</a>
-    </div>
-  </div>
+    </div><!-- /#content -->
+
+  </div><!-- /.page-container -->
+
+  <!-- STICKY CTA -->
+  <a id="stickyCta" class="sticky-cta" href="#">
+    Book Your Next Session →
+  </a>
 
   <script>
-  function getClubCode(){
+  /* ══════════════════════════════════════════
+     HELPERS
+  ══════════════════════════════════════════ */
+  function getClubCode() {
     const params = new URLSearchParams(location.search);
     const q = params.get('code');
     if (q) return q.trim().toLowerCase();
     const parts = location.pathname.split('/').filter(Boolean);
     return (parts[parts.length - 1] || '').toLowerCase();
   }
-  function isUrl(v){ return /^https?:\/\//i.test(v || ''); }
-  function makeStars(outOf5){
+  function isUrl(v) { return /^https?:\/\//i.test(v || ''); }
+  function makeStars(outOf5) {
     const n = Math.max(0, Math.min(5, Number(outOf5) || 0));
     const full = Math.floor(n);
     const half = n - full >= 0.5 ? 1 : 0;
     const empty = 5 - full - half;
     return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(empty);
   }
-  function formatMoney(amount){
+  function formatMoney(amount) {
     const n = Number(amount);
     if (!isFinite(n) || n <= 0) return '';
     return '£' + (Math.round(n * 100) / 100).toFixed(n % 1 ? 2 : 0);
   }
-  function formatOneDecimal(n){
+  function formatOneDecimal(n) {
     const v = Number(n);
-    if (!isFinite(v)) return '';
-    return v.toFixed(1);
+    return isFinite(v) ? v.toFixed(1) : '';
   }
-  function sanitiseHandle(v){
+  function sanitiseHandle(v) {
     if (!v) return '';
     const t = v.trim();
     if (isUrl(t)) return t;
-    const handle = t.replace(/^@/, '');
-    return 'https://instagram.com/' + handle;
+    return 'https://instagram.com/' + t.replace(/^@/, '');
   }
-  function addTag(container, text, className){
+
+  function addTag(container, text, className) {
     const el = document.createElement('span');
     el.className = 'tag' + (className ? ' ' + className : '');
     el.textContent = text;
     container.appendChild(el);
   }
-  function addContact(container, iconHtml, label, subtext, href){
+
+  function addContact(container, iconHtml, label, subtext, href) {
     const a = document.createElement('a');
     a.className = 'contact-item';
     a.href = href || 'javascript:void(0)';
     a.innerHTML = `
-      <div class="contact-icon">${iconHtml}</div>
+      <div class="contact-icon-wrap">${iconHtml}</div>
       <div class="contact-info">
-        <h4>${label}</h4>
-        <p>${subtext || ''}</p>
+        <span class="contact-label">${label}</span>
+        <span class="contact-value">${subtext || ''}</span>
       </div>`;
     container.appendChild(a);
   }
 
-  async function loadClub(){
+  function show(id) { document.getElementById(id).style.display = ''; }
+
+  /* ══════════════════════════════════════════
+     COLLAPSIBLES
+  ══════════════════════════════════════════ */
+  function initCollapsibles() {
+    document.querySelectorAll('.collapsible-header').forEach(h => {
+      h.addEventListener('click', () => {
+        const target = document.querySelector(h.dataset.target);
+        if (!target) return;
+        const isOpen = h.classList.toggle('expanded');
+        target.classList.toggle('expanded', isOpen);
+        target.style.maxHeight = isOpen ? target.scrollHeight + 'px' : '0px';
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════
+     LOAD CLUB
+  ══════════════════════════════════════════ */
+  async function loadClub() {
     const code = getClubCode();
-    if (!code){
-      document.getElementById('loading').style.display='none';
-      document.getElementById('error').style.display='block';
+    if (!code) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display = '';
       return;
     }
 
-    try{
+    try {
       const url = `/api/club-data?code=${encodeURIComponent(code)}&t=${Date.now()}`;
-      const res = await fetch(url, { cache:'no-store' });
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Failed to load club');
       const d = await res.json();
 
-      document.getElementById('loading').style.display='none';
-      document.getElementById('content').style.display='grid';
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'grid';
 
-      // Title/meta
-      const title = `${d.club_name || 'Club'} | NBRH`;
-      document.getElementById('pageTitle').textContent = title;
+      /* ── Meta ── */
+      const pageTitle = `${d.club_name || 'Club'} | The NBRH`;
+      document.getElementById('pageTitle').textContent = pageTitle;
       document.getElementById('pageDescription').setAttribute('content', d.club_bio || d.activity_type || '');
-      document.getElementById('ogTitle').setAttribute('content', title);
+      document.getElementById('ogTitle').setAttribute('content', pageTitle);
       document.getElementById('ogDescription').setAttribute('content', d.club_bio || '');
       if (d.image_url) document.getElementById('ogImage').setAttribute('content', d.image_url);
       document.getElementById('ogUrl').setAttribute('content', location.href);
 
-      // Structured data
+      /* Structured data */
       const sd = {
-        "@context":"https://schema.org",
-        "@type":"SportsClub",
+        "@context": "https://schema.org",
+        "@type": "SportsClub",
         "name": d.club_name || '',
         "description": d.club_bio || '',
-        "address": { "@type":"PostalAddress", "streetAddress": d.address || '', "addressLocality": d.location || '' },
+        "address": { "@type": "PostalAddress", "streetAddress": d.address || '', "addressLocality": d.location || '' },
         "telephone": d.phone || '',
         "email": d.email || '',
         "url": d.website || d.page_url || location.href,
@@ -668,19 +1141,19 @@
       };
       document.getElementById('structuredData').textContent = JSON.stringify(sd);
 
-      // Hero visuals
-      const hero = document.getElementById('heroCard');
-      if (d.image_url){
-        hero.style.backgroundImage = `linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)), url('${d.image_url}')`;
-      }else if (d.hero_background_gradient){
-        hero.style.backgroundImage = d.hero_background_gradient;
+      /* ── Hero BG ── */
+      const heroBg = document.getElementById('heroBg');
+      if (d.image_url) {
+        heroBg.style.background = `linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)), url('${d.image_url}') center center / cover no-repeat`;
+      } else if (d.hero_background_gradient) {
+        heroBg.style.background = d.hero_background_gradient;
       }
 
-      // Logo
+      /* ── Logo ── */
       const logoBox = document.getElementById('clubLogo');
       logoBox.innerHTML = '';
-      if (d.club_logo_emoji){
-        if (isUrl(d.club_logo_emoji)){
+      if (d.club_logo_emoji) {
+        if (isUrl(d.club_logo_emoji)) {
           const img = document.createElement('img');
           img.src = d.club_logo_emoji;
           img.alt = d.club_name ? `${d.club_name} logo` : 'Club logo';
@@ -692,180 +1165,124 @@
         logoBox.innerHTML = '<i class="fas fa-dumbbell"></i>';
       }
 
-      // Names / activity
+      /* ── Names / activity ── */
       document.getElementById('clubName').textContent = d.club_name || 'Club';
 
-      // Verification badge
-      if (d.verified){
+      if (d.verified) {
         document.getElementById('verifiedBadge').style.display = 'inline-flex';
+        document.getElementById('heroBadge').style.display = 'inline-flex';
+        document.getElementById('heroBadgeText').textContent = 'Verified Club';
       }
 
-      // Activity type tag
-      const activityEl = document.getElementById('clubActivity');
-      if (d.activity_type){
-        activityEl.textContent = d.activity_type;
-        activityEl.style.display = 'inline-block';
-      } else {
-        activityEl.style.display = 'none';
-      }
+      const actEl = document.getElementById('clubActivity');
+      if (d.activity_type) { actEl.textContent = d.activity_type; actEl.style.display = 'block'; }
 
-      // Club snippet
-      const snippetEl = document.getElementById('clubSnippet');
-      if (d.club_snippet){
-        snippetEl.textContent = d.club_snippet;
-        snippetEl.style.display = 'block';
-      } else {
-        snippetEl.style.display = 'none';
-      }
+      const snipEl = document.getElementById('clubSnippet');
+      if (d.club_snippet) { snipEl.textContent = d.club_snippet; snipEl.style.display = 'block'; }
 
-      // Sticky CTA
-      const sticky = document.getElementById('stickyCta');
-      if (d.booking_url){
-        sticky.href = d.booking_url;
-        sticky.style.display = 'inline-flex';
-      } else {
-        sticky.style.display = 'none';
-      }
+      /* ── CTA Buttons ── */
+      const bookBtn = document.getElementById('bookButton');
+      if (d.booking_url) { bookBtn.href = d.booking_url; bookBtn.style.display = 'inline-flex'; }
 
-      // Review Button
       const reviewBtn = document.getElementById('reviewButton');
-      if (d.review_link && isUrl(d.review_link)){
-        reviewBtn.href = d.review_link;
-        reviewBtn.style.display = 'inline-block';
-      } else {
-        reviewBtn.style.display = 'none';
-      }
+      if (d.review_link && isUrl(d.review_link)) { reviewBtn.href = d.review_link; reviewBtn.style.display = 'inline-flex'; }
 
-      // Shop Button
       const shopBtn = document.getElementById('shopButton');
-      if (d.shop_link && isUrl(d.shop_link)){
-        shopBtn.href = d.shop_link;
-        shopBtn.style.display = 'inline-block';
-      } else {
-        shopBtn.style.display = 'none';
-      }
+      if (d.shop_link && isUrl(d.shop_link)) { shopBtn.href = d.shop_link; shopBtn.style.display = 'inline-flex'; }
 
-      // Info grid
+      /* ── Sticky CTA ── */
+      const sticky = document.getElementById('stickyCta');
+      if (d.booking_url) { sticky.href = d.booking_url; sticky.style.display = 'inline-flex'; }
+
+      /* ── Info grid ── */
       document.getElementById('clubLocation').textContent = d.location || '—';
 
-      if (d.audience){
-        document.getElementById('audienceBlock').style.display = '';
-        document.getElementById('clubAudience').textContent = d.audience;
-      }
+      if (d.audience) { show('audienceBlock'); document.getElementById('clubAudience').textContent = d.audience; }
 
-      const feeBlock = document.getElementById('feeBlock');
       const feeText = d.monthly_fee_text || (d.monthly_fee_amount ? `${formatMoney(d.monthly_fee_amount)}/month` : '');
-      if (feeText){
-        feeBlock.style.display = '';
-        document.getElementById('clubFee').textContent = feeText;
-      }
+      if (feeText) { show('feeBlock'); document.getElementById('clubFee').textContent = feeText; }
 
-      if (d.star_rating){
+      if (d.star_rating) {
         const n = Number(d.star_rating) || 0;
-        document.getElementById('starBlock').style.display = '';
+        show('starBlock');
         document.getElementById('clubStars').textContent = makeStars(n);
         document.getElementById('starRatingText').textContent = `${n}/5`;
       }
 
-      if (d.numeric_rating !== undefined && d.numeric_rating !== null && d.numeric_rating !== ''){
-        const nn = Number(d.numeric_rating) || 0;
-        document.getElementById('numericBlock').style.display = '';
-        document.getElementById('numericRating').textContent = formatOneDecimal(nn);
+      if (d.numeric_rating !== undefined && d.numeric_rating !== null && d.numeric_rating !== '') {
+        show('numericBlock');
+        document.getElementById('numericRating').textContent = formatOneDecimal(d.numeric_rating);
       }
 
-      if (Number(d.member_count) > 0){
-        document.getElementById('membersBlock').style.display = '';
+      if (Number(d.member_count) > 0) {
+        show('membersBlock');
         document.getElementById('clubMembers').textContent = d.member_count;
       }
 
-      // Tags
+      /* ── Tags ── */
       const tagsRow = document.getElementById('clubTags');
-      if (d.tags_who){
-        d.tags_who.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t));
-      }
-      if (d.tags_vibe){
-        d.tags_vibe.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t, 'vibe'));
-      }
-      if (d.tags_accessibility){
-        d.tags_accessibility.split(',').map(s=>s.trim()).filter(Boolean).forEach(t=>addTag(tagsRow, t, 'accessibility'));
-      }
+      if (d.tags_who)           d.tags_who.split(',').map(s=>s.trim()).filter(Boolean).forEach(t => addTag(tagsRow, t));
+      if (d.tags_vibe)          d.tags_vibe.split(',').map(s=>s.trim()).filter(Boolean).forEach(t => addTag(tagsRow, t, 'vibe'));
+      if (d.tags_accessibility) d.tags_accessibility.split(',').map(s=>s.trim()).filter(Boolean).forEach(t => addTag(tagsRow, t, 'accessibility'));
 
-      // Performance stats
-      if (Number(d.ranking_position) > 0){
-        document.getElementById('rankPosBlock').style.display = '';
-        document.getElementById('rankingPosition').textContent = `#${d.ranking_position}`;
-      }
-      if (d.ranking_category){
-        document.getElementById('rankCatBlock').style.display = '';
-        document.getElementById('rankingCategory').textContent = d.ranking_category;
-      }
-      if (Number(d.sessions_per_week) > 0){
-        document.getElementById('spwBlock').style.display = '';
-        document.getElementById('sessionsPerWeek').textContent = d.sessions_per_week;
-      }
-      // Total Teams stat
-      if (Number(d.total_teams) > 0){
-        document.getElementById('totalTeamsBlock').style.display = '';
-        document.getElementById('totalTeamsStat').textContent = d.total_teams;
-      }
-      if (d.member_growth){
-        document.getElementById('growthBlock').style.display = '';
-        document.getElementById('memberGrowth').textContent = d.member_growth;
-      }
+      /* ── Performance ── */
+      if (Number(d.ranking_position) > 0) { show('rankPosBlock'); document.getElementById('rankingPosition').textContent = `#${d.ranking_position}`; }
+      if (d.ranking_category)             { show('rankCatBlock'); document.getElementById('rankingCategory').textContent = d.ranking_category; }
+      if (Number(d.sessions_per_week) > 0){ show('spwBlock'); document.getElementById('sessionsPerWeek').textContent = d.sessions_per_week; }
+      if (Number(d.total_teams) > 0)      { show('totalTeamsBlock'); document.getElementById('totalTeamsStat').textContent = d.total_teams; }
+      if (d.member_growth)                { show('growthBlock'); document.getElementById('memberGrowth').textContent = d.member_growth; }
 
-      // Sessions
-      if (Array.isArray(d.sessions) && d.sessions.length){
+      /* ── Sessions ── */
+      if (Array.isArray(d.sessions) && d.sessions.length) {
         const sg = document.getElementById('sessionsGrid');
-        d.sessions.forEach(s=>{
+        d.sessions.forEach(s => {
           if (!(s.date || s.time || s.type)) return;
           const el = document.createElement(s.url ? 'a' : 'div');
           el.className = 'session-item';
-          if (s.url){ el.href = s.url; }
+          if (s.url) el.href = s.url;
           el.innerHTML = `
             <div class="session-day">${s.date || 'Date TBC'}</div>
             <div class="session-time">${s.time || 'Time TBC'}</div>
-            <div class="session-type">${s.type || ''}</div>
-          `;
+            <div class="session-type">${s.type || ''}</div>`;
           sg.appendChild(el);
         });
-        document.getElementById('sessionsCard').style.display = '';
+        show('sessionsCard');
       }
 
-      // Teams
-      if (Array.isArray(d.teams) && d.teams.length){
+      /* ── Teams ── */
+      if (Array.isArray(d.teams) && d.teams.length) {
         const tg = document.getElementById('teamsGrid');
-        d.teams.forEach((name, i) => {
+        d.teams.forEach(name => {
           const el = document.createElement('div');
           el.className = 'team-item';
-          el.innerHTML = `<div class="team-name">${name}</div>`;
+          el.textContent = name;
           tg.appendChild(el);
         });
-        document.getElementById('teamsCard').style.display = '';
+        show('teamsCard');
       }
 
-      // Testimonials
-      if (Array.isArray(d.testimonials) && d.testimonials.length){
+      /* ── Testimonials ── */
+      if (Array.isArray(d.testimonials) && d.testimonials.length) {
         const tg = document.getElementById('testimonialsGrid');
-        d.testimonials.forEach(t=>{
+        d.testimonials.forEach(t => {
           const el = document.createElement('div');
           el.className = 'testimonial-item';
           const st = t.rating ? makeStars(Math.min(5, Number(t.rating))) : '';
           el.innerHTML = `
-            <div class="testimonial-rating">
-              <div class="stars">${st}</div>
-              <div class="testimonial-author">${t.author || ''}</div>
+            <div class="testimonial-meta">
+              <span class="stars">${st}</span>
+              <span class="testimonial-author">${t.author || ''}</span>
             </div>
-            <div class="testimonial-text">"${t.text || ''}"</div>
-          `;
+            <div class="testimonial-text">${t.text || ''}</div>`;
           tg.appendChild(el);
         });
-        document.getElementById('testimonialsCard').style.display = '';
+        show('testimonialsCard');
       }
 
-      // Benefits
-      if (Array.isArray(d.benefits) && d.benefits.length){
+      /* ── Benefits ── */
+      if (Array.isArray(d.benefits) && d.benefits.length) {
         const bg = document.getElementById('benefitsGrid');
-        d.benefits.forEach(b=>{
+        d.benefits.forEach(b => {
           if (!(b.title && b.description)) return;
           const el = document.createElement('div');
           el.className = 'benefit-item';
@@ -877,13 +1294,13 @@
             </div>`;
           bg.appendChild(el);
         });
-        document.getElementById('benefitsCard').style.display = '';
+        show('benefitsCard');
       }
 
-      // FAQs
-      if (Array.isArray(d.faqs) && d.faqs.length){
+      /* ── FAQs ── */
+      if (Array.isArray(d.faqs) && d.faqs.length) {
         const fq = document.getElementById('faqGrid');
-        d.faqs.forEach(f=>{
+        d.faqs.forEach(f => {
           if (!(f.question && f.answer)) return;
           const el = document.createElement('div');
           el.className = 'faq-item';
@@ -892,66 +1309,52 @@
             <div class="faq-answer">${f.answer}</div>`;
           fq.appendChild(el);
         });
-        document.getElementById('faqCard').style.display = '';
+        show('faqCard');
       }
 
-      // About & Coach
+      /* ── About & Coach ── */
       const aboutText = d.club_bio || '';
-      if (aboutText || d.coach_name || d.coach_role){
-        document.getElementById('aboutCard').style.display = '';
+      if (aboutText || d.coach_name || d.coach_role) {
+        show('aboutCard');
         document.getElementById('aboutText').textContent = aboutText;
-
-        if (d.coach_name || d.coach_role){
-          const ci = document.getElementById('coachInfo');
-          const cav = document.getElementById('coachAvatar');
-          const initials = (d.coach_name || '?').split(' ').map(x=>x[0]||'').join('').slice(0,2).toUpperCase();
-          cav.textContent = initials;
-          document.getElementById('coachName').textContent = d.coach_name || '';
-          document.getElementById('coachRole').textContent = d.coach_role || '';
-          ci.style.display = '';
+        if (d.coach_name || d.coach_role) {
+          show('coachInfo');
+          const initials = (d.coach_name || '?').split(' ').map(x => x[0] || '').join('').slice(0, 2).toUpperCase();
+          document.getElementById('coachAvatar').textContent = initials;
+          document.getElementById('coachName').textContent  = d.coach_name || '';
+          document.getElementById('coachRole').textContent  = d.coach_role || '';
         }
       }
 
-      // Contact
+      /* ── Contact ── */
       const cg = document.getElementById('contactGrid');
       const items = [];
-      if (d.email) items.push(()=>addContact(cg, '<i class="fa-solid fa-envelope"></i>', 'Email', d.email, 'mailto:'+d.email));
-      if (d.phone) items.push(()=>addContact(cg, '<i class="fa-solid fa-phone"></i>', 'Phone', d.phone, 'tel:'+d.phone.replace(/\s+/g,'')));
-      if (d.whatsapp) items.push(()=>addContact(cg, '<i class="fa-brands fa-whatsapp"></i>', 'WhatsApp', d.whatsapp, 'https://wa.me/'+ d.whatsapp.replace(/\D+/g,'')));
-      if (d.instagram){
+      if (d.email)     items.push(() => addContact(cg, '<i class="fa-solid fa-envelope"></i>',      'Email',     d.email,      'mailto:' + d.email));
+      if (d.phone)     items.push(() => addContact(cg, '<i class="fa-solid fa-phone"></i>',         'Phone',     d.phone,      'tel:' + d.phone.replace(/\s+/g, '')));
+      if (d.whatsapp)  items.push(() => addContact(cg, '<i class="fa-brands fa-whatsapp"></i>',    'WhatsApp',  d.whatsapp,   'https://wa.me/' + d.whatsapp.replace(/\D+/g, '')));
+      if (d.instagram) {
         const ig = sanitiseHandle(d.instagram);
-        items.push(()=>addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'@'), ig));
+        items.push(() => addContact(cg, '<i class="fa-brands fa-instagram"></i>', 'Instagram', ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i, '@'), ig));
       }
-      if (d.website && isUrl(d.website)) {
-        items.push(()=>addContact(cg, '<i class="fa-solid fa-globe"></i>', 'Website', d.website, d.website));
-      }
-      if (d.address) {
-        items.push(()=>addContact(cg, '<i class="fa-solid fa-location-dot"></i>', 'Address', d.address, 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(d.address)));
-      }
-      if (items.length){ items.forEach(fn=>fn()); document.getElementById('contactCard').style.display = ''; }
+      if (d.website && isUrl(d.website))
+        items.push(() => addContact(cg, '<i class="fa-solid fa-globe"></i>',          'Website',   d.website,   d.website));
+      if (d.address)
+        items.push(() => addContact(cg, '<i class="fa-solid fa-location-dot"></i>',   'Address',   d.address,   'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.address)));
 
-      // Collapsibles
-      document.querySelectorAll('.collapsible-header').forEach(h=>{
-        h.addEventListener('click', ()=>{
-          const target = document.querySelector(h.dataset.target);
-          h.classList.toggle('expanded');
-          target.classList.toggle('expanded');
-          if (target.classList.contains('expanded')){
-            target.style.maxHeight = target.scrollHeight+'px';
-          } else {
-            target.style.maxHeight = '0px';
-          }
-        });
-      });
+      if (items.length) { items.forEach(fn => fn()); show('contactCard'); }
 
-    }catch(e){
+      /* ── Collapsibles ── */
+      initCollapsibles();
+
+    } catch(e) {
       console.error(e);
-      document.getElementById('loading').style.display='none';
-      document.getElementById('error').style.display='block';
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('error').style.display   = '';
     }
   }
 
   document.addEventListener('DOMContentLoaded', loadClub);
   </script>
+
 </body>
 </html>
