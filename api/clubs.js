@@ -1,11 +1,10 @@
-// api/clubs.js - Fetch all active clubs data with corrected column mapping and verification support
+// api/clubs.js - Fetch all active clubs data with confidence score replacing numeric user rating
 module.exports = async (req, res) => {
   try {
     // CORS
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    // Faster updates without hammering Sheets: 15s edge cache, 5s stale
     res.setHeader('Cache-Control', 's-maxage=15, stale-while-revalidate=5');
 
     if (req.method === 'OPTIONS') return res.status(200).end();
@@ -23,26 +22,23 @@ module.exports = async (req, res) => {
     const sheets = google.sheets({ version: 'v4', auth });
     const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 
-    // Pull everything we might need
     const range = 'Dynamic Club Page Hub!A:CZ';
     const clubResponse = await sheets.spreadsheets.values.get({ spreadsheetId, range });
     const rows = clubResponse.data.values || [];
     if (!rows.length) return res.status(404).json({ error: 'No club data found' });
 
-    const headers = rows[0] || [];
     const out = [];
 
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i] || [];
 
-      // Active (column C) supports yes/true/1
       const activeCell = (row[2] || '').toString().trim().toLowerCase();
       const isActive = ['yes', 'true', '1'].includes(activeCell);
       if (!isActive) continue;
 
       const club = parseClubRow(row);
 
-      // Derive / legacy compatibility
+      // Derived / compatibility
       club.tags_array = [club.tags_who, club.tags_vibe, club.tags_accessibility].filter(Boolean);
       club.facilities_array = club.facilities_list
         ? club.facilities_list.split(',').map(s => s.trim()).filter(Boolean)
@@ -52,15 +48,13 @@ module.exports = async (req, res) => {
       club.is_wheelchair_accessible = acc.includes('wheelchair') || acc.includes('accessible');
       club.is_all_ages = (club.tags_who || '').toLowerCase().includes('all ages');
 
-      // Keep some legacy fields your front-end expects
+      // Legacy fields your front-end expects
       club.monthly_fee = club.monthly_fee_amount;
       club.description = club.club_bio;
-      club.rating = club.numeric_rating;
-      club.user_rating = club.numeric_rating;
-      club.review_count = 0; // directory doesn't need the full testimonials payload
+      // confidence_score is the authoritative club status field — no numeric alias
+      club.review_count = 0;
       club.total_members = club.member_count;
       club.age_groups = club.tags_who;
-      // Keep skill_levels for filter menu; don't render it in the card UI
       club.skill_levels = 'All levels';
       club.tags = club.tags_array.join(', ');
       club.facilities = club.facilities_list;
@@ -114,7 +108,6 @@ function makeSlug(s) {
 }
 
 function parseClubRow(row) {
-  // Columns aligned to the sheet structure used in club-data.js
   return {
     // Basic (A-C)
     club_id: safeGet(row, 0),
@@ -127,13 +120,14 @@ function parseClubRow(row) {
 
     // Details (F-S)
     activity_type: safeGet(row, 5),
-    club_logo_emoji: safeGet(row, 6), // may be emoji or image URL; front-end handles it
+    club_logo_emoji: safeGet(row, 6),
     location: safeGet(row, 7),
     monthly_fee_amount: safeFloat(row, 8),
     monthly_fee_text: safeGet(row, 9),
-    star_rating: safeGet(row, 10), // out of 5 (display as stars)
-    numeric_rating: safeFloat(row, 11), // out of 10 (overlay + numeric)
-    rating_out_of: safeFloat(row, 12) || 5,
+    star_rating: safeGet(row, 10),      // out of 5 (external / display as stars)
+    // Column 11: Confidence Score — one of:
+    // 'Verified' | 'Likely Active' | 'Probably Active' | 'Uncertain' | 'Unconfirmed'
+    confidence_score: safeGet(row, 11).trim(),
     member_count: safeInt(row, 13),
     ranking_position: safeInt(row, 14),
     ranking_category: safeGet(row, 15),
@@ -153,12 +147,12 @@ function parseClubRow(row) {
     tags_vibe: safeGet(row, 76),
     tags_accessibility: safeGet(row, 77),
 
-    // Contact (CA-CD: 78-81, CE: 82, CN: 91)
+    // Contact (CA-CD: 78-81, CE: 82)
     email: safeGet(row, 78),
     phone: safeGet(row, 79),
     whatsapp: safeGet(row, 80),
     instagram: safeGet(row, 81),
-    website: safeGet(row, 82),  // CE: Website column
+    website: safeGet(row, 82),
 
     // Design + Image (CF-CG: 83-84)
     hero_background_gradient: safeGet(row, 83),
@@ -170,7 +164,7 @@ function parseClubRow(row) {
     // Verified (CM: 90)
     verified: safeBool(row, 90),
 
-    // Address (CN: 91) - NEW COLUMN
+    // Address (CN: 91)
     address: safeGet(row, 91),
   };
 }
