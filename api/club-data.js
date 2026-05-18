@@ -78,11 +78,10 @@ module.exports = async (req, res) => {
     // Legacy fields for front-end compatibility
     club.monthly_fee = club.monthly_fee_amount;
     club.description = club.club_bio;
-    club.rating = club.numeric_rating;
-    club.user_rating = club.numeric_rating;
+    // confidence_score is the authoritative club status field — no numeric alias
     club.total_members = club.member_count;
     club.age_groups = club.tags_who;
-    club.skill_levels = 'All levels'; // not rendered on page
+    club.skill_levels = 'All levels';
     club.tags = club.tags_array.join(', ');
     club.facilities = club.facilities_list;
     club.instructor_name = club.coach_name;
@@ -133,8 +132,6 @@ function makeSlug(s) {
 }
 
 // ---------- Column index finder ----------
-// Finds a column index by its header name (case-insensitive, trimmed).
-// Falls back to `fallbackIndex` if the header row is unavailable or the name isn't found.
 function findColIndex(header, name, fallbackIndex) {
   if (!header || !Array.isArray(header)) return fallbackIndex;
   const lower = name.toLowerCase().trim();
@@ -156,25 +153,11 @@ function parseClubRow(row, header) {
   const totalTeamsCol = findColIndex(header, 'Total Teams', 97);
 
   // ---------------------------------------------------------------------------
-  // SESSION COLUMN MAPPING — resolved dynamically by header name
-  // ---------------------------------------------------------------------------
-  // Sessions 1–4 remain at their original hardcoded positions (indices 19–30).
-  // Sessions 5–7 are looked up by header name so they work wherever they land.
-  //
-  // Expected header names (case-insensitive):
-  //   session_5_time, session_5_date, session_5_type
-  //   session_6_time, session_6_date, session_6_type
-  //   session_7_time, session_7_date, session_7_type
-  //
-  // Fallback indices below match the layout visible in the screenshot
-  // (CZ=103, DA=104, DB=105, DC=106, DD=107, DE=108, DF=109, DG=110, DH=111).
+  // SESSION COLUMN MAPPING
   // ---------------------------------------------------------------------------
   const extraSessionCols = [
-    // Session 5
     { time: findColIndex(header, 'session_5_time', 103), date: findColIndex(header, 'session_5_date', 104), type: findColIndex(header, 'session_5_type', 105) },
-    // Session 6
     { time: findColIndex(header, 'session_6_time', 106), date: findColIndex(header, 'session_6_date', 107), type: findColIndex(header, 'session_6_type', 108) },
-    // Session 7
     { time: findColIndex(header, 'session_7_time', 109), date: findColIndex(header, 'session_7_date', 110), type: findColIndex(header, 'session_7_type', 111) },
   ];
 
@@ -190,14 +173,14 @@ function parseClubRow(row, header) {
 
     // Details (F-S)
     activity_type: safeGet(row, 5),
-    // May contain emoji OR an image URL — front-end handles either
     club_logo_emoji: safeGet(row, 6),
     location: safeGet(row, 7),
     monthly_fee_amount: safeFloat(row, 8),
     monthly_fee_text: safeGet(row, 9),
-    star_rating: safeGet(row, 10),       // out of 5 (display as stars)
-    numeric_rating: safeFloat(row, 11),  // out of 10 (numeric)
-    rating_out_of: safeFloat(row, 12) || 5,
+    star_rating: safeGet(row, 10),      // out of 5 (external / display as stars)
+    // Column 11: Confidence Score — one of:
+    // 'Verified' | 'Likely Active' | 'Probably Active' | 'Uncertain' | 'Unconfirmed'
+    confidence_score: safeGet(row, 11).trim(),
     member_count: safeInt(row, 13),
     ranking_position: safeInt(row, 14),
     ranking_category: safeGet(row, 15),
@@ -208,17 +191,17 @@ function parseClubRow(row, header) {
     // Sessions populated below
     sessions: [],
 
-    // Testimonials (AF-AN: 31–39) — 3 * (name, rating, text)
+    // Testimonials (AF-AN: 31–39)
     testimonials: [],
 
-    // Benefits (AO-BF: 40–57) — 6 * (icon, title, description)
+    // Benefits (AO-BF: 40–57)
     benefits: [],
 
     // Pricing (BG-BH: 58–59)
     pay_per_session_price: safeFloat(row, 58),
     savings_amount: safeFloat(row, 59),
 
-    // FAQs (BI-BR: 60–69) — 5 * (q, a)
+    // FAQs (BI-BR: 60–69)
     faqs: [],
 
     // About & Coach (BS-BV: 70–73)
@@ -262,15 +245,12 @@ function parseClubRow(row, header) {
     // Address (CN: 91)
     address: safeGet(row, 91),
 
-    // Teams — dynamically resolved from header names above
+    // Teams
     total_teams: safeInt(row, totalTeamsCol),
-    teams: teamCols
-      .map(col => safeGet(row, col))
-      .filter(Boolean),
+    teams: teamCols.map(col => safeGet(row, col)).filter(Boolean),
   };
 
-  // Sessions 1–4: original hardcoded positions (T-AC: indices 19–30)
-  // Each block is 3 columns: time, date, url
+  // Sessions 1–4
   for (let i = 0; i < 4; i++) {
     const base = 19 + i * 3;
     const time = safeGet(row, base);
@@ -279,9 +259,7 @@ function parseClubRow(row, header) {
     if (time || date) club.sessions.push({ time, date, url });
   }
 
-  // Sessions 5–7: dynamically resolved column positions.
-  // The _type column contains the booking URL (same as _url in sessions 1–4),
-  // so we map it to `url` so the front-end behaves identically.
+  // Sessions 5–7
   for (const cols of extraSessionCols) {
     const time = safeGet(row, cols.time);
     const date = safeGet(row, cols.date);
